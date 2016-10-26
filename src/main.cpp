@@ -5,12 +5,23 @@
  */
 
 #include <functional>
+#include "IdentityTransformation.h"
 #include "VideoCamera.h"
+#include "CamShiftTracker.h"
 
 using namespace std;
 
 int main(int argc, char** argv)
 {
+  // Prepare frame transformers
+  IdentityTransformation nothing;
+
+  // Prepare tracking models
+  CamShiftTracker camTrack;
+  function<void (Mat)> idle = [](Mat){};
   
+  // Start capturing from video source
+  VideoCamera cam("cam");
+  cam.captureRealtimeWith(nothing, idle);
   return 0;
 }
