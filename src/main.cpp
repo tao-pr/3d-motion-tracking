@@ -18,10 +18,11 @@ int main(int argc, char** argv)
 
   // Prepare tracking models
   CamShiftTracker camTrack;
-  function<void (Mat)> idle = [](Mat){};
+  function<void (Mat)> tracker = camTrack.track();
+  function<void (Mat)> idle    = [](Mat){};
   
   // Start capturing from video source
   VideoCamera cam("cam");
-  cam.captureRealtimeWith(nothing, idle);
+  cam.captureRealtimeWith(nothing, tracker);
   return 0;
 }

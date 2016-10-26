@@ -11,5 +11,5 @@ using namespace std;
 class CamShiftTracker
 {
 public:
-  function<void (Mat)> track(Mat& input);
+  function<void (Mat)> track();
 };

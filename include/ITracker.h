@@ -10,5 +10,5 @@ using namespace std;
 class ITracker 
 {
 public:
-  virtual function<void (Mat)> track(Mat& input) = 0;
+  virtual function<void (Mat)> track() = 0;
 };
