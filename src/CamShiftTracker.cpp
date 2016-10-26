@@ -39,6 +39,12 @@ void CamShiftTracker::trackMotion(Mat &im)
 
   // Track camera shift
   cout << "...Computing camera shift" << endl;
-  CamShift(backproj, entireRect, crit);
+  RotatedRect tracked  = CamShift(backproj, entireRect, crit);
+
+  // Draw the tracked area
+  auto canvas = im.clone();
+  ellipse( canvas, tracked, Scalar(0,100,255), 3, LINE_AA );
+  namedWindow("tracked", CV_WINDOW_AUTOSIZE);
+  imshow("tracked", canvas); 
 }
 
