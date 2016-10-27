@@ -21,6 +21,10 @@ void CamShiftTracker::trackMotion(Mat &im)
   Mat hsv;
   cvtColor(im, hsv, CV_BGR2HSV);
 
+  // Blur the image for noise reduction
+  Mat bhsv;
+  GaussianBlur( hsv, bhsv, Size(7,7), 8.0, 8.0, BORDER_REFLECT_101);
+
   // Compute image histogram
   cout << "...Computing histogram" << endl;
   Mat hist, backproj;
@@ -29,10 +33,10 @@ void CamShiftTracker::trackMotion(Mat &im)
   float range_hue[]     = {0, 180};
   float range_sat[]     = {0, 256};
   const float* ranges[] = {range_hue, range_sat};
-  int nChannels[]       = {0, 1}; // 0th and 1st channels
+  int nChannels[]       = {0, 2}; // Index of channels to take
 
   calcHist( &hsv, 1, nChannels, mask, hist, 2, histBins, ranges, true, false );
-  normalize(hist, hist, 0, 255, NORM_MINMAX);
+  normalize(hist, hist, 0, 32, NORM_MINMAX);
   
   cout << "...Computing back projection" << endl;
   calcBackProject(&hsv, 1, nChannels, hist, backproj, ranges);
@@ -42,7 +46,7 @@ void CamShiftTracker::trackMotion(Mat &im)
   RotatedRect tracked  = CamShift(backproj, entireRect, crit);
 
   // Draw the tracked area
-  auto canvas = im.clone();
+  auto canvas = bhsv.clone();
   ellipse( canvas, tracked, Scalar(0,100,255), 3, LINE_AA );
 
   // Draw the tracked movement direction

@@ -6,6 +6,7 @@
 
 #include <functional>
 #include "IdentityTransformation.h"
+#include "FilterTransformation.h"
 #include "VideoCamera.h"
 #include "CamShiftTracker.h"
 
@@ -15,6 +16,9 @@ int main(int argc, char** argv)
 {
   // Prepare frame transformers
   IdentityTransformation nothing;
+  FilterTransformation grayDownsampling = FilterTransformation(
+    FilterType::Nothing, 0, 0, 0.4
+    );
 
   // Prepare tracking models
   CamShiftTracker camTrack;
@@ -23,6 +27,6 @@ int main(int argc, char** argv)
   
   // Start capturing from video source
   VideoCamera cam("cam");
-  cam.captureRealtimeWith(nothing, tracker);
+  cam.captureRealtimeWith(grayDownsampling, tracker);
   return 0;
 }

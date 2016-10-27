@@ -12,6 +12,7 @@ using namespace cv;
 
 enum FilterType
 {
+  Nothing,
   Gray,
   BinaryThreshold,
   TruncateThreshold,
@@ -21,7 +22,7 @@ enum FilterType
 class FilterTransformation : public ITransformation
 {
 public:
-  FilterTransformation(FilterType t, float level, float maxScale);
+  FilterTransformation(FilterType t, float level, float maxScale, float ratioSize);
 
   Mat transform(Mat& input);
 
@@ -30,10 +31,12 @@ protected:
   FilterType m_type;
   float m_level;
   float m_maxScale;
+  float m_ratioSize;
 
   virtual Mat toGray(Mat &input) final;
   virtual Mat toBinarised(Mat &input) final;
   virtual Mat toTruncated(Mat &input) final;
   virtual Mat toZeroCut(Mat &input) final;
+  Mat reshape(Mat &input);
 
 };
