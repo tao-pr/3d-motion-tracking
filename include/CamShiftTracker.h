@@ -1,4 +1,5 @@
 #include <vector>
+#include <math.h>
 #include <functional>
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui.hpp>

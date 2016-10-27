@@ -25,7 +25,7 @@ void CamShiftTracker::trackMotion(Mat &im)
   cout << "...Computing histogram" << endl;
   Mat hist, backproj;
   Mat mask              = Mat(); // No masking
-  int histBins[]        = {64, 64}; // bin sizes
+  int histBins[]        = {32, 32}; // bin sizes
   float range_hue[]     = {0, 180};
   float range_sat[]     = {0, 256};
   const float* ranges[] = {range_hue, range_sat};
@@ -44,6 +44,19 @@ void CamShiftTracker::trackMotion(Mat &im)
   // Draw the tracked area
   auto canvas = im.clone();
   ellipse( canvas, tracked, Scalar(0,100,255), 3, LINE_AA );
+
+  // Draw the tracked movement direction
+  arrowedLine(
+    canvas, 
+    tracked.center, 
+    Point(
+      tracked.center.x + tracked.size.width*cos(tracked.angle)/5,
+      tracked.center.y - tracked.size.width*sin(tracked.angle)/5),
+    Scalar(0,100,255),
+    2, 8, 0, 0.08
+    );
+
+
   namedWindow("tracked", CV_WINDOW_AUTOSIZE);
   imshow("tracked", canvas); 
 }
