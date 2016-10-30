@@ -33,13 +33,13 @@ void MotionTracker::trackMotion(Mat &im)
   // Detect corners
   int wndSize    = 5;
   int maxCorners = 32;
-  double minDist = 8;
+  double minDist = 5;
   vector<Point2f> corners = TrackUtils::detectFeaturePoints(v, wndSize, maxCorners, minDist);
 
   // Canvas
-  // Mat canvas = Mat::zeros(v.size(), CV_8UC3);
-  // cvtColor(v, canvas, COLOR_GRAY2RGB);
-  Mat canvas = im.clone();
+  Mat canvas = Mat::zeros(v.size(), CV_8UC3);
+  cvtColor(v, canvas, COLOR_GRAY2RGB);
+  //Mat canvas = im.clone();
 
   // Draw detected corners
   DrawUtils::drawMarks(canvas, corners, Scalar(0,0,240));
