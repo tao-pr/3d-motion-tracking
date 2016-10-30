@@ -18,7 +18,7 @@ int main(int argc, char** argv)
   // Prepare frame transformers
   IdentityTransformation nothing;
   FilterTransformation grayDownsampling = FilterTransformation(
-    FilterType::Nothing, 0, 0, 0.50
+    FilterType::Nothing, 0, 0, 0.43
     );
 
   // Prepare tracking models

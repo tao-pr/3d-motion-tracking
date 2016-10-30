@@ -28,22 +28,25 @@ void MotionTracker::trackMotion(Mat &im)
   // Take only V component
   Mat arr[3];
   split(bhsv, arr);
-  Mat s = arr[1];
+  Mat h = arr[0];
+  Mat s = arr[0];
   Mat v = arr[2];
 
   // Detect corners
   int wndSize    = 5;
   int maxCorners = 32;
   double minDist = 5;
-  vector<Point2f> corners = TrackUtils::detectFeaturePoints(v, wndSize, maxCorners, minDist);
+  vector<Point2f> cornersH = TrackUtils::detectFeaturePoints(h, wndSize, maxCorners, minDist*3);
+  vector<Point2f> cornersV = TrackUtils::detectFeaturePoints(v, wndSize, maxCorners, minDist);
 
   // Canvas
-  Mat canvas = Mat::zeros(v.size(), CV_8UC3);
-  cvtColor(s, canvas, COLOR_GRAY2RGB);
-  //Mat canvas = im.clone();
+  // Mat canvas = Mat::zeros(v.size(), CV_8UC3);
+  // cvtColor(s, canvas, COLOR_GRAY2RGB);
+  Mat canvas = im.clone();
 
   // Draw detected corners
-  DrawUtils::drawMarks(canvas, corners, Scalar(0,0,240));
+  DrawUtils::drawMarks(canvas, cornersH, Scalar(0,0,240));
+  DrawUtils::drawMarks(canvas, cornersV, Scalar(0,210,240));
 
   namedWindow("tracked", CV_WINDOW_AUTOSIZE);
   imshow("tracked", canvas);
