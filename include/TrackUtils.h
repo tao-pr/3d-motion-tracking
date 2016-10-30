@@ -1,5 +1,5 @@
-#ifndef CAMSHIFT
-#define CAMSHIFT
+#ifndef TRACKUTILS
+#define TRACKUTILS
 
 #include <vector>
 #include <math.h>
@@ -9,18 +9,18 @@
 #include <opencv2/video/tracking.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv/cvaux.hpp>
-#include "ITracker.h"
 
 using namespace cv;
 using namespace std;
 
-class CamShiftTracker
+class TrackUtils
 {
 public:
-  function<void (Mat)> track();
+  static vector<Point2f> detectFeaturePoints(Mat& in, int wndSize, int maxCorners, double minDist);
+  static Mat detectCorners(Mat& in, int wndSize);
+
 
 protected:
-  void trackMotion(Mat& im);
 };
 
 #endif

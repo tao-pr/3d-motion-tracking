@@ -37,3 +37,4 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 
 clean:
 	rm -r $(BUILD_DIR)/*.o $(TARGET)
+	@make

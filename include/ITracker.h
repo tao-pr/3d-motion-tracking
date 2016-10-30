@@ -1,3 +1,6 @@
+#ifndef ITRACKER
+#define ITRACKER
+
 #include <vector>
 #include <functional>
 #include <opencv2/opencv.hpp>
@@ -12,3 +15,5 @@ class ITracker
 public:
   virtual function<void (Mat)> track() = 0;
 };
+
+#endif

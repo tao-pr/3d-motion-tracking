@@ -9,6 +9,7 @@
 #include "FilterTransformation.h"
 #include "VideoCamera.h"
 #include "CamShiftTracker.h"
+#include "MotionTracker.h"
 
 using namespace std;
 
@@ -17,13 +18,16 @@ int main(int argc, char** argv)
   // Prepare frame transformers
   IdentityTransformation nothing;
   FilterTransformation grayDownsampling = FilterTransformation(
-    FilterType::Nothing, 0, 0, 0.4
+    FilterType::Nothing, 0, 0, 0.50
     );
 
   // Prepare tracking models
   CamShiftTracker camTrack;
-  function<void (Mat)> tracker = camTrack.track();
-  function<void (Mat)> idle    = [](Mat){};
+  // function<void (Mat)> tracker = camTrack.track();
+  // function<void (Mat)> idle    = [](Mat){};
+
+  MotionTracker motionTrack;
+  function<void (Mat)> tracker = motionTrack.track();
   
   // Start capturing from video source
   VideoCamera cam("cam");
