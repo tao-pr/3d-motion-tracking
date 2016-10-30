@@ -28,6 +28,7 @@ void MotionTracker::trackMotion(Mat &im)
   // Take only V component
   Mat arr[3];
   split(bhsv, arr);
+  Mat s = arr[1];
   Mat v = arr[2];
 
   // Detect corners
@@ -38,7 +39,7 @@ void MotionTracker::trackMotion(Mat &im)
 
   // Canvas
   Mat canvas = Mat::zeros(v.size(), CV_8UC3);
-  cvtColor(v, canvas, COLOR_GRAY2RGB);
+  cvtColor(s, canvas, COLOR_GRAY2RGB);
   //Mat canvas = im.clone();
 
   // Draw detected corners
