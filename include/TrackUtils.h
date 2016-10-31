@@ -16,7 +16,7 @@ using namespace std;
 class TrackUtils
 {
 public:
-  static vector<Point2f> detectFeaturePoints(Mat& in, int wndSize, int maxCorners, double minDist);
+  static vector<Point2f> detectFeaturePoints(Mat& in, int wndSize, int maxCorners, double minDist, double k);
   static Mat detectCorners(Mat& in, int wndSize);
 
 

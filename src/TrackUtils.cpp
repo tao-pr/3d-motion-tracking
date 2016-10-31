@@ -10,12 +10,12 @@ Mat TrackUtils::detectCorners(Mat& in, int wndSize)
   return h;
 }
 
-vector<Point2f> TrackUtils::detectFeaturePoints(Mat& in, int wndSize, int maxCorners, double minDist)
+vector<Point2f> TrackUtils::detectFeaturePoints(Mat& in, int wndSize, int maxCorners, double minDist, double k)
 {
   vector<Point2f> corners;
   double quality   = 0.015;
   Mat mask         = Mat();
-  double k         = 0.005;
+  
   // Shi-Tomasi
   goodFeaturesToTrack(in, corners, maxCorners, quality, minDist, mask, wndSize, false, k);
   return corners;

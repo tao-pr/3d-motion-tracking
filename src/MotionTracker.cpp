@@ -39,8 +39,8 @@ void MotionTracker::trackMotion(Mat &im)
   int wndSize    = 5;
   int maxCorners = 16;
   double minDist = 5;
-  vector<Point2f> cornersS = TrackUtils::detectFeaturePoints(h, wndSize, maxCorners, minDist*3);
-  vector<Point2f> cornersV = TrackUtils::detectFeaturePoints(v, wndSize, maxCorners, minDist);
+  vector<Point2f> cornersS = TrackUtils::detectFeaturePoints(h, wndSize, maxCorners, minDist*3, 0.2);
+  vector<Point2f> cornersV = TrackUtils::detectFeaturePoints(v, wndSize, maxCorners, minDist, 0.05);
 
   // Canvas
   // Mat canvas = Mat::zeros(v.size(), CV_8UC3);
