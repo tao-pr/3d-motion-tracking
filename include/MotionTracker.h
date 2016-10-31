@@ -25,6 +25,7 @@ public:
 
 protected:
   void trackMotion(Mat& im);
+  Mat calcHistBackProjection(Mat& im);
 };
 
 #endif
