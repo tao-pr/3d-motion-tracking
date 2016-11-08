@@ -3,6 +3,8 @@
 TrackableKeyPoint::TrackableKeyPoint(Point &p)
 {
   int N = 0;
+  this->p0 = 0;
+  this->absenceLength = 0;
   this->kf = KalmanFilter(
     DIMENSION_OF_STATE, 
     DIMENSION_OF_MEASUREMENT,
@@ -13,7 +15,7 @@ TrackableKeyPoint::TrackableKeyPoint(Point &p)
   // z[k] = H[k]*x[k] + v[k]
 
   // Noise {v}
-  this->noise = Mat(DIMENSION_OF_STATE, 1, CV_32F);
+  this->noise = Mat(DIMENSION_OF_MEASUREMENT, 1, CV_32F);
 
   // State {x} : [x, y, dx/dt, dy/dt]
   this->state = Mat(DIMENSION_OF_STATE, DIMENSION_OF_STATE, CV_32F);
@@ -53,7 +55,7 @@ TrackableKeyPoint::TrackableKeyPoint(Point &p)
   setIdentity(this->kf.measurementNoiseCov, Scalar::all(1e-2));
 }
 
-void TrackableKeyPoint::update(Point &p)
+Point TrackableKeyPoint::update(Point &p)
 {
   // Predict the state
   Point p_ = this->predict();
@@ -62,10 +64,41 @@ void TrackableKeyPoint::update(Point &p)
   int N = DIMENSION_OF_MEASUREMENT;
   Mat m = (Mat_<float>(N,1) << p.x, p.y);
   this->kf.correct(m);
+
+  return p_;
 }
 
 Point TrackableKeyPoint::predict()
 {
   Mat matp = this->kf.predict();
-  return Point(matp.at<float>(0), matp.at<float>(1));
+  this->p_ = Point(matp.at<float>(0), matp.at<float>(1));
+  return this->p_;
+}
+
+
+Point TrackableKeyPoint::setAbsence()
+{
+  // Predict the state
+  Point p_ = this->predict();
+
+  this->absenceLength ++;
+  return p_;
+}
+
+
+
+//======================================
+
+void Mesh::drawMarkers(Mat& canvas, Scalar colorMeasure, Scalar colorPredict)
+{
+
+}
+
+void Mesh::update(vector<Point> &ps)
+{
+  for (Point p : ps)
+  {
+    // Find the nearest tracked point
+
+  }
 }
