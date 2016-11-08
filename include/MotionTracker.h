@@ -12,6 +12,7 @@
 #include "DrawUtils.h"
 #include "TrackUtils.h"
 #include "ITracker.h"
+#include "Keypoints.h"
 
 using namespace cv;
 using namespace std;
