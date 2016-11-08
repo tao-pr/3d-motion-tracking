@@ -32,22 +32,22 @@ TrackableKeyPoint::TrackableKeyPoint(Point &p)
     DIMENSION_OF_STATE,
     CV_32F);
   N = DIMENSION_OF_STATE;
-  this->kf.measurementMatrix.at(0 + N*0) = 1; // x(measure) = x(state)
-  this->kf.measurementMatrix.at(1 + N*1) = 1; // y(measure) = y(state)
+  this->kf.measurementMatrix.at<float>(0 + N*0) = 1; // x(measure) = x(state)
+  this->kf.measurementMatrix.at<float>(1 + N*1) = 1; // y(measure) = y(state)
 
   // Transition Matrix A : A*x[k] = x[k+1] .... (kinetic system)
   setIdentity(this->kf.transitionMatrix);
   float dt = 0.1;
   N = DIMENSION_OF_MEASUREMENT;
-  this->kf.transitionMatrix.at(2 + N*0) = dt; // x' = x + v[x]*dt
-  this->kf.transitionMatrix.at(3 + N*1) = dt; // y' = y + v[y]*dt
+  this->kf.transitionMatrix.at<float>(2 + N*0) = dt; // x' = x + v[x]*dt
+  this->kf.transitionMatrix.at<float>(3 + N*1) = dt; // y' = y + v[y]*dt
 
   N = DIMENSION_OF_STATE;
-  this->kf.processNoiseCov = Mat.zeros(DIMENSION_OF_STATE, DIMENSION_OF_STATE, CV_32F);
-  this->kf.processNoiseCov.at(0 + N*0) = 1e-5; // R_x
-  this->kf.processNoiseCov.at(1 + N*1) = 1e-5; // R_y
-  this->kf.processNoiseCov.at(2 + N*2) = 0.1; // R_vx
-  this->kf.processNoiseCov.at(3 + N*3) = 0.1; // R_vy
+  this->kf.processNoiseCov = Mat::zeros(DIMENSION_OF_STATE, DIMENSION_OF_STATE, CV_32F);
+  this->kf.processNoiseCov.at<float>(0 + N*0) = 1e-5; // R_x
+  this->kf.processNoiseCov.at<float>(1 + N*1) = 1e-5; // R_y
+  this->kf.processNoiseCov.at<float>(2 + N*2) = 0.1; // R_vx
+  this->kf.processNoiseCov.at<float>(3 + N*3) = 0.1; // R_vy
 
   // Measurement Noise covariance : v[k] ~ N(0,R[k]) .... where E[v.vT] = R
   setIdentity(this->kf.measurementNoiseCov, Scalar::all(1e-2));
@@ -55,5 +55,17 @@ TrackableKeyPoint::TrackableKeyPoint(Point &p)
 
 void TrackableKeyPoint::update(Point &p)
 {
+  // Predict the state
+  Point p_ = this->predict();
 
+  // Update the measurement
+  int N = DIMENSION_OF_MEASUREMENT;
+  Mat m = (Mat_<float>(N,1) << p.x, p.y);
+  this->kf.correct(m);
+}
+
+Point TrackableKeyPoint::predict()
+{
+  Mat matp = this->kf.predict();
+  return Point(matp.at<float>(0), matp.at<float>(1));
 }

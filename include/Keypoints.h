@@ -18,13 +18,15 @@ public:
   TrackableKeyPoint(Point &p);
   // Update a new position
   void update(Point &p);
+  Point predict();
 
 private:
   KalmanFilter kf;
   Mat state;
   Mat noise;
+  Mat measure;
 
-  const int DIMENSION_OF_STATE  = 4; // [x,y,vx,vy]
+  const int DIMENSION_OF_STATE  = 4; // [x,y,dx/dt,dy/dt]
   const int DIMENSION_OF_MEASUREMENT = 2; // [x,y]
   const int DIMENSION_OF_CONTROLVECTOR = 0;
 };
@@ -38,6 +40,7 @@ public:
 
 protected:
   vector<TrackableKeyPoint> points; // TAOTOREVIEW: Better use KD-Tree ?
+  
 };
 
 #endif
