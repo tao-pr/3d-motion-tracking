@@ -3,7 +3,7 @@
 TrackableKeyPoint::TrackableKeyPoint(Point &p)
 {
   int N = 0;
-  this->p0 = 0;
+  this->p0 = Point(0,0);
   this->absenceLength = 0;
   this->kf = KalmanFilter(
     DIMENSION_OF_STATE, 
@@ -87,18 +87,3 @@ Point TrackableKeyPoint::setAbsence()
 
 
 
-//======================================
-
-void Mesh::drawMarkers(Mat& canvas, Scalar colorMeasure, Scalar colorPredict)
-{
-
-}
-
-void Mesh::update(vector<Point> &ps)
-{
-  for (Point p : ps)
-  {
-    // Find the nearest tracked point
-
-  }
-}

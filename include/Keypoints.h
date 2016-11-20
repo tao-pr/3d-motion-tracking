@@ -1,6 +1,7 @@
 #ifndef KEYPOINTS
 #define KEYPOINTS
 
+#include <queue>
 #include <vector>
 #include <math.h>
 #include <functional>
@@ -23,6 +24,7 @@ public:
 
   inline Point get(){ return this->p0; };
   inline Point getPredicted(){ return this->p_; };
+  inline int getAbsence(){ return this->absenceLength; };
 
 private:
   KalmanFilter kf;
@@ -31,30 +33,19 @@ private:
   Mat measure;
 
   // Current position
-  Point p0; // Measured
+  Point p0; // Measured // TAOTODO: Nullable<>
   Point p_; // Predicted
 
-  int absenceLength;
+  int absenceLength; // Number of consecutive absent frames
 
   const int DIMENSION_OF_STATE  = 4; // [x,y,dx/dt,dy/dt]
   const int DIMENSION_OF_MEASUREMENT = 2; // [x,y]
   const int DIMENSION_OF_CONTROLVECTOR = 0;
 };
 
-// A set of sparse keypoints to track
-class Mesh
-{
-public:
-  Mesh(vector<Point> &ps);
-  void update(vector<Point> &ps);
-  void drawMarkers(Mat& canvas, Scalar colorMeasure, Scalar colorPredict);
+#define SQR(n)    n*n
+#define DIST(a,b) sqrt(SQR(a.x - b.x) + SQR(a.y - b.y))
 
-protected:
-  vector<TrackableKeyPoint> points; // TAOTOREVIEW: Better use KD-Tree ?
 
-private:
-  const float MAX_DISTANCE = 25.0; // Max distance to track
-  const int LONGEST_ABSENCE = 8; // Longest absence of points before removal
-};
 
 #endif
