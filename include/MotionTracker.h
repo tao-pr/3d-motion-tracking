@@ -12,7 +12,8 @@
 #include "DrawUtils.h"
 #include "TrackUtils.h"
 #include "ITracker.h"
-#include "Keypoints.h"
+#include "Keypoint.h"
+#include "MeshObject.h"
 
 using namespace cv;
 using namespace std;

@@ -33,7 +33,7 @@ private:
   Mat measure;
 
   // Current position
-  Point p0; // Measured // TAOTODO: Nullable<>
+  Point p0; // Measured
   Point p_; // Predicted
 
   int absenceLength; // Number of consecutive absent frames
