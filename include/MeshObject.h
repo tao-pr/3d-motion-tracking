@@ -41,12 +41,17 @@ public:
   // with tracking technique
   MeshObject align(MeshObject &newMesh);
 
+  Point2f centroid() const; 
+
+  // Split the mesh into one or more sub-meshes
+  vector<MeshObject> split(double maxEdgeLength=100) const;
+
   bool isEmpty() const;
 
   void drawMesh(Mat &canvas, Scalar color, double maxDistance=100) const;
 
 protected:
-  vector<Point2f> Point2fs; // TAOTOREVIEW: KD-Tree might be a better choice
+  vector<Point2f> points; // TAOTOREVIEW: KD-Tree might be a better choice
 };
 
 
