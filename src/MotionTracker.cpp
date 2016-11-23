@@ -53,6 +53,9 @@ void MotionTracker::trackMotion(Mat &im)
   MeshObject mesh(points);
   cout << "... Mesh allocated" << endl;
 
+  double maxEdgeLength = im.size[0];
+  mesh.drawMesh(canvas, Scalar(100,100,200), maxEdgeLength);
+
   // Draw detected corners
   DrawUtils::drawMarks(canvas, cornersS, Scalar(0,0,240));
   DrawUtils::drawMarks(canvas, cornersV, Scalar(210,100,0));

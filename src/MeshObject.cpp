@@ -28,7 +28,7 @@ bool MeshObject::isEmpty() const
 }
 
 
-void MeshObject::drawMesh(Mat &canvas, Scalar color) const
+void MeshObject::drawMesh(Mat &canvas, Scalar color, double maxDistance) const
 {
   auto N = this->Point2fs.size();
   for (int i=0; i<N; i++)
@@ -36,7 +36,7 @@ void MeshObject::drawMesh(Mat &canvas, Scalar color) const
     {
       Point2f p0 = this->Point2fs[i];
       Point2f p  = this->Point2fs[j];
-      if (!EQ(p0,p))
+      if (_dist(p0,p) <= maxDistance)
         line(canvas, p0, p, color, 1, CV_AA);
     }
 }

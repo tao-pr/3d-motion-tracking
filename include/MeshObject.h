@@ -12,6 +12,7 @@
 #include <opencv/cvaux.hpp>
 #include "DrawUtils.h"
 #include "KeyPoint.h"
+#include "CalcUtils.h"
 
 #define EQ(a,b) ((a.x==b.x && a.y==b.y))
 
@@ -44,7 +45,7 @@ public:
 
   bool isEmpty() const;
 
-  void drawMesh(Mat &canvas, Scalar color) const;
+  void drawMesh(Mat &canvas, Scalar color, double maxDistance=100) const;
 
 protected:
   vector<Point2f> Point2fs; // TAOTOREVIEW: KD-Tree might be a better choice
