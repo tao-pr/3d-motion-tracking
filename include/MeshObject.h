@@ -14,8 +14,6 @@
 #include "KeyPoint.h"
 #include "CalcUtils.h"
 
-#define EQ(a,b) ((a.x==b.x && a.y==b.y))
-
 struct Point2fPair
 {
   Point2f a, b;

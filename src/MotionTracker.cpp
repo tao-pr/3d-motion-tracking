@@ -51,7 +51,6 @@ void MotionTracker::trackMotion(Mat &im)
   points.insert(points.end(), cornersV.begin(), cornersV.end());
   cout << "... " << points.size() << " vertices captured" << endl;
   MeshObject mesh(points);
-  cout << "... Mesh allocated" << endl;
 
   double maxEdgeLength = im.size[0];
   mesh.drawMesh(canvas, Scalar(100,100,200), maxEdgeLength);
