@@ -47,11 +47,11 @@ void MotionTracker::trackMotion(Mat &im)
   Mat canvas = im.clone();
 
   // Create a trackable mesh
-  vector<Point2f> points;
-  points.reserve( cornersS.size() + cornersV.size() );
-  points.insert( cornersS.end(), cornersS.begin(), cornersS.end() );
-  points.insert( cornersV.end(), cornersV.begin(), cornersV.end() );
+  vector<Point2f> points = cornersS;
+  points.insert(points.end(), cornersV.begin(), cornersV.end());
+  cout << "... " << points.size() << " vertices captured" << endl;
   MeshObject mesh(points);
+  cout << "... Mesh allocated" << endl;
 
   // Draw detected corners
   DrawUtils::drawMarks(canvas, cornersS, Scalar(0,0,240));

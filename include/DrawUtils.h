@@ -43,8 +43,6 @@ public:
    */
   inline static void drawMarks(Mat& canvas, vector<Point2f> marks, Scalar color)
   {
-    // TAODEBUG:
-    cout << marks.size() << " points to draw" << endl;
     for (Point2f p : marks)
     {
       circle(canvas, p, 3, color, CV_FILLED, CV_AA);
