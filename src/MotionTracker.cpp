@@ -46,6 +46,13 @@ void MotionTracker::trackMotion(Mat &im)
   // cvtColor(h, canvas, COLOR_GRAY2RGB);
   Mat canvas = im.clone();
 
+  // Create a trackable mesh
+  vector<Point2f> points;
+  points.reserve( cornersS.size() + cornersV.size() );
+  points.insert( cornersS.end(), cornersS.begin(), cornersS.end() );
+  points.insert( cornersV.end(), cornersV.begin(), cornersV.end() );
+  MeshObject mesh(points);
+
   // Draw detected corners
   DrawUtils::drawMarks(canvas, cornersS, Scalar(0,0,240));
   DrawUtils::drawMarks(canvas, cornersV, Scalar(210,100,0));

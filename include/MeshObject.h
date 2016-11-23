@@ -11,19 +11,19 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv/cvaux.hpp>
 #include "DrawUtils.h"
-#include "Keypoint.h"
+#include "KeyPoint.h"
 
 #define EQ(a,b) ((a.x==b.x && a.y==b.y))
 
-struct PointPair
+struct Point2fPair
 {
-  Point a, b;
+  Point2f a, b;
   double distance;
 };
 
 struct ShorterDistance
 {
-  bool operator() (const PointPair& p1, const PointPair& p2) const 
+  bool operator() (const Point2fPair& p1, const Point2fPair& p2) const 
   {
     return p1.distance < p2.distance;
   }
@@ -33,12 +33,12 @@ class MeshObject
 {
 public:
   MeshObject(){};
-  MeshObject(vector<Point> &ps);
+  MeshObject(vector<Point2f> &ps);
 
-  vector<TrackableKeyPoint> toKeypoints() const;
+  vector<TrackedPoint> toKeyPoint2fs() const;
 
   // Align new mesh onto the current mesh
-  // This will also smoothen the displacement of points
+  // This will also smoothen the displacement of Point2fs
   // with tracking technique
   MeshObject align(MeshObject &newMesh);
 
@@ -47,7 +47,7 @@ public:
   void drawMesh(Mat &canvas, Scalar color) const;
 
 protected:
-  vector<Point> points; // TAOTOREVIEW: KD-Tree might be a better choice
+  vector<Point2f> Point2fs; // TAOTOREVIEW: KD-Tree might be a better choice
 };
 
 

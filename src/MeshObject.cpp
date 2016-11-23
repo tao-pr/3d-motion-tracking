@@ -1,15 +1,15 @@
 #include "MeshObject.h"
 
-MeshObject::MeshObject(vector<Point> &ps)
+MeshObject::MeshObject(vector<Point2f> &ps)
 {
-  this->points = ps;
+  this->Point2fs = ps;
 }
 
-vector<TrackableKeyPoint> MeshObject::toKeypoints() const
+vector<TrackedPoint> MeshObject::toKeyPoint2fs() const
 {
-  vector<TrackableKeyPoint> kps;
-  for (Point p: this->points)
-    kps.push_back(TrackableKeyPoint(p));
+  vector<TrackedPoint> kps;
+  for (Point2f p: this->Point2fs)
+    kps.push_back(TrackedPoint(p));
   return kps;
 }
 
@@ -24,18 +24,18 @@ MeshObject MeshObject::align(MeshObject &newMesh)
 
 bool MeshObject::isEmpty() const
 {
-  return this->points.empty();
+  return this->Point2fs.empty();
 }
 
 
 void MeshObject::drawMesh(Mat &canvas, Scalar color) const
 {
-  auto N = this->points.size();
+  auto N = this->Point2fs.size();
   for (int i=0; i<N; i++)
     for (int j=i+1; j<N; j++)
     {
-      Point p0 = this->points[i];
-      Point p  = this->points[j];
+      Point2f p0 = this->Point2fs[i];
+      Point2f p  = this->Point2fs[j];
       if (!EQ(p0,p))
         line(canvas, p0, p, color, 1, CV_AA);
     }

@@ -1,9 +1,9 @@
-#include "Keypoint.h"
+#include "KeyPoint.h"
 
-TrackableKeyPoint::TrackableKeyPoint(Point &p)
+TrackedPoint::TrackedPoint(Point2f &p)
 {
   int N = 0;
-  this->p0 = Point(0,0);
+  this->p0 = Point2f(0,0);
   this->absenceLength = 0;
   this->kf = KalmanFilter(
     DIMENSION_OF_STATE, 
@@ -55,10 +55,10 @@ TrackableKeyPoint::TrackableKeyPoint(Point &p)
   setIdentity(this->kf.measurementNoiseCov, Scalar::all(1e-2));
 }
 
-Point TrackableKeyPoint::update(Point &p)
+Point2f TrackedPoint::update(Point2f &p)
 {
   // Predict the state
-  Point p_ = this->predict();
+  Point2f p_ = this->predict();
 
   // Update the measurement
   int N = DIMENSION_OF_MEASUREMENT;
@@ -68,18 +68,18 @@ Point TrackableKeyPoint::update(Point &p)
   return p_;
 }
 
-Point TrackableKeyPoint::predict()
+Point2f TrackedPoint::predict()
 {
   Mat matp = this->kf.predict();
-  this->p_ = Point(matp.at<float>(0), matp.at<float>(1));
+  this->p_ = Point2f(matp.at<float>(0), matp.at<float>(1));
   return this->p_;
 }
 
 
-Point TrackableKeyPoint::setAbsence()
+Point2f TrackedPoint::setAbsence()
 {
   // Predict the state
-  Point p_ = this->predict();
+  Point2f p_ = this->predict();
 
   this->absenceLength ++;
   return p_;

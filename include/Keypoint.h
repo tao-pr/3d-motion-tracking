@@ -1,5 +1,5 @@
-#ifndef KEYPOINTS
-#define KEYPOINTS
+#ifndef KEYPoint2fS
+#define KEYPoint2fS
 
 #include <queue>
 #include <vector>
@@ -12,18 +12,18 @@
 #include <opencv/cvaux.hpp>
 #include "DrawUtils.h"
 
-// A single keypoint to track
-class TrackableKeyPoint
+// A single keyPoint2f to track
+class TrackedPoint
 {
 public:
-  TrackableKeyPoint(Point &p);
+  TrackedPoint(Point2f &p);
   // Update a new position
-  Point update(Point &p);
-  Point setAbsence();
-  Point predict();
+  Point2f update(Point2f &p);
+  Point2f setAbsence();
+  Point2f predict();
 
-  inline Point get(){ return this->p0; };
-  inline Point getPredicted(){ return this->p_; };
+  inline Point2f get(){ return this->p0; };
+  inline Point2f getPredicted(){ return this->p_; };
   inline int getAbsence(){ return this->absenceLength; };
 
 private:
@@ -33,8 +33,8 @@ private:
   Mat measure;
 
   // Current position
-  Point p0; // Measured
-  Point p_; // Predicted
+  Point2f p0; // Measured
+  Point2f p_; // Predicted
 
   int absenceLength; // Number of consecutive absent frames
 
