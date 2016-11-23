@@ -13,14 +13,38 @@
 #include "DrawUtils.h"
 #include "Keypoint.h"
 
+#define EQ(a,b) ((a.x==b.x && a.y==b.y))
+
+struct PointPair
+{
+  Point a, b;
+  double distance;
+};
+
+struct ShorterDistance
+{
+  bool operator() (const PointPair& p1, const PointPair& p2) const 
+  {
+    return p1.distance < p2.distance;
+  }
+};
+
 class MeshObject
 {
 public:
   MeshObject(){};
   MeshObject(vector<Point> &ps);
 
-  // Align two meshes and track corresponding points
-  MeshObject align(MeshObject &another);
+  vector<TrackableKeyPoint> toKeypoints() const;
+
+  // Align new mesh onto the current mesh
+  // This will also smoothen the displacement of points
+  // with tracking technique
+  MeshObject align(MeshObject &newMesh);
+
+  bool isEmpty() const;
+
+  void drawMesh(Mat &canvas, Scalar color) const;
 
 protected:
   vector<Point> points; // TAOTOREVIEW: KD-Tree might be a better choice

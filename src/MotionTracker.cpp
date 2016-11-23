@@ -9,7 +9,6 @@ function<void (Mat)> MotionTracker::track()
   auto pipe = [&](Mat im)
   {
     trackMotion(im);
-    cout << "Tracking ..." << endl;
   };
 
   return pipe;
