@@ -53,11 +53,17 @@ void MotionTracker::trackMotion(Mat &im)
   MeshObject mesh(points);
 
   double maxEdgeLength = im.size[0];
-  mesh.drawMesh(canvas, Scalar(100,100,200), maxEdgeLength);
+
+  // Split meshes
+  vector<MeshObject> meshes = mesh.split(maxEdgeLength);
+  cout << "... " << meshes.size() << " meshes splitted" << endl;
+  for (MeshObject m : meshes) 
+    m.drawMesh(canvas, Scalar(100,100,200), Scalar(0,0,240), maxEdgeLength);
+  //mesh.drawMesh(canvas, Scalar(100,100,200), Scalar(0,0,240), maxEdgeLength);
 
   // Draw detected corners
-  DrawUtils::drawMarks(canvas, cornersS, Scalar(0,0,240));
-  DrawUtils::drawMarks(canvas, cornersV, Scalar(210,100,0));
+  // DrawUtils::drawMarks(canvas, cornersS, Scalar(0,0,240));
+  // DrawUtils::drawMarks(canvas, cornersV, Scalar(210,100,0));
 
   namedWindow("tracked", CV_WINDOW_AUTOSIZE);
   imshow("tracked", canvas);

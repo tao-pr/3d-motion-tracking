@@ -48,10 +48,14 @@ public:
 
   bool isEmpty() const;
 
-  void drawMesh(Mat &canvas, Scalar color, double maxDistance=100) const;
+  void drawMesh(Mat &canvas, Scalar edgeColor, Scalar vertexColor, double maxDistance=100) const;
 
 protected:
   vector<Point2f> points; // TAOTOREVIEW: KD-Tree might be a better choice
+
+  // Find minimum distance from a point [p]
+  // to the group of points [ps]
+  static double findMinDistance(Point2f p, vector<Point2f> ps);
 };
 
 
