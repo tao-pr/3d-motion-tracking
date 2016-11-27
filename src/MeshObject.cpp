@@ -125,9 +125,25 @@ void MeshObject::drawMesh(Mat &canvas, Scalar edgeColor, Scalar vertexColor, dou
       if (_dist(p0,p) <= maxDistance)
         line(canvas, p0, p, edgeColor, 1, CV_AA);
     }
+
+  double bx0 = numeric_limits<double>::max();
+  double bxN = -numeric_limits<double>::max();
+  double by0 = numeric_limits<double>::max();
+  double byN = -numeric_limits<double>::max();
+
   // Draw vertices
   for (Point2f p : this->points)
+  {
     circle(canvas, p, 1, vertexColor, 1, CV_AA);
+    // Update bounding box coordinates
+    bx0 = p.x < bx0 ? p.x : bx0;
+    by0 = p.y < by0 ? p.y : by0;
+    bxN = p.x > bxN ? p.x : bxN;
+    byN = p.y > byN ? p.y : byN;
+  }
+
+  // Draw bounding box
+  rectangle(canvas, Point2f(bx0, by0), Point2f(bxN, byN), vertexColor, 1, CV_AA);
 }
 
 
