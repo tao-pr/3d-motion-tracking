@@ -50,18 +50,26 @@ double MeshObject::findMinDistance(Point2f p, vector<Point2f> ps)
   return minDist;
 }
 
+vector<Point2f> MeshObject::toVec() const 
+{
+  vector<Point2f> vec;
+  for (auto p : this->points)
+    vec.push_back(p);
+  return vec;
+}
+
 vector<MeshObject> MeshObject::split(double maxEdgeLength) const
 {
   vector<MeshObject> ms;
 
   // Traverse through the mesh graph 
-  vector<Point2f> points0(this->points.begin(), this->points.end());
+  vector<Point2f> points0 = this->toVec();
   vector<Point2f> residues;
 
   while (!points0.empty())
   {
     vector<Point2f> neighbors;
-    
+
     // Pick up next candidate
     Point2f p0 = points0.back();
     points0.pop_back();
@@ -86,7 +94,14 @@ vector<MeshObject> MeshObject::split(double maxEdgeLength) const
     MeshObject m(neighbors);
     ms.push_back(m);
 
-    points0 = residues;
+    // [residues]  becomes next [points0]
+    points0.clear();
+    while (!residues.empty()) 
+    {
+      Point2f p = residues.back();
+      residues.pop_back();
+      points0.push_back(p);
+    }
   }
 
   return ms;

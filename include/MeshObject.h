@@ -53,6 +53,8 @@ public:
 protected:
   vector<Point2f> points; // TAOTOREVIEW: KD-Tree might be a better choice
 
+  vector<Point2f> toVec() const;
+
   // Find minimum distance from a point [p]
   // to the group of points [ps]
   static double findMinDistance(Point2f p, vector<Point2f> ps);
