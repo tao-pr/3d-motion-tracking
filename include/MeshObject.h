@@ -10,8 +10,9 @@
 #include <opencv2/video/tracking.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv/cvaux.hpp>
+#include "Particle.h"
+#include "Hungarian.h"
 #include "DrawUtils.h"
-#include "KeyPoint.h"
 #include "CalcUtils.h"
 
 struct Point2fPair
@@ -34,14 +35,8 @@ public:
   MeshObject(){};
   MeshObject(vector<Point2f> &ps);
 
-  vector<TrackedPoint> toKeyPoint2fs() const;
-
-  // Align new mesh onto the current mesh
-  // This will also smoothen the displacement of Point2fs
-  // with tracking technique
-  MeshObject align(MeshObject &newMesh);
-
   Point2f centroid() const; 
+  Particle centroidAsParticle() const;
 
   // Split the mesh into one or more sub-meshes
   vector<MeshObject> split(double maxEdgeLength=100) const;

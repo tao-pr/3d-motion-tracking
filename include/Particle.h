@@ -1,5 +1,5 @@
-#ifndef KEYPoint2fS
-#define KEYPoint2fS
+#ifndef PARTICLE
+#define PARTICLE
 
 #include <queue>
 #include <vector>
@@ -11,12 +11,13 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv/cvaux.hpp>
 #include "DrawUtils.h"
+#include "CalcUtils.h"
 
 // A single keyPoint2f to track
-class TrackedPoint
+class Particle
 {
 public:
-  TrackedPoint(Point2f &p);
+  Particle(Point2f &p);
   // Update a new position
   Point2f update(Point2f &p);
   Point2f setAbsence();
@@ -44,8 +45,5 @@ private:
 };
 
 #define SQR(n)    n*n
-#define DIST(a,b) sqrt(SQR(a.x - b.x) + SQR(a.y - b.y))
-
-
 
 #endif

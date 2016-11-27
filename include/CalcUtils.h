@@ -36,4 +36,5 @@ inline double _dist(Point2f p1, Point2f p2)
 }
 
 
+
 #endif

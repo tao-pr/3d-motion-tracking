@@ -12,7 +12,6 @@
 #include "DrawUtils.h"
 #include "TrackUtils.h"
 #include "ITracker.h"
-#include "Keypoint.h"
 #include "MeshObject.h"
 
 using namespace cv;
@@ -27,7 +26,11 @@ public:
 
 protected:
   void trackMotion(Mat& im);
+  void alignMeshes(vector<MeshObject> newMeshes, double maxDist);
   Mat calcHistBackProjection(Mat& im);
+
+private:
+  vector<MeshObject> currMeshes;
 };
 
 #endif

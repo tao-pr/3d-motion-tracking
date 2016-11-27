@@ -52,23 +52,39 @@ void MotionTracker::trackMotion(Mat &im)
   cout << "... " << points.size() << " vertices captured" << endl;
   MeshObject mesh(points);
 
-  double maxEdgeLength = im.size[0];
+  double maxEdgeLength   = im.size[0];
+  double maxDisplacement = im.size[0]*0.833;
 
   // Split meshes
   vector<MeshObject> meshes = mesh.split(maxEdgeLength);
   cout << "... " << meshes.size() << " meshes splitted" << endl;
   for (MeshObject m : meshes) 
     m.drawMesh(canvas, Scalar(100,100,200), Scalar(0,0,240), maxEdgeLength);
-  //mesh.drawMesh(canvas, Scalar(100,100,200), Scalar(0,0,240), maxEdgeLength);
 
-  // Draw detected corners
-  // DrawUtils::drawMarks(canvas, cornersS, Scalar(0,0,240));
-  // DrawUtils::drawMarks(canvas, cornersV, Scalar(210,100,0));
+  // TAOTODO: Align the newly detected meshes with the previous ones
+  alignMeshes(meshes, maxDisplacement);
 
   namedWindow("tracked", CV_WINDOW_AUTOSIZE);
   imshow("tracked", canvas);
 }
 
+void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
+{
+  // Memorise the previously detected meshes
+  vector<MeshObject> prevMeshes;
+  while (!this->currMeshes.empty())
+  {
+    MeshObject m = this->currMeshes.back();
+    prevMeshes.push_back(m);
+    this->currMeshes.pop_back();
+  }
+
+  // TAOTODO: Use Hungarian algorithm to find best matches
+  // of [currentMesh] and [prevMesh]
+
+
+
+}
 
 Mat MotionTracker::calcHistBackProjection(Mat& im)
 {

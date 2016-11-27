@@ -1,6 +1,6 @@
-#include "KeyPoint.h"
+#include "Particle.h"
 
-TrackedPoint::TrackedPoint(Point2f &p)
+Particle::Particle(Point2f &p)
 {
   int N = 0;
   this->p0 = Point2f(0,0);
@@ -55,7 +55,7 @@ TrackedPoint::TrackedPoint(Point2f &p)
   setIdentity(this->kf.measurementNoiseCov, Scalar::all(1e-2));
 }
 
-Point2f TrackedPoint::update(Point2f &p)
+Point2f Particle::update(Point2f &p)
 {
   // Predict the state
   Point2f p_ = this->predict();
@@ -68,7 +68,7 @@ Point2f TrackedPoint::update(Point2f &p)
   return p_;
 }
 
-Point2f TrackedPoint::predict()
+Point2f Particle::predict()
 {
   Mat matp = this->kf.predict();
   this->p_ = Point2f(matp.at<float>(0), matp.at<float>(1));
@@ -76,7 +76,7 @@ Point2f TrackedPoint::predict()
 }
 
 
-Point2f TrackedPoint::setAbsence()
+Point2f Particle::setAbsence()
 {
   // Predict the state
   Point2f p_ = this->predict();

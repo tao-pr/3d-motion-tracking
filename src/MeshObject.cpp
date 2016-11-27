@@ -5,21 +5,10 @@ MeshObject::MeshObject(vector<Point2f> &ps)
   this->points = ps;
 }
 
-vector<TrackedPoint> MeshObject::toKeyPoint2fs() const
+Particle MeshObject::centroidAsParticle() const
 {
-  vector<TrackedPoint> kps;
-  for (Point2f p: this->points)
-    kps.push_back(TrackedPoint(p));
-  return kps;
-}
-
-MeshObject MeshObject::align(MeshObject &newMesh)
-{
-  // TAOTODO:
-  MeshObject out;
-
-  
-  return out;
+  Point2f centr = this->centroid();
+  return Particle(centr);
 }
 
 Point2f MeshObject::centroid() const
