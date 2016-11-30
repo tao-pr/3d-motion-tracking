@@ -62,3 +62,37 @@ double Hungarian::minOfCol(int i) const
   return m;
 }
 
+static Mat Hungarian::coverZeros(Mat& m)
+{
+  unordered_map<int, vector<int>> zeroRow; // {row id => indexes in master}
+  unordered_map<int, vector<int>> zeroCol; // {col id => indexes in master}
+  vector<tuple<int, int>> master;
+
+
+  // Find all zeroes
+  int numRows = m.rows;
+  int numCols = m.cols;
+  for (int j=0; j<numRows; j++)
+    for (int i=0; i<numCols; i++)
+      if (m.at<double>(j,i) == 0)
+      {
+        int idx = master.size();
+        master.push_back({j, i});
+
+        if (zeroRow.find(j) == zeroRow.end())
+          zeroRow.insert(make_pair(j, {idx}));
+        else
+          zeroRow[j].push_back(idx);
+
+        if (zeroCol.find(i) == zeroCol.end())
+          zeroCol.insert(make_pair(i, {idx}));
+        else
+          zeroCol[i].push_back(idx);
+      }
+
+  // TAOTODO:
+  // Find minimum number of lines to cover all those zeroes
+
+
+}
+

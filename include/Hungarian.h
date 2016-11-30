@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <tuple>
+#include <unordered_map>
 #include <opencv2/opencv.hpp>
 #include <opencv/cvaux.hpp>
 
@@ -28,6 +29,8 @@ private:
   double minOfRow(int i) const;
   // Find minimum of the i-th col
   double minOfCol(int i) const;
+
+  static Mat coverZeros(Mat& m);
 };
 
 
