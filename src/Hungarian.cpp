@@ -62,7 +62,7 @@ double Hungarian::minOfCol(int i) const
   return m;
 }
 
-static Mat Hungarian::coverZeros(Mat& m)
+Mat Hungarian::coverZeros(Mat& m)
 {
   unordered_map<int, vector<int>> zeroRow; // {row id => indexes in master}
   unordered_map<int, vector<int>> zeroCol; // {col id => indexes in master}
@@ -79,20 +79,27 @@ static Mat Hungarian::coverZeros(Mat& m)
         int idx = master.size();
         master.push_back({j, i});
 
+        vector<int> idxVec = {idx};
+
         if (zeroRow.find(j) == zeroRow.end())
-          zeroRow.insert(make_pair(j, {idx}));
+          zeroRow.insert(make_pair(j, idxVec));
         else
           zeroRow[j].push_back(idx);
 
         if (zeroCol.find(i) == zeroCol.end())
-          zeroCol.insert(make_pair(i, {idx}));
+          zeroCol.insert(make_pair(i, idxVec));
         else
           zeroCol[i].push_back(idx);
       }
 
   // TAOTODO:
   // Find minimum number of lines to cover all those zeroes
+  vector<int> lineRows;
+  vector<int> lineCols;
 
+  // Row with most zeroes
+
+  // Col with most zeroes
 
 }
 
