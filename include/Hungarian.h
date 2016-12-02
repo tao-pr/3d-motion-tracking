@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <tuple>
+#include <set>
 #include <unordered_map>
 #include <opencv2/opencv.hpp>
 #include <opencv/cvaux.hpp>
@@ -30,7 +31,8 @@ private:
   // Find minimum of the i-th col
   double minOfCol(int i) const;
 
-  static Mat coverZeros(Mat& m);
+  // Find minimum cover lines to cover all zeroes in matrix {m}
+  static tuple<set<int>, set<int>> coverZeros(Mat& m);
 };
 
 

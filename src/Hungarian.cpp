@@ -62,12 +62,17 @@ double Hungarian::minOfCol(int i) const
   return m;
 }
 
-Mat Hungarian::coverZeros(Mat& m)
+tuple<set<int>, set<int>> Hungarian::coverZeros(Mat& m)
 {
+  // Positions of all zeroes
   unordered_map<int, vector<int>> zeroRow; // {row id => indexes in master}
   unordered_map<int, vector<int>> zeroCol; // {col id => indexes in master}
   vector<tuple<int, int>> master;
 
+  // C++ {set} is an implementation of Red-Black tree
+  // so it's an efficient candidate for this job \\O//
+  set<int> lineRows; // list of row ids to cover 
+  set<int> lineCols; // list of col ids to cover
 
   // Find all zeroes
   int numRows = m.rows;
@@ -90,16 +95,37 @@ Mat Hungarian::coverZeros(Mat& m)
           zeroCol.insert(make_pair(i, idxVec));
         else
           zeroCol[i].push_back(idx);
+
+        // Add lines to cover, both horizontal and vertical
+        if (lineRows.find(j)==lineRows.end())
+          lineRows.insert(j);
+        if (lineCols.find(i)==lineCols.end())
+          lineCols.insert(i);
       }
 
-  // TAOTODO:
-  // Find minimum number of lines to cover all those zeroes
-  vector<int> lineRows;
-  vector<int> lineCols;
-
-  // Row with most zeroes
-
-  // Col with most zeroes
-
-}
+  // Pruning cover lines:
+  // Iterate and remove the lines which won't lose any covered zeros
+  for (auto zero : master)
+  {
+    int j = get<0>(zero);
+    int i = get<1>(zero);
+    int nRowNeighbors = zeroRow[j].size();
+    int nColNeighbors = zeroCol[i].size();
+    if (nRowNeighbors==1 && nColNeighbors>1) 
+    {
+      // If [row] can be removed, there still other lines cover it
+      lineRows.erase(j);
+    }
+    else if (nRowNeighbors>1 && nColNeighbors==1)
+    {
+      // If [col] can be removed, there still other lines cover it
+      lineCols.erase(i);
+    }
+    // Otherwise, neither of the lines could be removed.
+    // leave them
+  }
+  
+  // All cover lines pruned!
+  return make_tuple(lineRows, lineCols);
+};
 
