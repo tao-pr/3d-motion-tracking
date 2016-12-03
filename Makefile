@@ -11,15 +11,28 @@ LIB       := -lopencv_core -lopencv_imgproc -lopencv_video \
 						-lopencv_imgcodecs -lopencv_objdetect
 
 # Take all CPP source files
-SRC_DIR   := src
-BUILD_DIR := build
-SOURCES   := $(shell find $(SRC_DIR) -name "*.cpp")
-OBJS      := $(patsubst $(SRC_DIR)/%,$(BUILD_DIR)/%,$(SOURCES:.cpp=.o))
-TARGET    := bin/track
+BUILD_DIR     := build
+BUILDTEST_DIR := buildtest
+SRC_DIR       := src
+TEST_DIR      := test
+SOURCES       := $(shell find $(SRC_DIR) -name "*.cpp")
+TESTSOURCES   := $(shell find $(TEST_DIR) -name "*.cpp")
+OBJS          := $(patsubst $(SRC_DIR)/%,$(BUILD_DIR)/%,$(SOURCES:.cpp=.o))
+TESTOBJS      := $(patsubst $(TEST_DIR)/%,$(BUILDTEST_DIR)/%,$(TESTSOURCES:.cpp=.o))
+TARGET        := bin/track
+TEST          := bin/test
 
 #$(CC) $(INCLUDE) $(LDFLAGS) $(CFLAGS) $(LIB) -o $(TARGET) $(OBJS)
 
 all:$(TARGET)
+
+test:$(TEST)
+
+$(TEST): $(TESTOBJS)
+	@echo "••••••••••••••••••••••••••••••"
+	@echo "Link Test : $(TESTOBJS)"
+	@echo "••••••••••••••••••••••••••••••"
+	$(CC) $(CFLAGS) $(LDFLAGS) $(LIB) $^ -o $(TEST)
 
 $(TARGET): $(OBJS)
 	@echo "••••••••••••••••••••••••••••••"
@@ -27,6 +40,13 @@ $(TARGET): $(OBJS)
 	@echo "••••••••••••••••••••••••••••••"
 	@mkdir -p bin/
 	$(CC) $(CFLAGS) $(LDFLAGS) $(LIB) $^ -o $(TARGET)
+
+$(BUILDTEST_DIR)/%.o: $(TEST_DIR)/%.cpp
+	@echo "••••••••••••••••••••••••••••••"
+	@echo "Build test : $@"
+	@echo "••••••••••••••••••••••••••••••"
+	@mkdir -p $(BUILDTEST_DIR)
+	$(CC) $(CFLAGS) $(INCLUDE) $(LDFLAGS) -c -o $@ $<
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@echo "••••••••••••••••••••••••••••••"
