@@ -10,8 +10,13 @@ using namespace std;
 class TestCase
 {
 public:
-  TestCase(string title, function<void()> func);
-private:
+  TestCase(string title, function<bool()> func);
+
+  bool pass() const;
+
+protected:
+  string title;
+  function<bool()> func;
 };
 
 
@@ -21,7 +26,7 @@ public:
   TestScenario();
   inline ~TestScenario(){ queue<TestCase>().swap(this->cases); };
 
-  TestScenario& operator>>(const TestCase &c);
+  void addCase(const TestCase &c);
 
 protected:
   queue<TestCase> cases;
@@ -30,6 +35,12 @@ private:
 
 };
 
+
+TestScenario& operator>>(TestScenario& t, const TestCase &c)
+{
+  t.addCase(c);
+  return t;
+}
 
 
 #endif
