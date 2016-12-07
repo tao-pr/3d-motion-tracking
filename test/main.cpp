@@ -10,12 +10,13 @@
 #include "CamShiftTracker.h"
 #include "MotionTracker.h"
 
+#include "TestHungarian.h"
+#include "common.h"
+
 using namespace std;
 
 int main(int argc, char** argv)
 {
-  
+  // Prepare test cases
 
-
-  
 }
