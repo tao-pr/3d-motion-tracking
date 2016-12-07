@@ -58,4 +58,6 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 
 clean:
 	rm -r $(BUILD_DIR)/*.o $(TARGET)
+	rm -r $(BUILDTEST_DIR)/*.o $(TEST)
 	@make
+	@make test
