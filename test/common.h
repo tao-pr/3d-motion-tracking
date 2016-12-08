@@ -4,6 +4,7 @@
 #include <queue>
 #include <string>
 #include <functional>
+#include <iostream>
 
 using namespace std;
 
@@ -13,6 +14,7 @@ public:
   TestCase(string title, function<bool()> func);
 
   virtual bool pass() const;
+  inline string getTitle() const { return this->title; }
 
 protected:
   string title;
@@ -23,12 +25,14 @@ protected:
 class TestScenario
 {
 public:
-  TestScenario();
+  TestScenario(string title);
   ~TestScenario();
 
   void addCase(const TestCase &c);
+  bool runAll();
 
 protected:
+  string title;
   queue<TestCase> cases;
 
 private:
