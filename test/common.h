@@ -12,7 +12,7 @@ class TestCase
 public:
   TestCase(string title, function<bool()> func);
 
-  bool pass() const;
+  virtual bool pass() const;
 
 protected:
   string title;
@@ -24,7 +24,7 @@ class TestScenario
 {
 public:
   TestScenario();
-  inline ~TestScenario(){ queue<TestCase>().swap(this->cases); };
+  ~TestScenario();
 
   void addCase(const TestCase &c);
 
@@ -36,11 +36,6 @@ private:
 };
 
 
-TestScenario& operator>>(TestScenario& t, const TestCase &c)
-{
-  t.addCase(c);
-  return t;
-}
-
+TestScenario& operator>>(TestScenario& t, const TestCase &c);
 
 #endif

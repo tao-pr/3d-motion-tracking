@@ -3,7 +3,7 @@
  * @author Tao PR (github.com/starcolon)
  */
 
- #include <functional>
+#include <functional>
 #include "IdentityTransformation.h"
 #include "FilterTransformation.h"
 #include "VideoCamera.h"
@@ -11,7 +11,6 @@
 #include "MotionTracker.h"
 
 #include "TestHungarian.h"
-#include "common.h"
 
 using namespace std;
 
