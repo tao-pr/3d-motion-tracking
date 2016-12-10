@@ -23,6 +23,9 @@ public:
   // <row, col>
   vector<tuple<int, int>> optimiseMinima() const;
 
+  // Find minimum cover lines to cover all zeroes in matrix {m}
+  static tuple<set<int>, set<int>> coverZeros(Mat& m);
+
 private:
   Mat costM;
 
@@ -30,9 +33,6 @@ private:
   double minOfRow(int i) const;
   // Find minimum of the i-th col
   double minOfCol(int i) const;
-
-  // Find minimum cover lines to cover all zeroes in matrix {m}
-  static tuple<set<int>, set<int>> coverZeros(Mat& m);
 };
 
 
