@@ -9,10 +9,10 @@ using namespace std;
 using namespace cv;
 
 
-class TestHungarian : TestScenario 
+class TestHungarian : public TestScenario 
 {
 public:
-  TestHungarian() : TestScenario("Hungarian");
+  TestHungarian() : TestScenario("Hungarian Algorithm") {}
 };
 
 

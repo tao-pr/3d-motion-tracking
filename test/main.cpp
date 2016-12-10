@@ -18,7 +18,7 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-  queue<TestScenario> tests = {
+  vector<TestScenario> tests = {
     TestHungarian()
   };
 
