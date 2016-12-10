@@ -4,6 +4,7 @@
  */
 
 #include <functional>
+#include <queue>
 #include "IdentityTransformation.h"
 #include "FilterTransformation.h"
 #include "VideoCamera.h"
@@ -14,8 +15,15 @@
 
 using namespace std;
 
+
 int main(int argc, char** argv)
 {
-  // Prepare test cases
+  queue<TestScenario> tests = {
+    TestHungarian()
+  };
 
+  // Prepare test cases
+  cout << "[3d-motion-track]" << endl;
+
+  
 }

@@ -8,10 +8,11 @@
 using namespace std;
 using namespace cv;
 
-class HungarianTestScenario : TestScenario
+
+class TestHungarian : TestScenario 
 {
 public:
-  HungarianTestScenario();
+  TestHungarian() : TestScenario("Hungarian");
 };
 
 
