@@ -19,6 +19,7 @@ TEST_DIR      := test
 SOURCES       := $(shell find $(SRC_DIR) -name "*.cpp")
 TESTSOURCES   := $(shell find $(TEST_DIR) -name "*.cpp")
 OBJS          := $(patsubst $(SRC_DIR)/%,$(BUILD_DIR)/%,$(SOURCES:.cpp=.o))
+OBJS_FOR_TEST := $(shell find $(BUILD_DIR) -name "*.o" | sed '/.*main.o/d/')
 TESTOBJS      := $(patsubst $(TEST_DIR)/%,$(BUILDTEST_DIR)/%,$(TESTSOURCES:.cpp=.o))
 TARGET        := bin/track
 TEST          := bin/test
@@ -29,7 +30,7 @@ all:$(TARGET)
 
 test:$(TEST)
 
-$(TEST): $(TESTOBJS)
+$(TEST): $(TESTOBJS) $(OBJS_FOR_TEST)
 	@echo "••••••••••••••••••••••••••••••"
 	@echo "Link Test : $(TESTOBJS)"
 	@echo "••••••••••••••••••••••••••••••"
