@@ -8,12 +8,9 @@
 using namespace std;
 using namespace cv;
 
-
-class TestHungarian : public TestScenario 
-{
-public:
-  TestHungarian() : TestScenario("Hungarian Algorithm") {}
-};
-
+TestScenario testHungarian0 = TestScenario("Hungarian");
+TestScenario testHungarian = testHungarian0
+  >> TestCase("[case 1]", [](){ return true; })
+  >> TestCase("[case 2]", [](){ return true; });
 
 #endif

@@ -31,6 +31,8 @@ public:
   void addCase(const TestCase &c);
   bool runAll();
 
+  friend TestScenario& operator>>(TestScenario& t, const TestCase &c);
+
 protected:
   string title;
   queue<TestCase> cases;

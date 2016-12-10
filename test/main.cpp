@@ -15,15 +15,19 @@
 
 using namespace std;
 
+extern TestScenario testHungarian;
 
 int main(int argc, char** argv)
 {
+  // All test scenarios we want to examine
   vector<TestScenario> tests = {
-    TestHungarian()
+    testHungarian
   };
 
-  // Prepare test cases
   cout << "[3d-motion-track]" << endl;
-
+  for (auto test : tests)
+  {
+    test.runAll();
+  }
   
 }
