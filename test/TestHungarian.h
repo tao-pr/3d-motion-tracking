@@ -10,12 +10,6 @@
 using namespace std;
 using namespace cv;
 
-// extern string RED;
-// extern string GREEN;
-// extern string YELLOW;
-// extern string CYAN;
-// extern string MAGENTA;
-// extern string RESET;
 
 function<bool()> caseCoverZeros = []()
 {
@@ -42,9 +36,34 @@ function<bool()> caseCoverZeros = []()
   return isEql(lineRows, expectedRows) && isEql(lineCols, expectedCols);
 };
 
+function<bool()> caseCoverNoZeros = []()
+{
+  float vecM[16] = {1, 2, 1, 3, 2, 2, 1, 1, 3, 1, 5, 1, 2, 1, 5, 3};
+  Mat m          = Mat(4, 4, CV_32F, vecM);
+
+  cout << m << endl << endl;
+
+  tuple<set<int>, set<int>> zeroes = Hungarian::coverZeros(m, true);
+  set<int> lineRows = get<0>(zeroes);
+  set<int> lineCols = get<1>(zeroes);
+
+  cout << "rows: " << endl;
+  for (auto j : lineRows) 
+    cout << j << endl;
+
+  cout << "cols: " << endl;
+  for (auto i : lineCols)
+    cout << i << endl;
+
+  // ASSERT
+  set<int> expectedRows;
+  set<int> expectedCols;
+  return isEql(lineRows, expectedRows) && isEql(lineCols, expectedCols);
+};
+
 TestScenario testHungarian0 = TestScenario("Hungarian");
 TestScenario testHungarian = testHungarian0
   >> TestCase("[case 1] - Cover zeroes", caseCoverZeros)
-  >> TestCase("[case 2]", [](){ return true; });
+  >> TestCase("[case 2] - Cover zeroes (non-zeroes)", caseCoverNoZeros);
 
 #endif
