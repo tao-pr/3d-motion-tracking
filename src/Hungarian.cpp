@@ -34,6 +34,19 @@ vector<tuple<int, int>> Hungarian::optimiseMinima() const
   }
 
   // TAOTODO:
+  // Cover all zeroes in the matrix 
+  // The minimum number of lines to cover must equal to the dimension
+  while (true)
+  {
+    tuple<set<int>, set<int>> zeroes = Hungarian::coverZeros(cost, this->debug);
+    set<int> zeroRows = get<0>(zeroes);
+    set<int> zeroCols = get<1>(zeroes);
+    if (zeroRows.size() + zeroCols.size() == nRows)
+      break;
+
+    // TAOTODO: Create additional zeroes
+    Hungarian::createAdditionalZeros(cost, zeroes, this->debug);
+  }
 
 
   return minima;
@@ -61,6 +74,13 @@ double Hungarian::minOfCol(int i) const
     m = v < m ? v : m;
   }
   return m;
+}
+
+void Hungarian::createAdditionalZeros(Mat& m, tuple<set<int>, set<int>> zeroes, bool debug=false)
+{
+  // TAOTODO:
+
+
 }
 
 tuple<set<int>, set<int>> Hungarian::coverZeros(Mat& m, bool debug=false)

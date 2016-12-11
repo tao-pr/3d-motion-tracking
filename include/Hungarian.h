@@ -26,6 +26,9 @@ public:
   // Find minimum cover lines to cover all zeroes in matrix {m}
   static tuple<set<int>, set<int>> coverZeros(Mat& m, bool debug);
 
+  // Create augmented zeroes in the cost matrix {m}
+  static void createAdditionalZeros(Mat& m, tuple<set<int>, set<int>> zeroes, bool debug);
+
 private:
   Mat costM;
   bool debug;
