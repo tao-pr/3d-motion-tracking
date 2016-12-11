@@ -5,9 +5,17 @@
 #include <functional>
 #include "Hungarian.h"
 #include "common.h"
+#include "coloriser.h"
 
 using namespace std;
 using namespace cv;
+
+// extern string RED;
+// extern string GREEN;
+// extern string YELLOW;
+// extern string CYAN;
+// extern string MAGENTA;
+// extern string RESET;
 
 function<bool()> caseCoverZeros = []()
 {

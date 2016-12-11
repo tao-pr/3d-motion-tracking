@@ -103,6 +103,15 @@ tuple<set<int>, set<int>> Hungarian::coverZeros(Mat& m)
           lineCols.insert(i);
       }
 
+#ifdef DEBUG_ON
+  // Print out detected zeroes
+  cout << "~zeros~" << endl;
+  for (auto m : master)
+  {
+    cout << m << endl;
+  }
+#endif
+
   // Pruning cover lines:
   // Iterate and remove the lines which won't lose any covered zeros
   for (auto zero : master)

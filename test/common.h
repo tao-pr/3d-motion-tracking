@@ -5,6 +5,7 @@
 #include <string>
 #include <functional>
 #include <iostream>
+#include "coloriser.h"
 
 using namespace std;
 
