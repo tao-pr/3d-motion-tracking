@@ -61,9 +61,41 @@ function<bool()> caseCoverNoZeros = []()
   return isEql(lineRows, expectedRows) && isEql(lineCols, expectedCols);
 };
 
+function<bool()> caseCoverZerosLargeMat = []()
+{
+  float vecM[25] = {
+    1, 2, 1, 0, 3,
+    3, 0, 1, 5, 1,
+    1, 0, 3, 1, 2,
+    0, 3, 2, 2, 4,
+    0, 0, 3, 0, 4
+  };
+  Mat m          = Mat(5, 5, CV_32F, vecM);
+
+  cout << m << endl << endl;
+
+  tuple<set<int>, set<int>> zeroes = Hungarian::coverZeros(m, true);
+  set<int> lineRows = get<0>(zeroes);
+  set<int> lineCols = get<1>(zeroes);
+
+  cout << "rows: " << endl;
+  for (auto j : lineRows) 
+    cout << j << endl;
+
+  cout << "cols: " << endl;
+  for (auto i : lineCols)
+    cout << i << endl;
+
+  // ASSERT
+  set<int> expectedRows = {4};
+  set<int> expectedCols = {0,1,3};
+  return isEql(lineRows, expectedRows) && isEql(lineCols, expectedCols);
+};
+
 TestScenario testHungarian0 = TestScenario("Hungarian");
 TestScenario testHungarian = testHungarian0
   >> TestCase("[case 1] - Cover zeroes", caseCoverZeros)
-  >> TestCase("[case 2] - Cover zeroes (non-zeroes)", caseCoverNoZeros);
+  >> TestCase("[case 2] - Cover zeroes (non-zeroes)", caseCoverNoZeros)
+  >> TestCase("[case 3] - Cover zeroes (larger matrix)", caseCoverZerosLargeMat);
 
 #endif
