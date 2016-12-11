@@ -1,7 +1,8 @@
 #include "Hungarian.h"
 
-Hungarian::Hungarian(const Mat& cost)
+Hungarian::Hungarian(const Mat& cost, bool debug=false)
 {
+  this->debug = debug;
   this->costM = cost.clone();
 }
 
@@ -62,7 +63,7 @@ double Hungarian::minOfCol(int i) const
   return m;
 }
 
-tuple<set<int>, set<int>> Hungarian::coverZeros(Mat& m)
+tuple<set<int>, set<int>> Hungarian::coverZeros(Mat& m, bool debug=false)
 {
   // Positions of all zeroes
   unordered_map<int, vector<int>> zeroRow; // {row id => indexes in master}
@@ -79,7 +80,7 @@ tuple<set<int>, set<int>> Hungarian::coverZeros(Mat& m)
   int numCols = m.cols;
   for (int j=0; j<numRows; j++)
     for (int i=0; i<numCols; i++)
-      if (m.at<double>(j,i) == 0)
+      if (m.at<float>(j,i) <= 1e-4) // Zero?
       {
         int idx = master.size();
         master.push_back({j, i});
@@ -103,14 +104,15 @@ tuple<set<int>, set<int>> Hungarian::coverZeros(Mat& m)
           lineCols.insert(i);
       }
 
-#ifdef DEBUG_ON
-  // Print out detected zeroes
-  cout << "~zeros~" << endl;
-  for (auto m : master)
+  if (debug)
   {
-    cout << m << endl;
+    // Print out detected zeroes
+    cout << "~zeros~" << endl;
+    for (auto z : master)
+    {
+      cout << get<0>(z) << ", " << get<1>(z) << endl;
+    }
   }
-#endif
 
   // Pruning cover lines:
   // Iterate and remove the lines which won't lose any covered zeros

@@ -38,7 +38,7 @@ bool TestScenario::runAll()
 
     cout << CYAN << "...case# " << nextCase.getTitle() << endl << RESET;
     auto rc = nextCase.pass();
-    if (rc)
+    if (!rc)
       cout << RED << "...[FAILED]" << endl << RESET;
     else
       cout << GREEN << "...[PASSED]" << endl << RESET;

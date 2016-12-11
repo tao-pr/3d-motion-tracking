@@ -20,6 +20,9 @@ public:
 protected:
   string title;
   function<bool()> func;
+
+private:
+  bool isEql(set<float> a, set<float> b) const;
 };
 
 

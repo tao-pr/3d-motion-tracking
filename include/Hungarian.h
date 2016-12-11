@@ -18,16 +18,17 @@ using namespace cv;
 class Hungarian
 {
 public:
-  Hungarian(const Mat& cost);
+  Hungarian(const Mat& cost, bool debug);
 
   // <row, col>
   vector<tuple<int, int>> optimiseMinima() const;
 
   // Find minimum cover lines to cover all zeroes in matrix {m}
-  static tuple<set<int>, set<int>> coverZeros(Mat& m);
+  static tuple<set<int>, set<int>> coverZeros(Mat& m, bool debug);
 
 private:
   Mat costM;
+  bool debug;
 
   // Find minimum of the i-th row
   double minOfRow(int i) const;
