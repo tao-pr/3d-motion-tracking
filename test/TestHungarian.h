@@ -37,9 +37,9 @@ function<bool()> caseCoverZeros = []()
     cout << i << endl;
 
   // ASSERT
-  
-
-  return true;
+  set<int> expectedRows = {0};
+  set<int> expectedCols = {2};
+  return isEql(lineRows, expectedRows) && isEql(lineCols, expectedCols);
 };
 
 TestScenario testHungarian0 = TestScenario("Hungarian");

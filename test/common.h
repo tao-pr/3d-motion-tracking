@@ -1,6 +1,7 @@
 #ifndef TEST_COMMON
 #define TEST_COMMON
 
+#include <set>
 #include <queue>
 #include <string>
 #include <functional>
@@ -21,8 +22,6 @@ protected:
   string title;
   function<bool()> func;
 
-private:
-  bool isEql(set<float> a, set<float> b) const;
 };
 
 
@@ -47,5 +46,7 @@ private:
 
 
 TestScenario& operator>>(TestScenario& t, const TestCase &c);
+
+bool isEql(set<int> a, set<int> b);
 
 #endif

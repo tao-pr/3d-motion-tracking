@@ -55,3 +55,8 @@ TestScenario& operator>>(TestScenario& t, const TestCase &c)
 }
 
 
+bool isEql(set<int> a, set<int> b)
+{
+  if (a==b) return true;
+  else return false;
+}
