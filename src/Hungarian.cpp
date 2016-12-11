@@ -80,6 +80,48 @@ void Hungarian::createAdditionalZeros(Mat& m, tuple<set<int>, set<int>> zeroes, 
 {
   // TAOTODO:
 
+  // Find minimum uncovered number in {m}
+  float minVal = numeric_limits<float>::max();
+  int nRows = m.rows;
+  int nCols = m.cols;
+
+  set<int> zeroRows = get<0>(zeroes);
+  set<int> zeroCols = get<1>(zeroes);
+
+  for (int j=0; j<nRows; j++)
+    for (int i=0; i<nCols; i++)
+    {
+      if (zeroRows.find(j) != zeroRows.end() || 
+        zeroCols.find(i) != zeroCols.end())
+        continue;
+      float u = m.at<float>(j,i);
+      if (u<minVal) minVal = u;
+    }
+
+  if (debug)
+  {
+    cout << "Minimum uncovered : " << minVal << endl;
+  }
+
+  // Subtract all uncovered numbers with {min}
+  for (int j=0; j<nRows; j++)
+    for (int i=0; i<nCols; i++)
+    {
+      if (zeroRows.find(j) != zeroRows.end() || 
+        zeroCols.find(i) != zeroCols.end())
+        continue;
+      m.at<float>(j,i) -= minVal;
+    }
+
+  if (debug)
+  {
+    cout << "Subtracted with min vals:" << endl;
+    cout << m << endl << endl;
+  }
+
+  // Add {min} to numbers which are covered twice
+
+  // Done!
 
 }
 
