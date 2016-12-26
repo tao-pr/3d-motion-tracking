@@ -34,7 +34,7 @@ public:
 private:
   Mat costM;
   bool debug;
-  const int MAX_ITER = 3;
+  const int MAX_ITER = 3; // TAOTODO: Increase to the upper limit
 
   // Find minimum of the i-th row
   static float minOfRow(int i, const Mat& cost);

@@ -48,5 +48,6 @@ private:
 TestScenario& operator>>(TestScenario& t, const TestCase &c);
 
 bool isEql(set<int> a, set<int> b);
+bool isEql(int a, int b);
 
 #endif
