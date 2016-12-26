@@ -4,6 +4,7 @@
 #include <vector>
 #include <tuple>
 #include <set>
+#include <algorithm>
 #include <unordered_map>
 #include <opencv2/opencv.hpp>
 #include <opencv/cvaux.hpp>

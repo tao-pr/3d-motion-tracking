@@ -70,7 +70,7 @@ function<bool()> caseCoverZerosLargeMat = []()
     0, 3, 2, 2, 4,
     0, 0, 3, 0, 4
   };
-  Mat m          = Mat(5, 5, CV_32F, vecM);
+  Mat m = Mat(5, 5, CV_32F, vecM);
 
   cout << m << endl << endl;
 
