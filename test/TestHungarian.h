@@ -102,13 +102,28 @@ function<bool()> caseOptimise = []()
   Mat m = Mat(3, 3, CV_32F, vec);
   cout << m << endl << endl;
 
+  Hungarian hungarian(m, true);
+  vector<tuple<int,int>> minima = hungarian.optimiseMinima();
+
   // TAOTODO:
+  cout << YELLOW << "[Minima]" << endl;
+  for (tuple<int,int> p : minima)
+  {
+    int j = get<0>(p);
+    int i = get<1>(p);
+    printf("...(%d, %d) : %0.0f", j, i, m.at<float>(j,i));
+  }
+
+  // ASSERT
+
+  return false;
 };
 
 TestScenario testHungarian0 = TestScenario("Hungarian");
 TestScenario testHungarian = testHungarian0
   >> TestCase("[case 1] - Cover zeroes", caseCoverZeros)
   >> TestCase("[case 2] - Cover zeroes (non-zeroes)", caseCoverNoZeros)
-  >> TestCase("[case 3] - Cover zeroes (larger matrix)", caseCoverZerosLargeMat);
+  >> TestCase("[case 3] - Cover zeroes (larger matrix)", caseCoverZerosLargeMat)
+  >> TestCase("[case 4] - Minima", caseOptimise);
 
 #endif

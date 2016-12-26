@@ -6,7 +6,7 @@ Hungarian::Hungarian(const Mat& cost, bool debug=false)
   this->costM = cost.clone();
 }
 
-vector<tuple<int, int>> Hungarian::optimiseMinima(bool debug=false) const
+vector<tuple<int, int>> Hungarian::optimiseMinima() const
 {
   vector<tuple<int, int>> minima;
 
@@ -16,7 +16,7 @@ vector<tuple<int, int>> Hungarian::optimiseMinima(bool debug=false) const
   Mat cost = this->costM.clone();
 
   // Row-wise minima subtraction
-  if (debug)
+  if (this->debug)
     cout << "...Row subtraction" << endl;
   for (int n=0; n<nRows; n++)
   {
@@ -26,7 +26,7 @@ vector<tuple<int, int>> Hungarian::optimiseMinima(bool debug=false) const
   }
 
   // Col-wise minima subtraction
-  if (debug)
+  if (this->debug)
     cout << "...Col subtraction" << endl;
   for (int n=0; n<nCols; n++)
   {
@@ -49,7 +49,7 @@ vector<tuple<int, int>> Hungarian::optimiseMinima(bool debug=false) const
     if (zeroRows.size() + zeroCols.size() == nRows)
       break;
 
-    if (debug){
+    if (this->debug){
       cout << "...Creating additional zeroes" << endl;
     }
     Hungarian::createAdditionalZeros(cost, zeroes, this->debug);
