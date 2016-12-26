@@ -16,33 +16,37 @@ vector<tuple<int, int>> Hungarian::optimiseMinima() const
   Mat cost = this->costM.clone();
 
   // Row-wise minima subtraction
-  if (this->debug)
-    cout << "...Row subtraction" << endl;
   for (int n=0; n<nRows; n++)
   {
-    double mini = minOfRow(n);
+    float mini = minOfRow(n);
     Mat minVec  = Mat(1, nCols, CV_32FC1, Scalar(mini));
     cost.row(n) = cost.row(n) - minVec;
   }
 
   // Col-wise minima subtraction
-  if (this->debug)
-    cout << "...Col subtraction" << endl;
   for (int n=0; n<nCols; n++)
   {
-    double mini = minOfCol(n);
+    float mini = minOfCol(n);
     Mat minVec = Mat(nRows, 1, CV_32FC1, Scalar(mini));
     cost.col(n) = cost.col(n) - minVec;
   }
 
+  if (this->debug)
+  {
+    cout << "...Col & Row subtracted" << endl;
+    cout << cost << endl << endl;
+  }
+
   // Cover all zeroes in the matrix 
   // The minimum number of lines to cover must equal to the dimension
-  while (true)
+  int iter = 0;
+  while (true && iter<MAX_ITER)
   {
     tuple<set<int>, set<int>> zeroes = Hungarian::coverZeros(cost, this->debug);
     set<int> zeroRows = get<0>(zeroes);
     set<int> zeroCols = get<1>(zeroes);
     if (debug){
+      cout << cost << endl << endl;
       cout << "...Cover zeroes : expected {" << nRows 
         << "} got {" << zeroRows.size() + zeroCols.size() << "}" << endl;
     }
@@ -53,38 +57,39 @@ vector<tuple<int, int>> Hungarian::optimiseMinima() const
       cout << "...Creating additional zeroes" << endl;
     }
     Hungarian::createAdditionalZeros(cost, zeroes, this->debug);
+    iter++;
   }
 
   // Locate minima
   for (int j=0; j<nRows; j++)
     for (int i=0; i<nCols; i++)
     {
-      if (this->costM.at<double>(j,i) == 0)
+      if (this->costM.at<float>(j,i) == 0)
         minima.push_back(make_tuple(j,i));
     }
 
   return minima;
 }
 
-double Hungarian::minOfRow(int i) const
+float Hungarian::minOfRow(int i) const
 {
-  double m = numeric_limits<double>::max();
+  float m = numeric_limits<float>::max();
   int nCols = this->costM.cols;
   for (int k=0; k<nCols; k++)
   {
-    double v = this->costM.at<double>(i,k);
+    float v = this->costM.at<float>(i,k);
     m = v < m ? v : m;
   }
   return m;
 }
 
-double Hungarian::minOfCol(int i) const
+float Hungarian::minOfCol(int i) const
 {
-  double m = numeric_limits<double>::max();
+  float m = numeric_limits<float>::max();
   int nRows = this->costM.rows;
   for (int k=0; k<nRows; k++)
   {
-    double v = this->costM.at<double>(k,i);
+    float v = this->costM.at<float>(k,i);
     m = v < m ? v : m;
   }
   return m;

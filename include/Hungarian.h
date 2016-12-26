@@ -14,7 +14,8 @@ using namespace cv;
 
 /**
  * Hungarian algorithm implementation 
- * Compatible with [Mat<double>]
+ * Compatible with [Mat<float>]
+ * TAOTOREVIEW: Use template class
  */
 class Hungarian
 {
@@ -33,11 +34,12 @@ public:
 private:
   Mat costM;
   bool debug;
+  const int MAX_ITER = 3;
 
   // Find minimum of the i-th row
-  double minOfRow(int i) const;
+  float minOfRow(int i) const;
   // Find minimum of the i-th col
-  double minOfCol(int i) const;
+  float minOfCol(int i) const;
 };
 
 
