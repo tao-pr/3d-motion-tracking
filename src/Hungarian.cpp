@@ -18,22 +18,28 @@ vector<tuple<int, int>> Hungarian::optimiseMinima() const
   // Row-wise minima subtraction
   for (int n=0; n<nRows; n++)
   {
-    float mini = minOfRow(n);
+    float mini = Hungarian::minOfRow(n,cost);
     Mat minVec  = Mat(1, nCols, CV_32FC1, Scalar(mini));
     cost.row(n) = cost.row(n) - minVec;
+  }
+
+  if (this->debug)
+  {
+    cout << "...Row subtracted" << endl;
+    cout << cost << endl << endl;
   }
 
   // Col-wise minima subtraction
   for (int n=0; n<nCols; n++)
   {
-    float mini = minOfCol(n);
+    float mini = Hungarian::minOfCol(n,cost);
     Mat minVec = Mat(nRows, 1, CV_32FC1, Scalar(mini));
     cost.col(n) = cost.col(n) - minVec;
   }
 
   if (this->debug)
   {
-    cout << "...Col & Row subtracted" << endl;
+    cout << "...Col subtracted" << endl;
     cout << cost << endl << endl;
   }
 
@@ -71,25 +77,25 @@ vector<tuple<int, int>> Hungarian::optimiseMinima() const
   return minima;
 }
 
-float Hungarian::minOfRow(int i) const
+float Hungarian::minOfRow(int i, const Mat& cost)
 {
   float m = numeric_limits<float>::max();
-  int nCols = this->costM.cols;
+  int nCols = cost.cols;
   for (int k=0; k<nCols; k++)
   {
-    float v = this->costM.at<float>(i,k);
+    float v = cost.at<float>(i,k);
     m = v < m ? v : m;
   }
   return m;
 }
 
-float Hungarian::minOfCol(int i) const
+float Hungarian::minOfCol(int i, const Mat& cost)
 {
   float m = numeric_limits<float>::max();
-  int nRows = this->costM.rows;
+  int nRows = cost.rows;
   for (int k=0; k<nRows; k++)
   {
-    float v = this->costM.at<float>(k,i);
+    float v = cost.at<float>(k,i);
     m = v < m ? v : m;
   }
   return m;

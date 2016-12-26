@@ -37,9 +37,9 @@ private:
   const int MAX_ITER = 3;
 
   // Find minimum of the i-th row
-  float minOfRow(int i) const;
+  static float minOfRow(int i, const Mat& cost);
   // Find minimum of the i-th col
-  float minOfCol(int i) const;
+  static float minOfCol(int i, const Mat& cost);
 };
 
 
