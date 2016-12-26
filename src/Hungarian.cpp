@@ -55,6 +55,14 @@ vector<tuple<int, int>> Hungarian::optimiseMinima(bool debug=false) const
     Hungarian::createAdditionalZeros(cost, zeroes, this->debug);
   }
 
+  // Locate minima
+  for (int j=0; j<nRows; j++)
+    for (int i=0; i<nCols; i++)
+    {
+      if (this->costM.at<double>(j,i) == 0)
+        minima.push_back(make_tuple(j,i));
+    }
+
   return minima;
 }
 

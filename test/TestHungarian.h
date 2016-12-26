@@ -92,6 +92,19 @@ function<bool()> caseCoverZerosLargeMat = []()
   return isEql(lineRows, expectedRows) && isEql(lineCols, expectedCols);
 };
 
+function<bool()> caseOptimise = []()
+{
+  float vec[9] = {
+    1, 10, 3,
+    5, 7, 4,
+    5, 10, 7
+  };
+  Mat m = Mat(3, 3, CV_32F, vec);
+  cout << m << endl << endl;
+
+  // TAOTODO:
+};
+
 TestScenario testHungarian0 = TestScenario("Hungarian");
 TestScenario testHungarian = testHungarian0
   >> TestCase("[case 1] - Cover zeroes", caseCoverZeros)
