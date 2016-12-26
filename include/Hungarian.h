@@ -22,7 +22,7 @@ public:
   Hungarian(const Mat& cost, bool debug);
 
   // <row, col>
-  vector<tuple<int, int>> optimiseMinima() const;
+  vector<tuple<int, int>> optimiseMinima(bool debug) const;
 
   // Find minimum cover lines to cover all zeroes in matrix {m}
   static tuple<set<int>, set<int>> coverZeros(Mat& m, bool debug);

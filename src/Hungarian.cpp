@@ -6,7 +6,7 @@ Hungarian::Hungarian(const Mat& cost, bool debug=false)
   this->costM = cost.clone();
 }
 
-vector<tuple<int, int>> Hungarian::optimiseMinima() const
+vector<tuple<int, int>> Hungarian::optimiseMinima(bool debug=false) const
 {
   vector<tuple<int, int>> minima;
 
@@ -16,7 +16,8 @@ vector<tuple<int, int>> Hungarian::optimiseMinima() const
   Mat cost = this->costM.clone();
 
   // Row-wise minima subtraction
-  cout << "...Row subtraction" << endl;
+  if (debug)
+    cout << "...Row subtraction" << endl;
   for (int n=0; n<nRows; n++)
   {
     double mini = minOfRow(n);
@@ -25,7 +26,8 @@ vector<tuple<int, int>> Hungarian::optimiseMinima() const
   }
 
   // Col-wise minima subtraction
-  cout << "...Col subtraction" << endl;
+  if (debug)
+    cout << "...Col subtraction" << endl;
   for (int n=0; n<nCols; n++)
   {
     double mini = minOfCol(n);
@@ -33,7 +35,6 @@ vector<tuple<int, int>> Hungarian::optimiseMinima() const
     cost.col(n) = cost.col(n) - minVec;
   }
 
-  // TAOTODO:
   // Cover all zeroes in the matrix 
   // The minimum number of lines to cover must equal to the dimension
   while (true)
@@ -41,13 +42,18 @@ vector<tuple<int, int>> Hungarian::optimiseMinima() const
     tuple<set<int>, set<int>> zeroes = Hungarian::coverZeros(cost, this->debug);
     set<int> zeroRows = get<0>(zeroes);
     set<int> zeroCols = get<1>(zeroes);
+    if (debug){
+      cout << "...Cover zeroes : expected {" << nRows 
+        << "} got {" << zeroRows.size() + zeroCols.size() << "}" << endl;
+    }
     if (zeroRows.size() + zeroCols.size() == nRows)
       break;
 
-    // TAOTODO: Create additional zeroes
+    if (debug){
+      cout << "...Creating additional zeroes" << endl;
+    }
     Hungarian::createAdditionalZeros(cost, zeroes, this->debug);
   }
-
 
   return minima;
 }
