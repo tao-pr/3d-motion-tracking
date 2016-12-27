@@ -197,9 +197,11 @@ tuple<set<int>, set<int>> Hungarian::coverZeros(Mat& m, bool debug=false)
     cout << "~zeros~" << endl;
     for (auto z : master)
     {
-      cout << get<0>(z) << ", " << get<1>(z) << endl;
+      cout << "@ " << get<0>(z) << ", " << get<1>(z) << endl;
     }
   }
+
+  // TAOTODO: To fix
 
   // Pruning cover lines:
   // Iterate and remove the lines which won't lose any covered zeros
