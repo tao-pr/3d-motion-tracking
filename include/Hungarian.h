@@ -6,6 +6,7 @@
 #include <set>
 #include <algorithm>
 #include <unordered_map>
+#include <queue>
 #include <opencv2/opencv.hpp>
 #include <opencv/cvaux.hpp>
 
