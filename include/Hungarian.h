@@ -13,6 +13,15 @@
 using namespace std;
 using namespace cv;
 
+typedef tuple<int,int> Profile;
+
+class CompareProfile
+{
+public:
+  // TRUE if profile(a) < profile(b)
+  bool operator()(Profile &a, Profile &b );
+};
+
 /**
  * Hungarian algorithm implementation 
  * Compatible with [Mat<float>]
@@ -27,7 +36,7 @@ public:
   vector<tuple<int, int>> optimiseMinima() const;
 
   // Find minimum cover lines to cover all zeroes in matrix {m}
-  static tuple<set<int>, set<int>> coverZeros(Mat& m, bool debug);
+  static tuple<set<int>, set<int>> coverZeroes(Mat& m, bool debug);
 
   // Create augmented zeroes in the cost matrix {m}
   static void createAdditionalZeros(Mat& m, tuple<set<int>, set<int>> zeroes, bool debug);

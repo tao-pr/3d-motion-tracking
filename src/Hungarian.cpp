@@ -1,5 +1,10 @@
 #include "Hungarian.h"
 
+bool CompareProfile::operator()(Profile &a, Profile &b )
+{
+  return get<1>(a) < get<1>(b);
+}
+
 Hungarian::Hungarian(const Mat& cost, bool debug=false)
 {
   this->debug = debug;
@@ -48,7 +53,7 @@ vector<tuple<int, int>> Hungarian::optimiseMinima() const
   int iter = 0;
   while (true && iter<MAX_ITER)
   {
-    tuple<set<int>, set<int>> zeroes = Hungarian::coverZeros(cost, this->debug);
+    tuple<set<int>, set<int>> zeroes = Hungarian::coverZeroes(cost, this->debug);
     set<int> zeroRows = get<0>(zeroes);
     set<int> zeroCols = get<1>(zeroes);
     if (debug){
@@ -150,7 +155,7 @@ void Hungarian::createAdditionalZeros(Mat& m, tuple<set<int>, set<int>> zeroes, 
 
 }
 
-tuple<set<int>, set<int>> Hungarian::coverZeros(Mat& m, bool debug=false)
+tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
 {
   // Initialisation
   set<int> coverRowLines;
@@ -179,7 +184,7 @@ tuple<set<int>, set<int>> Hungarian::coverZeros(Mat& m, bool debug=false)
           profileCol[i]++;
 
         // Record uncovered zeroes
-        uncoveredZeroes.push_back(Point(j,i));
+        uncoveredZeroes.push_back(Point(i,j));
       }
 
   if (debug)
@@ -193,12 +198,8 @@ tuple<set<int>, set<int>> Hungarian::coverZeros(Mat& m, bool debug=false)
   }
 
   // Convert profiles to priority queues
-  auto comparer = [](tuple<int,int> a, tuple<int,int> b)
-  {
-    return get<1>(a) < get<1>(b);
-  };
-  priority_queue<tuple<int,int>,,> qRows;
-  priority_queue<tuple<int,int>,,> qCols;
+  priority_queue<Profile,vector<Profile>,CompareProfile> qRows;
+  priority_queue<Profile,vector<Profile>,CompareProfile> qCols;
   for (auto pj : profileRow)
   {
     int j = get<0>(pj);
@@ -214,9 +215,14 @@ tuple<set<int>, set<int>> Hungarian::coverZeros(Mat& m, bool debug=false)
 
   // Repeatedly add more cover lines
   // Until there is no uncovered zeroes left
+  int nAttempt = 1;
   while (uncoveredZeroes.size()>0)
   {
-    
+    if (debug) printf("...[Attempt #%d] %zu uncovered remaining", nAttempt, uncoveredZeroes.size());
+
+    // Add a new cover line which covers the most zeroes
+
+    nAttempt++;
   }
 
 

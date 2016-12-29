@@ -18,7 +18,7 @@ function<bool()> caseCoverZeros = []()
 
   cout << m << endl << endl;
 
-  tuple<set<int>, set<int>> zeroes = Hungarian::coverZeros(m, true);
+  tuple<set<int>, set<int>> zeroes = Hungarian::coverZeroes(m, true);
   set<int> lineRows = get<0>(zeroes);
   set<int> lineCols = get<1>(zeroes);
 
@@ -43,7 +43,7 @@ function<bool()> caseCoverNoZeros = []()
 
   cout << m << endl << endl;
 
-  tuple<set<int>, set<int>> zeroes = Hungarian::coverZeros(m, true);
+  tuple<set<int>, set<int>> zeroes = Hungarian::coverZeroes(m, true);
   set<int> lineRows = get<0>(zeroes);
   set<int> lineCols = get<1>(zeroes);
 
@@ -74,7 +74,7 @@ function<bool()> caseCoverZerosLargeMat = []()
 
   cout << m << endl << endl;
 
-  tuple<set<int>, set<int>> zeroes = Hungarian::coverZeros(m, true);
+  tuple<set<int>, set<int>> zeroes = Hungarian::coverZeroes(m, true);
   set<int> lineRows = get<0>(zeroes);
   set<int> lineCols = get<1>(zeroes);
 
@@ -104,7 +104,7 @@ function<bool()> caseCoverZerosSparse = []()
   Mat m = Mat(5, 5, CV_32F, vec);
   cout << m << endl << endl;
 
-  tuple<set<int>, set<int>> zeroes = Hungarian::coverZeros(m, true);
+  tuple<set<int>, set<int>> zeroes = Hungarian::coverZeroes(m, true);
   set<int> lineRows = get<0>(zeroes);
   set<int> lineCols = get<1>(zeroes);
 
