@@ -160,8 +160,7 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
   // Initialisation
   set<int> coverRowLines;
   set<int> coverColLines;
-  unordered_map<int, int> profileRow; // { j => num of zeroes in the row}
-  unordered_map<int, int> profileCol; // { i => num of zeroes in the col}
+  unordered_map<int, int> profile;
   vector<Point> uncoveredZeroes;
 
   int numRows = m.rows;
@@ -173,54 +172,60 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
       if (m.at<float>(j,i) <= 1e-4) // Zero?
       {
         // Record the profiling lines
-        if (profileRow.find(j) == profileRow.end())
-          profileRow.insert(make_pair(j,1));
+        if (profile.find(j) == profile.end())
+          profile.insert(make_pair(j,1));
         else
-          profileRow[j]++;
+          profile[j]++;
 
-        if (profileCol.find(i) == profileCol.end())
-          profileCol.insert(make_pair(i,1));
+        if (profile.find(-i) == profile.end())
+          profile.insert(make_pair(-i,1));
         else 
-          profileCol[i]++;
+          profile[-i]++;
 
         // Record uncovered zeroes
         uncoveredZeroes.push_back(Point(i,j));
       }
 
+  // Convert profiles to priority queue
+  priority_queue<Profile,vector<Profile>,CompareProfile> q0;
+  priority_queue<Profile,vector<Profile>,CompareProfile> q;
+  for (auto p : profile)
+  {
+    int k = get<0>(p);
+    int mag = get<1>(p);
+    q.push(make_tuple(k,mag));
+    q0.push(make_tuple(k,mag));
+  }
+
   if (debug)
   {
     cout << "...[Zero profiles] << endl";
-    for (auto pj : profileRow)
-      cout << "......Row #" << get<0>(pj) << " : " << get<1>(pj);
-    cout << endl;
-    for (auto pi : profileCol)
-      cout << "......Col #" << get<0>(pi) << " : " << get<1>(pi);
+    while (!q0.empty())
+    {
+      auto p = q0.top();
+      if (get<0>(p) < 0)
+        cout << "......Col #" << -get<0>(p) << " : " << get<1>(p);
+      else
+        cout << "......Row #" << get<0>(p) << " : " << get<1>(p);
+      q0.pop();
+    }
   }
 
-  // Convert profiles to priority queues
-  priority_queue<Profile,vector<Profile>,CompareProfile> qRows;
-  priority_queue<Profile,vector<Profile>,CompareProfile> qCols;
-  for (auto pj : profileRow)
-  {
-    int j = get<0>(pj);
-    int size = get<1>(pj);
-    qRows.push(make_tuple(j,size));
-  }
-  for (auto pi : profileRow)
-  {
-    int i = get<0>(pi);
-    int size = get<1>(pi);
-    qRows.push(make_tuple(i,size));
-  }
 
-  // Repeatedly add more cover lines
+  // Repeatedly add more cover lines (greedy-algo-based)
   // Until there is no uncovered zeroes left
   int nAttempt = 1;
-  while (uncoveredZeroes.size()>0)
+  while (!uncoveredZeroes.empty())
   {
     if (debug) printf("...[Attempt #%d] %zu uncovered remaining", nAttempt, uncoveredZeroes.size());
 
-    // Add a new cover line which covers the most zeroes
+    // Find the next profile line with most zeroes aligned within
+    if (q.size()>0)
+    {
+      // Take the next
+      Profile p = q.top();
+
+    }
 
     nAttempt++;
   }
