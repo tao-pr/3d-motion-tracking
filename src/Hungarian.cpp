@@ -199,14 +199,14 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
 
   if (debug)
   {
-    cout << "...[Zero profiles] << endl";
+    cout << "...[Zero profiles]" << endl;
     while (!q0.empty())
     {
       auto p = q0.top();
       if (get<0>(p) < 0)
-        cout << "......Col #" << -get<0>(p) << " : " << get<1>(p);
+        cout << "......Col #" << -get<0>(p) << " : " << get<1>(p) << endl;
       else
-        cout << "......Row #" << get<0>(p) << " : " << get<1>(p);
+        cout << "......Row #" << get<0>(p) << " : " << get<1>(p) << endl;
       q0.pop();
     }
   }
@@ -217,7 +217,7 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
   int nAttempt = 1;
   while (!uncoveredZeroes.empty())
   {
-    if (debug) printf("...[Attempt #%d] %zu uncovered remaining", nAttempt, uncoveredZeroes.size());
+    if (debug) printf("...[Attempt #%d] %zu uncovered remaining\n", nAttempt, uncoveredZeroes.size());
 
     // Find the next profile line with most zeroes aligned within
     if (q.size()>0)
@@ -246,7 +246,7 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
 
         if (debug)
         {
-          printf("......Added col #%d : %d more zeroes are now covered.", i, nZeroesNewlyCovered);
+          printf("......Added col #%d : %d more zeroes are now covered.\n", i, nZeroesNewlyCovered);
         }
       }
       else
@@ -262,7 +262,7 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
 
         if (debug)
         {
-          printf("......Added row #%d : %d more zeroes are now covered.", j, nZeroesNewlyCovered);
+          printf("......Added row #%d : %d more zeroes are now covered.\n", j, nZeroesNewlyCovered);
         }
 
       }
@@ -278,11 +278,6 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
 
     nAttempt++;
   }
-
-
-
-
-  // TAOTODO:
 
   // All cover lines pruned!
   return make_tuple(coverRowLines, coverColLines);
