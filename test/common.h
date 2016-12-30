@@ -6,9 +6,13 @@
 #include <string>
 #include <functional>
 #include <iostream>
+#include <assert.h>
 #include "coloriser.h"
+#include <opencv2/opencv.hpp>
+#include <opencv/cvaux.hpp>
 
 using namespace std;
+using namespace cv;
 
 class TestCase
 {
@@ -47,6 +51,7 @@ private:
 
 TestScenario& operator>>(TestScenario& t, const TestCase &c);
 
+bool isEql(Mat a, Mat b);
 bool isEql(set<int> a, set<int> b);
 bool isEql(int a, int b);
 

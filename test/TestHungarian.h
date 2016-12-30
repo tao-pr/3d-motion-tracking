@@ -114,6 +114,35 @@ function<bool()> caseCoverZerosSparse = []()
   return isEql(lineRows, expectedRows) && isEql(lineCols, expectedCols);
 };
 
+function<bool()> caseAdditionalZero = []()
+{
+  float vec[9] = {
+    0, 3, 1,
+    2, 4, 1,
+    3, 1, 0 // This will need only 2 lines to cover
+  };
+  Mat m0 = Mat(3, 3, CV_32F, vec);
+  cout << m0 << endl << endl;
+  Mat m = m0.clone();
+
+  tuple<set<int>, set<int>> zeroes = Hungarian::coverZeroes(m, false);
+
+  cout << "...[Cover rows:]";
+  for (int j : get<0>(zeroes))
+    cout << j << ",";
+  cout << endl << "...[Cover cols:]";
+  for (int i : get<1>(zeroes))
+    cout << i << ",";
+  cout << endl;
+
+  Hungarian::createAdditionalZeros(m, zeroes, true);
+
+
+
+  // TAOTODO:
+  return false;
+};
+
 function<bool()> caseOptimise = []()
 {
   float vec[9] = {
@@ -133,7 +162,7 @@ function<bool()> caseOptimise = []()
   {
     int j = get<0>(p);
     int i = get<1>(p);
-    printf("...(%d, %d) : %0.0f", j, i, m.at<float>(j,i));
+    printf("...(%d, %d) : %0.0f\n", j, i, m.at<float>(j,i));
   }
 
   // ASSERT
@@ -147,6 +176,7 @@ TestScenario testHungarian = testHungarian0
   >> TestCase("[case 2] - Cover zeroes (non-zeroes)", caseCoverNoZeros)
   >> TestCase("[case 3] - Cover zeroes (larger matrix)", caseCoverZerosLargeMat)
   >> TestCase("[case 4] - Cover zeroes (sparse matrix)", caseCoverZerosSparse)
-  >> TestCase("[case 5] - Minima", caseOptimise);
+  >> TestCase("[case 5] - Create additional zeroes", caseAdditionalZero)
+  >> TestCase("[case _] - Minima", caseOptimise);
 
 #endif

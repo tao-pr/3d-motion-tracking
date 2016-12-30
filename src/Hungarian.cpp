@@ -51,22 +51,23 @@ vector<tuple<int, int>> Hungarian::optimiseMinima() const
   // Cover all zeroes in the matrix 
   // The minimum number of lines to cover must equal to the dimension
   int iter = 0;
-  while (true && iter<MAX_ITER)
+  while (iter<MAX_ITER)
   {
     tuple<set<int>, set<int>> zeroes = Hungarian::coverZeroes(cost, this->debug);
     set<int> zeroRows = get<0>(zeroes);
     set<int> zeroCols = get<1>(zeroes);
-    if (debug){
+    if (debug)
+    {
       cout << cost << endl << endl;
       cout << "...Cover zeroes : expected {" << nRows 
         << "} got {" << zeroRows.size() + zeroCols.size() << "}" << endl;
     }
-    if (zeroRows.size() + zeroCols.size() == nRows)
+    if (zeroRows.size() + zeroCols.size() >= nRows)
       break;
 
-    if (this->debug){
+    if (this->debug)
       cout << "...Creating additional zeroes" << endl;
-    }
+    
     Hungarian::createAdditionalZeros(cost, zeroes, this->debug);
     iter++;
   }
@@ -75,9 +76,22 @@ vector<tuple<int, int>> Hungarian::optimiseMinima() const
   for (int j=0; j<nRows; j++)
     for (int i=0; i<nCols; i++)
     {
-      if (this->costM.at<float>(j,i) == 0)
+      if (cost.at<float>(j,i) <= 1E-4)
         minima.push_back(make_tuple(j,i));
     }
+
+  if (debug)
+  {
+    cout << "[Original Mat]" << endl;
+    cout << this->costM << endl << endl;
+    cout << "[Cost']" << endl;
+    cout << cost << endl << endl;
+    cout << "[Minima]" << endl;
+    for (auto min : minima)
+    {
+      printf("...(j=%d, i=%d)\n", get<0>(min), get<1>(min));
+    }
+  }
 
   return minima;
 }

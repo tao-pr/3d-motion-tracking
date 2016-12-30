@@ -54,6 +54,21 @@ TestScenario& operator>>(TestScenario& t, const TestCase &c)
   return t;
 }
 
+bool isEql(Mat a, Mat b)
+{
+  assert(a.cols==b.cols && a.rows==b.rows);
+  for (int j=0; j<a.rows; j++)
+    for (int i=0; i<a.cols; i++)
+    {
+      if (a.at<float>(j,i) != b.at<float>(j,i))
+      {
+        cout << RED;
+        printf("Inequal elem at (%d, %d)\n", j, i);
+        return false;
+      }
+    }
+  return true;
+}
 
 bool isEql(set<int> a, set<int> b)
 {
