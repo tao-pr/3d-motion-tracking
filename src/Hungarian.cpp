@@ -150,14 +150,14 @@ void Hungarian::createAdditionalZeros(Mat& m, tuple<set<int>, set<int>> zeroes, 
   for (int j=0; j<nRows; j++)
     for (int i=0; i<nCols; i++)
     {
-      auto rowCovered = zeroRows.find(j) != zeroRows.end();
-      auto colCovered = zeroCols.find(i) != zeroCols.end();
+      bool rowCovered = zeroRows.find(j) != zeroRows.end();
+      bool colCovered = zeroCols.find(i) != zeroCols.end();
 
-      // Double-covered
+      // Covered twice
       if (rowCovered && colCovered)
         m.at<float>(j,i) += minVal;
       // Uncovered
-      else if (!(rowCovered || colCovered))
+      else if (!rowCovered && !colCovered)
         m.at<float>(j,i) -= minVal;
     }
 

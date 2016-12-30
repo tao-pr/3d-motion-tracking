@@ -137,10 +137,14 @@ function<bool()> caseAdditionalZero = []()
 
   Hungarian::createAdditionalZeros(m, zeroes, true);
 
+  float expectedM[9] = {
+    0, 3, 2,
+    1, 3, 1,
+    2, 0, 0
+  };
+  Mat me = Mat(3, 3, CV_32F, expectedM);
 
-
-  // TAOTODO:
-  return false;
+  return isEql(m, me);
 };
 
 function<bool()> caseOptimise = []()
