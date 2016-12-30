@@ -222,9 +222,58 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
     // Find the next profile line with most zeroes aligned within
     if (q.size()>0)
     {
-      // Take the next
+      // Take the next profile line
       Profile p = q.top();
+      // Add a covering line at this profile index
+      if (get<0>(p) < 0)
+        coverColLines.insert(-get<0>(p));
+      else
+        coverRowLines.insert(get<0>(p));
 
+      // Remove zeroes which are covered by this new line
+      int nZeroesNewlyCovered = 0;
+      vector<Point> newUncoveredZeroes;
+      if (get<0>(p) < 0)
+      {
+        // Col
+        int i = -get<0>(p);
+        coverColLines.insert(i);
+        for (auto z : uncoveredZeroes)
+        {
+          if (z.x != i) newUncoveredZeroes.push_back(z);
+          else nZeroesNewlyCovered++;
+        }
+
+        if (debug)
+        {
+          printf("......Added col #%d : %d more zeroes are now covered.", i, nZeroesNewlyCovered);
+        }
+      }
+      else
+      {
+        // Row
+        int j = get<0>(p);
+        coverRowLines.insert(j);
+        for (auto z : uncoveredZeroes)
+        {
+          if (z.y != j) newUncoveredZeroes.push_back(z);
+          else nZeroesNewlyCovered++;
+        }
+
+        if (debug)
+        {
+          printf("......Added row #%d : %d more zeroes are now covered.", j, nZeroesNewlyCovered);
+        }
+
+      }
+
+      swap(uncoveredZeroes, newUncoveredZeroes);
+      q.pop();
+    }
+    else
+    {
+      cout << "...No uncovered zeroes left to collect" << endl;
+      break;
     }
 
     nAttempt++;
