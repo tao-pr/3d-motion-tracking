@@ -20,11 +20,20 @@ using namespace cv;
 // (All index are 1-based so the sign matters)
 typedef tuple<int,int> Profile;
 
+typedef tuple<int,int> ZeroInCol;
+
 class CompareProfile
 {
 public:
   // TRUE if profile(a) < profile(b)
   bool operator()(Profile &a, Profile &b );
+};
+
+class CompareZeroInCol
+{
+public:
+  // TRUE if zeroInCol(a) < zeroInCol(b)
+  bool operator()(ZeroInCol &a, ZeroInCol &b);
 };
 
 /**

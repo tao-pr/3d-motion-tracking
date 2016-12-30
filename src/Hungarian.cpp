@@ -5,6 +5,11 @@ bool CompareProfile::operator()(Profile &a, Profile &b )
   return get<1>(a) < get<1>(b);
 }
 
+bool CompareZeroInCol::operator()(ZeroInCol &a, ZeroInCol &b)
+{
+  return get<1>(a) > get(1)(b);
+}
+
 Hungarian::Hungarian(const Mat& cost, bool debug=false)
 {
   this->debug = debug;
@@ -72,25 +77,35 @@ vector<tuple<int, int>> Hungarian::optimiseMinima() const
     iter++;
   }
 
-  // Locate minima
-  for (int j=0; j<nRows; j++)
-    for (int i=0; i<nCols; i++)
-    {
-      if (cost.at<float>(j,i) <= 1E-4)
-        minima.push_back(make_tuple(j,i));
-    }
-
   if (debug)
   {
     cout << "[Original Mat]" << endl;
     cout << this->costM << endl << endl;
-    cout << "[Cost']" << endl;
+    cout << "[Minima Mat]" << endl;
     cout << cost << endl << endl;
-    cout << "[Minima]" << endl;
-    for (auto min : minima)
+  }
+
+  // Locate minima
+  priority_queue<ZeroInCol, vector<ZeroInCol>, CompareZeroInCol> minimaQ; // Least zero in a column comes first
+  for (int i=0; i<nCols; i++)
+  {
+    int nZeroes = 0;
+    for (int j=0; j<nRows; j++)
     {
-      printf("...(j=%d, i=%d)\n", get<0>(min), get<1>(min));
+      if (cost.at<float>(j,i) < 1E-4) // Zero?
+        nZeroes++;
     }
+    minimaQ.push(make_tuple(i,nZeroes));
+  }
+
+  // TAOTODO: Select the optimal solution
+  while (!minimaQ.empty())
+  {
+    auto next = minimaQ.top();
+
+
+
+    minimaQ.pop();
   }
 
   return minima;

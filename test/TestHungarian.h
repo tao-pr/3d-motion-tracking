@@ -181,6 +181,6 @@ TestScenario testHungarian = testHungarian0
   >> TestCase("[case 3] - Cover zeroes (larger matrix)", caseCoverZerosLargeMat)
   >> TestCase("[case 4] - Cover zeroes (sparse matrix)", caseCoverZerosSparse)
   >> TestCase("[case 5] - Create additional zeroes", caseAdditionalZero)
-  >> SkippedTestCase("[case 6] - Minima", caseOptimise);
+  >> TestCase("[case 6] - Minima", caseOptimise);
 
 #endif
