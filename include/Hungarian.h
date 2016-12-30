@@ -14,8 +14,10 @@ using namespace std;
 using namespace cv;
 
 // NOTE: The usage of the profile is TRICKY.
+//-------------------------------------------
 // First element : Index of row, col. (Negative) denotes col
 // Secnd element : Number of projected zeroes.
+// (All index are 1-based so the sign matters)
 typedef tuple<int,int> Profile;
 
 class CompareProfile

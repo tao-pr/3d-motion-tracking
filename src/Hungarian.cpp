@@ -172,19 +172,28 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
       if (m.at<float>(j,i) <= 1e-4) // Zero?
       {
         // Record the profiling lines
-        if (profile.find(j) == profile.end())
-          profile.insert(make_pair(j,1));
+        if (profile.find(j+1) == profile.end())
+          profile.insert(make_pair(j+1,1));
         else
-          profile[j]++;
+          profile[j+1]++;
 
-        if (profile.find(-i) == profile.end())
-          profile.insert(make_pair(-i,1));
+        if (profile.find(-i-1) == profile.end())
+          profile.insert(make_pair(-i-1,1));
         else 
-          profile[-i]++;
+          profile[-i-1]++;
 
         // Record uncovered zeroes
         uncoveredZeroes.push_back(Point(i,j));
       }
+
+  if (debug)
+  {
+    cout << "...[Initial uncovered zeroes]" << endl;
+    for (auto z : uncoveredZeroes)
+    {
+      printf("...(%d, %d)\n", z.x, z.y);
+    }
+  }
 
   // Convert profiles to priority queue
   priority_queue<Profile,vector<Profile>,CompareProfile> q0;
@@ -204,9 +213,9 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
     {
       auto p = q0.top();
       if (get<0>(p) < 0)
-        cout << "......Col #" << -get<0>(p) << " : " << get<1>(p) << endl;
+        cout << "......Col #" << -get<0>(p)-1 << " : " << get<1>(p) << endl;
       else
-        cout << "......Row #" << get<0>(p) << " : " << get<1>(p) << endl;
+        cout << "......Row #" << get<0>(p)-1 << " : " << get<1>(p) << endl;
       q0.pop();
     }
   }
@@ -226,9 +235,9 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
       Profile p = q.top();
       // Add a covering line at this profile index
       if (get<0>(p) < 0)
-        coverColLines.insert(-get<0>(p));
+        coverColLines.insert(-get<0>(p)-1);
       else
-        coverRowLines.insert(get<0>(p));
+        coverRowLines.insert(get<0>(p)-1);
 
       // Remove zeroes which are covered by this new line
       int nZeroesNewlyCovered = 0;
@@ -236,7 +245,7 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
       if (get<0>(p) < 0)
       {
         // Col
-        int i = -get<0>(p);
+        int i = -get<0>(p)-1;
         coverColLines.insert(i);
         for (auto z : uncoveredZeroes)
         {
@@ -252,7 +261,7 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
       else
       {
         // Row
-        int j = get<0>(p);
+        int j = get<0>(p)-1;
         coverRowLines.insert(j);
         for (auto z : uncoveredZeroes)
         {
