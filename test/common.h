@@ -29,6 +29,14 @@ protected:
 };
 
 
+class SkippedTestCase : public TestCase 
+{
+public:
+  using TestCase::TestCase;
+  bool pass() const override;
+};
+
+
 class TestScenario
 {
 public:

@@ -125,7 +125,7 @@ function<bool()> caseAdditionalZero = []()
   cout << m0 << endl << endl;
   Mat m = m0.clone();
 
-  tuple<set<int>, set<int>> zeroes = Hungarian::coverZeroes(m, false);
+  tuple<set<int>, set<int>> zeroes = Hungarian::coverZeroes(m, true);
 
   cout << "...[Cover rows:]";
   for (int j : get<0>(zeroes))
@@ -157,7 +157,7 @@ function<bool()> caseOptimise = []()
   vector<tuple<int,int>> minima = hungarian.optimiseMinima();
 
   // TAOTODO:
-  cout << YELLOW << "[Minima]" << endl;
+  cout << YELLOW << "[Minima]" << RESET << endl;
   for (tuple<int,int> p : minima)
   {
     int j = get<0>(p);
@@ -177,6 +177,6 @@ TestScenario testHungarian = testHungarian0
   >> TestCase("[case 3] - Cover zeroes (larger matrix)", caseCoverZerosLargeMat)
   >> TestCase("[case 4] - Cover zeroes (sparse matrix)", caseCoverZerosSparse)
   >> TestCase("[case 5] - Create additional zeroes", caseAdditionalZero)
-  >> TestCase("[case _] - Minima", caseOptimise);
+  >> SkippedTestCase("[case 6] - Minima", caseOptimise);
 
 #endif

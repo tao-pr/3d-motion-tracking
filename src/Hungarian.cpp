@@ -247,11 +247,6 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
     {
       // Take the next profile line
       Profile p = q.top();
-      // Add a covering line at this profile index
-      if (get<0>(p) < 0)
-        coverColLines.insert(-get<0>(p)-1);
-      else
-        coverRowLines.insert(get<0>(p)-1);
 
       // Remove zeroes which are covered by this new line
       int nZeroesNewlyCovered = 0;
@@ -260,34 +255,39 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
       {
         // Col
         int i = -get<0>(p)-1;
-        coverColLines.insert(i);
         for (auto z : uncoveredZeroes)
         {
           if (z.x != i) newUncoveredZeroes.push_back(z);
           else nZeroesNewlyCovered++;
         }
 
-        if (debug)
+        if (nZeroesNewlyCovered>0)
         {
-          printf("......Added col #%d : %d more zeroes are now covered.\n", i, nZeroesNewlyCovered);
+          coverColLines.insert(i);
+          if (debug)
+          {
+            printf("......Added col #%d : %d more zeroes are now covered.\n", i, nZeroesNewlyCovered);
+          }
         }
       }
       else
       {
         // Row
         int j = get<0>(p)-1;
-        coverRowLines.insert(j);
         for (auto z : uncoveredZeroes)
         {
           if (z.y != j) newUncoveredZeroes.push_back(z);
           else nZeroesNewlyCovered++;
         }
 
-        if (debug)
+        if (nZeroesNewlyCovered>0)
         {
-          printf("......Added row #%d : %d more zeroes are now covered.\n", j, nZeroesNewlyCovered);
+          coverRowLines.insert(j);
+          if (debug)
+          {
+            printf("......Added row #%d : %d more zeroes are now covered.\n", j, nZeroesNewlyCovered);
+          }
         }
-
       }
 
       swap(uncoveredZeroes, newUncoveredZeroes);

@@ -54,6 +54,12 @@ TestScenario& operator>>(TestScenario& t, const TestCase &c)
   return t;
 }
 
+bool SkippedTestCase::pass() const
+{
+  cout << CYAN << "[SKIPPED: " << this->title << "]" << endl;
+  return true;
+}
+
 bool isEql(Mat a, Mat b)
 {
   assert(a.cols==b.cols && a.rows==b.rows);
@@ -64,6 +70,7 @@ bool isEql(Mat a, Mat b)
       {
         cout << RED;
         printf("Inequal elem at (%d, %d)\n", j, i);
+        cout << RESET;
         return false;
       }
     }
