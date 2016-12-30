@@ -109,7 +109,9 @@ function<bool()> caseCoverZerosSparse = []()
   set<int> lineCols = get<1>(zeroes);
 
   // ASSERT
-  return isEql(lineRows.size() + lineCols.size(), 5);
+  set<int> expectedRows = {2,3,4};
+  set<int> expectedCols = {0,1,3};
+  return isEql(lineRows, expectedRows) && isEql(lineCols, expectedCols);
 };
 
 function<bool()> caseOptimise = []()

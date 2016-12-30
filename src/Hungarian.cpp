@@ -186,14 +186,14 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
         uncoveredZeroes.push_back(Point(i,j));
       }
 
-  if (debug)
-  {
-    cout << "...[Initial uncovered zeroes]" << endl;
-    for (auto z : uncoveredZeroes)
-    {
-      printf("...(%d, %d)\n", z.x, z.y);
-    }
-  }
+  // if (debug)
+  // {
+  //   cout << "...[Initial uncovered zeroes]" << endl;
+  //   for (auto z : uncoveredZeroes)
+  //   {
+  //     printf("...(%d, %d)\n", z.x, z.y);
+  //   }
+  // }
 
   // Convert profiles to priority queue
   priority_queue<Profile,vector<Profile>,CompareProfile> q0;
@@ -287,6 +287,16 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
 
     nAttempt++;
   }
+
+  cout << "[covered rows:]" << endl << "...";
+  for (auto j : coverRowLines)
+    cout << j << ",";
+  cout << endl;
+  cout << "[covered cols:]" << endl << "...";
+  for (auto i : coverColLines)
+    cout << i << ",";
+  cout << endl;
+
 
   // All cover lines pruned!
   return make_tuple(coverRowLines, coverColLines);
