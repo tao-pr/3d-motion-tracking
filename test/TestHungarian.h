@@ -170,8 +170,21 @@ function<bool()> caseOptimise = []()
   }
 
   // ASSERT
+  assert(isEql(minima.size(), 3));
 
-  return false;
+  // The assigned minima must not duplicate
+  bool rc = true;
+  set<int> assignedCol;
+  for (auto min : minima)
+  {
+    int j = min.first;
+    int i = min.second;
+    rc &= assignedCol.find(i) == assignedCol.end();
+    assert(assignedCol.find(i) == assignedCol.end());
+    assignedCol.insert(i);
+  }
+
+  return rc;
 };
 
 TestScenario testHungarian0 = TestScenario("Hungarian");
