@@ -46,8 +46,8 @@ class Hungarian
 public:
   Hungarian(const Mat& cost, bool debug);
 
-  // Row => Col
-  unordered_map<int,int> optimiseMinima() const;
+  // (Row,Col)
+  vector<tuple<int,int>> optimiseMinima() const;
 
   // Find minimum cover lines to cover all zeroes in matrix {m}
   static tuple<set<int>, set<int>> coverZeroes(Mat& m, bool debug);

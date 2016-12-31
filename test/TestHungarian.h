@@ -159,13 +159,13 @@ function<bool()> caseOptimise = []()
   cout << m << endl << endl;
 
   Hungarian hungarian(m, true);
-  unordered_map<int,int> minima = hungarian.optimiseMinima();
+  auto minima = hungarian.optimiseMinima(); // TAOTODO: This stuck
 
   cout << YELLOW << "[Minima]" << RESET << endl;
   for (const auto &min : minima)
   {
-    int j = min.first;
-    int i = min.second;
+    int j = get<0>(min);
+    int i = get<1>(min);
     printf("...(%d, %d) : %0.0f\n", j, i, m.at<float>(j,i));
   }
 
@@ -177,8 +177,8 @@ function<bool()> caseOptimise = []()
   set<int> assignedCol;
   for (auto min : minima)
   {
-    int j = min.first;
-    int i = min.second;
+    int j = get<0>(min);
+    int i = get<1>(min);
     rc &= assignedCol.find(i) == assignedCol.end();
     assert(assignedCol.find(i) == assignedCol.end());
     assignedCol.insert(i);

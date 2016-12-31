@@ -16,7 +16,7 @@ Hungarian::Hungarian(const Mat& cost, bool debug=false)
   this->costM = cost.clone();
 }
 
-unordered_map<int,int> Hungarian::optimiseMinima() const
+vector<tuple<int,int>> Hungarian::optimiseMinima() const
 {
   int nRows = this->costM.rows;
   int nCols = this->costM.cols;
@@ -109,6 +109,7 @@ unordered_map<int,int> Hungarian::optimiseMinima() const
 
   // Select the optimal solution
   unordered_map<int,int> mapRowToCol;
+  vector<tuple<int,int>> minima;
   if (debug)
   {
     cout << "...[Locating optimal solution]" << endl;
@@ -130,13 +131,13 @@ unordered_map<int,int> Hungarian::optimiseMinima() const
       if (debug) cout << "......Skip row #" << j << endl;
       j = zeroesInCol[i].back();
       zeroesInCol[i].pop_back();
-      //zeroesInCol[i].insert(zeroesInCol[i].begin(),j,1);
     }
 
     if (debug) printf("......Zero # (%d, %d)\n",j, i);
 
     // Memorise the selected optimum coordinate (j,i)
     mapRowToCol.insert(make_pair(j,i));
+    minima.push_back(make_tuple(j,i));
 
     zeroesInCol[i].pop_back();
     minimaQ.pop();
@@ -157,7 +158,7 @@ unordered_map<int,int> Hungarian::optimiseMinima() const
     }
   }
 
-  return mapRowToCol;
+  return minima;
 }
 
 float Hungarian::minOfRow(int i, const Mat& cost)
