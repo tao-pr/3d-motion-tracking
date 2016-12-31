@@ -7,7 +7,7 @@ bool CompareProfile::operator()(Profile &a, Profile &b )
 
 bool CompareZeroInCol::operator()(ZeroInCol &a, ZeroInCol &b)
 {
-  return get<1>(a) > get(1)(b);
+  return get<1>(a) > get<1>(b);
 }
 
 Hungarian::Hungarian(const Mat& cost, bool debug=false)
@@ -16,10 +16,8 @@ Hungarian::Hungarian(const Mat& cost, bool debug=false)
   this->costM = cost.clone();
 }
 
-vector<tuple<int, int>> Hungarian::optimiseMinima() const
+unordered_map<int,int> Hungarian::optimiseMinima() const
 {
-  vector<tuple<int, int>> minima;
-
   int nRows = this->costM.rows;
   int nCols = this->costM.cols;
 
@@ -79,36 +77,84 @@ vector<tuple<int, int>> Hungarian::optimiseMinima() const
 
   if (debug)
   {
-    cout << "[Original Mat]" << endl;
+    cout << "...[Original Mat]" << endl;
     cout << this->costM << endl << endl;
-    cout << "[Minima Mat]" << endl;
+    cout << "...[Minima Mat]" << endl;
     cout << cost << endl << endl;
   }
 
-  // Locate minima
+  // Locate zeroes in reduced cost matrix
   priority_queue<ZeroInCol, vector<ZeroInCol>, CompareZeroInCol> minimaQ; // Least zero in a column comes first
+  unordered_map<int,vector<int>> zeroesInCol;
   for (int i=0; i<nCols; i++)
   {
     int nZeroes = 0;
     for (int j=0; j<nRows; j++)
     {
       if (cost.at<float>(j,i) < 1E-4) // Zero?
+      {
         nZeroes++;
+        
+        if (zeroesInCol.find(i)==zeroesInCol.end())
+        {
+          vector<int> v = {j};
+          zeroesInCol.insert(make_pair(i,v));
+        }
+        else
+          zeroesInCol[i].push_back(j);
+      }
     }
     minimaQ.push(make_tuple(i,nZeroes));
   }
 
-  // TAOTODO: Select the optimal solution
+  // Select the optimal solution
+  unordered_map<int,int> mapRowToCol;
+  if (debug)
+  {
+    cout << "...[Locating optimal solution]" << endl;
+  }
   while (!minimaQ.empty())
   {
+    // Take next column with least zeroes (least choices)
     auto next = minimaQ.top();
+    int i = get<0>(next);
+    if (debug) cout << "...take col #" << i << endl;
 
+    // Take a row with zero
+    int j = zeroesInCol[i].back();
+    // Must no duplicatedly assigned
+    while (mapRowToCol.find(j) != mapRowToCol.end())
+    {
+      if (debug) cout << "......Skip row #" << j << endl;
+      zeroesInCol[i].pop_back();
+      zeroesInCol[i].insert(zeroesInCol[i].begin(),j,1);
+    }
 
+    if (debug) printf("......Zero # (%d, %d)\n",j, i);
 
+    // Memorise the selected optimum coordinate (j,i)
+    mapRowToCol.insert(make_pair(j,i));
+
+    zeroesInCol[i].pop_back();
     minimaQ.pop();
   }
 
-  return minima;
+  if (debug)
+  {
+    cout << "...[Minima at]" << endl;
+    for (int j=0; j<nRows; j++)
+    {
+      int iMin = mapRowToCol[j];
+      for (int i=0; i<nCols; i++)
+      {
+        if (i==iMin) cout << "[ ] ";
+        else cout << "[†] ";
+      }
+      cout << endl;
+    }
+  }
+
+  return mapRowToCol;
 }
 
 float Hungarian::minOfRow(int i, const Mat& cost)
