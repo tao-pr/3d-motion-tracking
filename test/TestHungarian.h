@@ -3,6 +3,7 @@
 
 #include <queue>
 #include <functional>
+#include <unordered_map>
 #include "Hungarian.h"
 #include "common.h"
 #include "coloriser.h"
@@ -158,14 +159,13 @@ function<bool()> caseOptimise = []()
   cout << m << endl << endl;
 
   Hungarian hungarian(m, true);
-  vector<tuple<int,int>> minima = hungarian.optimiseMinima();
+  unordered_map<int,int> minima = hungarian.optimiseMinima();
 
-  // TAOTODO:
   cout << YELLOW << "[Minima]" << RESET << endl;
-  for (tuple<int,int> p : minima)
+  for (const auto &min : minima)
   {
-    int j = get<0>(p);
-    int i = get<1>(p);
+    int j = min.first;
+    int i = min.second;
     printf("...(%d, %d) : %0.0f\n", j, i, m.at<float>(j,i));
   }
 
