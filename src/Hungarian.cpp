@@ -122,12 +122,15 @@ unordered_map<int,int> Hungarian::optimiseMinima() const
 
     // Take a row with zero
     int j = zeroesInCol[i].back();
+    zeroesInCol[i].pop_back();
+
     // Must no duplicatedly assigned
     while (mapRowToCol.find(j) != mapRowToCol.end())
     {
       if (debug) cout << "......Skip row #" << j << endl;
+      j = zeroesInCol[i].back();
       zeroesInCol[i].pop_back();
-      zeroesInCol[i].insert(zeroesInCol[i].begin(),j,1);
+      //zeroesInCol[i].insert(zeroesInCol[i].begin(),j,1);
     }
 
     if (debug) printf("......Zero # (%d, %d)\n",j, i);
@@ -147,8 +150,8 @@ unordered_map<int,int> Hungarian::optimiseMinima() const
       int iMin = mapRowToCol[j];
       for (int i=0; i<nCols; i++)
       {
-        if (i==iMin) cout << "[ ] ";
-        else cout << "[†] ";
+        if (i==iMin) cout << "[†] ";
+        else cout << "[ ] ";
       }
       cout << endl;
     }
