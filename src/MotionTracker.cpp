@@ -66,9 +66,14 @@ void MotionTracker::trackMotion(Mat &im)
   for (auto m : this->currMeshes)
   {
     if (m.lengthOfAbsence==0)
-      m.drawMesh(canvas, Scalar(100,100,200), Scalar(0,0,240), maxEdgeLength);
+    {
+      if (m.lengthOfHistory()>=1)
+        m.drawMesh(canvas, Scalar(100,100,200), Scalar(0,0,240), maxEdgeLength);
+      else
+        m.drawMesh(canvas, Scalar(100,230,100), Scalar(0,240,0), maxEdgeLength, true);        
+    }
     else
-      m.drawMesh(canvas, Scalar(100,100,200, 0.4), Scalar(0,0,240), maxEdgeLength);      
+      m.drawMesh(canvas, Scalar(100,200,200, 0.4), Scalar(0,120,240, 0.4), maxEdgeLength);      
   }
 
   namedWindow("tracked", CV_WINDOW_AUTOSIZE);

@@ -95,7 +95,7 @@ bool MeshObject::isEmpty() const
 }
 
 
-void MeshObject::drawMesh(Mat &canvas, Scalar edgeColor, Scalar vertexColor, double maxDistance) const
+void MeshObject::drawMesh(Mat &canvas, Scalar edgeColor, Scalar vertexColor, double maxDistance, bool thick) const
 {
   auto N = this->points.size();
   // Draw edges
@@ -116,7 +116,7 @@ void MeshObject::drawMesh(Mat &canvas, Scalar edgeColor, Scalar vertexColor, dou
   // Draw vertices
   for (Point2f p : this->points)
   {
-    circle(canvas, p, 1, vertexColor, 1, CV_AA);
+    circle(canvas, p, 1, vertexColor, thick ? 3 : 1, CV_AA);
     // Update bounding box coordinates
     bx0 = p.x < bx0 ? p.x : bx0;
     by0 = p.y < by0 ? p.y : by0;
@@ -125,7 +125,7 @@ void MeshObject::drawMesh(Mat &canvas, Scalar edgeColor, Scalar vertexColor, dou
   }
 
   // Draw bounding box
-  rectangle(canvas, Point2f(bx0, by0), Point2f(bxN, byN), vertexColor, 1, CV_AA);
+  rectangle(canvas, Point2f(bx0, by0), Point2f(bxN, byN), vertexColor, thick ? 3 : 1);
 }
 
 void MeshObject::update(const MeshObject &newM)

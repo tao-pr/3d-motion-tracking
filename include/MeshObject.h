@@ -43,8 +43,9 @@ public:
 
   bool isEmpty() const;
   int lengthOfAbsence;
+  inline int lengthOfHistory() const { return this->history.size(); }
 
-  void drawMesh(Mat &canvas, Scalar edgeColor, Scalar vertexColor, double maxDistance=100) const;
+  void drawMesh(Mat &canvas, Scalar edgeColor, Scalar vertexColor, double maxDistance=100, bool thick=false) const;
   void drawHistoryPath(Mat &canvas, Scalar pathColor) const;
   void update(const MeshObject &newM);
   inline const vector<Point2f> toVec() const { return this->points; };
