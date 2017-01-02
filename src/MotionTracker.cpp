@@ -42,9 +42,6 @@ void MotionTracker::trackMotion(Mat &im)
   vector<Point2f> cornersS = TrackUtils::detectFeaturePoints(h, wndSize, maxCorners, minDist*3, 0.2);
   vector<Point2f> cornersV = TrackUtils::detectFeaturePoints(v, wndSize, maxCorners, minDist, 0.05);
 
-  // Canvas
-  // Mat canvas = Mat::zeros(v.size(), CV_8UC3);
-  // cvtColor(h, canvas, COLOR_GRAY2RGB);
   Mat canvas = im.clone();
 
   // Create a trackable mesh
@@ -64,7 +61,8 @@ void MotionTracker::trackMotion(Mat &im)
   for (MeshObject m : meshes) 
     m.drawMesh(canvas, Scalar(100,100,200), Scalar(0,0,240), maxEdgeLength);
 
-  // TAOTODO: Align the newly detected meshes with the previous ones
+  // Align recently tracked meshes
+  // with the newly tracked ones
   alignMeshes(meshes, maxDisplacement);
 
   namedWindow("tracked", CV_WINDOW_AUTOSIZE);
@@ -73,14 +71,22 @@ void MotionTracker::trackMotion(Mat &im)
 
 void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
 {
-  // Memorise the previously detected meshes
-  vector<MeshObject> prevMeshes;
-  while (!this->currMeshes.empty())
+  if (this->debug)
+    cout << "...Aligning " << newMeshes.size() << " mesh(es)" << endl;
+
+  // If there was no previously tracked meshes,
+  // just clone them
+  if (this->currMeshes.size()==0)
   {
-    MeshObject m = this->currMeshes.back();
-    prevMeshes.push_back(m);
-    this->currMeshes.pop_back();
+    copy(newMeshes.begin(), newMeshes.end(), back_inserter(this->currMeshes));
+    return;
   }
+
+  // Prepare [prev] , [curr] meshes
+  vector<MeshObject> prevMeshes; // [prev] <- [curr]
+  copy(this->currMeshes.begin(), this->currMeshes.end(), back_inserter(prevMeshes));
+  this->currMeshes.clear(); // [curr] <- [new]
+  copy(newMeshes.begin(), newMeshes.end(), back_inserter(this->currMeshes));
 
   int N0 = prevMeshes.size();
   int N1 = this->currMeshes.size();
@@ -96,13 +102,11 @@ void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
   for (auto m : this->currMeshes)
     centroids.push_back(m.centroid());
 
-  // TAOTODO: Pad if N0 != N1
-
   // Map 1-to-N distrances
   // and create an assignment problem matrix M
   //     [row] => represents old mesh
   //     [col] => represents new mesh
-  Mat m = Mat(N, N, CV_32F, Scalar(0.));
+  Mat m = Mat(N, N, CV_32F, Scalar(numeric_limits<float>::max()));
   int j = 0;
   for (auto c0 : centroids0)
   {
@@ -118,8 +122,7 @@ void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
 
   if (debug)
   {
-    cout << "[M]" << endl;
-    cout << m << endl << endl;
+    cout << "[M] " << N << " x " << N << endl;
   }
 
   // TAOTODO: Use Hungarian algorithm to find best matches

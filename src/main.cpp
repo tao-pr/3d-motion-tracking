@@ -13,6 +13,8 @@
 
 using namespace std;
 
+bool debug = true;
+
 int main(int argc, char** argv)
 {
   // Prepare frame transformers
@@ -26,7 +28,7 @@ int main(int argc, char** argv)
   // function<void (Mat)> tracker = camTrack.track();
   // function<void (Mat)> idle    = [](Mat){};
 
-  MotionTracker motionTrack;
+  MotionTracker motionTrack(debug);
   function<void (Mat)> tracker = motionTrack.track();
   
   // Start capturing from video source
