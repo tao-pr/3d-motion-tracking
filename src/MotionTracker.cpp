@@ -1,7 +1,8 @@
 #include "MotionTracker.h"
 
-MotionTracker::MotionTracker()
+MotionTracker::MotionTracker(bool debug)
 {
+  this->debug = debug;
 }
 
 function<void (Mat)> MotionTracker::track()
@@ -49,7 +50,8 @@ void MotionTracker::trackMotion(Mat &im)
   // Create a trackable mesh
   vector<Point2f> points = cornersS;
   points.insert(points.end(), cornersV.begin(), cornersV.end());
-  cout << "... " << points.size() << " vertices captured" << endl;
+  if (this->debug)
+    cout << "... " << points.size() << " vertices captured" << endl;
   MeshObject mesh(points);
 
   double maxEdgeLength   = im.size[0];
@@ -57,7 +59,8 @@ void MotionTracker::trackMotion(Mat &im)
 
   // Split meshes
   vector<MeshObject> meshes = mesh.split(maxEdgeLength);
-  cout << "... " << meshes.size() << " meshes splitted" << endl;
+  if (this->debug)
+    cout << "... " << meshes.size() << " meshes splitted" << endl;
   for (MeshObject m : meshes) 
     m.drawMesh(canvas, Scalar(100,100,200), Scalar(0,0,240), maxEdgeLength);
 
@@ -111,6 +114,12 @@ void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
       i++;
     }
     j++;
+  }
+
+  if (debug)
+  {
+    cout << "[M]" << endl;
+    cout << m << endl << endl;
   }
 
   // TAOTODO: Use Hungarian algorithm to find best matches

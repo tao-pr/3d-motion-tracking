@@ -23,10 +23,11 @@ using namespace std;
 class MotionTracker : ITracker
 {
 public:
-  MotionTracker();
+  MotionTracker(bool debug=false);
   function<void (Mat)> track();
 
 protected:
+  bool debug;
   void trackMotion(Mat& im);
   void alignMeshes(vector<MeshObject> newMeshes, double maxDist);
   Mat calcHistBackProjection(Mat& im);
