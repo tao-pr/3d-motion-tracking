@@ -15,7 +15,7 @@ using namespace std;
 
 bool debug = true;
 float meshDisplace = 50;
-float maxEdgeLength = 250;
+float maxEdgeLength = 420;
 int longestAbsence = 3;
 
 int main(int argc, char** argv)
