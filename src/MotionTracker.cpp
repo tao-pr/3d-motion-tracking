@@ -57,8 +57,6 @@ void MotionTracker::trackMotion(Mat &im)
   if (this->debug)
     cout << "... " << meshes.size() << " meshes splitted from "
       << points.size() << " vertices" << endl;
-  // for (MeshObject m : meshes) 
-  //   m.drawMesh(canvas, Scalar(100,100,200), Scalar(0,0,240), maxEdgeLength);
 
   // Align recently tracked meshes
   // with the newly tracked ones
