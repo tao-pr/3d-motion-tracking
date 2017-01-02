@@ -3,6 +3,7 @@
 MeshObject::MeshObject(vector<Point2f> &ps)
 {
   this->points = ps;
+  this->lengthOfAbsence = 0;
 }
 
 Particle MeshObject::centroidAsParticle() const
@@ -37,14 +38,6 @@ double MeshObject::findMinDistance(Point2f p, vector<Point2f> ps)
     minDist = d < minDist ? d : minDist;
   }
   return minDist;
-}
-
-vector<Point2f> MeshObject::toVec() const 
-{
-  vector<Point2f> vec;
-  for (auto p : this->points)
-    vec.push_back(p);
-  return vec;
 }
 
 vector<MeshObject> MeshObject::split(double maxEdgeLength) const
@@ -135,5 +128,21 @@ void MeshObject::drawMesh(Mat &canvas, Scalar edgeColor, Scalar vertexColor, dou
   rectangle(canvas, Point2f(bx0, by0), Point2f(bxN, byN), vertexColor, 1, CV_AA);
 }
 
+void MeshObject::update(const MeshObject &newM)
+{
+  // Current state becomes the most recent history
+  this->history.push_back(MeshObject(this->points));
+  this->points.clear();
+
+  const vector<Point2f> ps = newM.toVec();
+
+  // New mesh becomes the current state
+  copy(ps.begin(), ps.end(), back_inserter(this->points));
+}
+
+void MeshObject::drawHistoryPath(Mat &canvas, Scalar pathColor) const
+{
+  // TAOTODO:
+}
 
 

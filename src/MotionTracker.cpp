@@ -72,7 +72,9 @@ void MotionTracker::trackMotion(Mat &im)
 void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
 {
   if (this->debug)
-    cout << "...Aligning " << newMeshes.size() << " mesh(es)" << endl;
+    cout << "...Aligning mesh: " << this->currMeshes.size() 
+      << " --> " << newMeshes.size() 
+      << endl;
 
   // If there was no previously tracked meshes,
   // just clone them
@@ -82,14 +84,8 @@ void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
     return;
   }
 
-  // Prepare [prev] , [curr] meshes
-  vector<MeshObject> prevMeshes; // [prev] <- [curr]
-  copy(this->currMeshes.begin(), this->currMeshes.end(), back_inserter(prevMeshes));
-  this->currMeshes.clear(); // [curr] <- [new]
-  copy(newMeshes.begin(), newMeshes.end(), back_inserter(this->currMeshes));
-
-  int N0 = prevMeshes.size();
-  int N1 = this->currMeshes.size();
+  int N0 = this->currMeshes.size();
+  int N1 = newMeshes.size();
   int N  = max(N0,N1);
 
   // Take only centroids into account
@@ -97,9 +93,9 @@ void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
   vector<Point2f> centroids;
 
   // Fill lists of centroids
-  for (auto m : prevMeshes)
-    centroids0.push_back(m.centroid());
   for (auto m : this->currMeshes)
+    centroids0.push_back(m.centroid());
+  for (auto m : newMeshes)
     centroids.push_back(m.centroid());
 
   // Map 1-to-N distrances
@@ -125,10 +121,62 @@ void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
     cout << "[M] " << N << " x " << N << endl;
   }
 
-  // TAOTODO: Use Hungarian algorithm to find best matches
+  // Use Hungarian algorithm to find best matches
   // of [currentMesh] and [prevMesh]
   Hungarian h(m, false); // Debug OFF
   vector<tuple<int,int>> match = h.optimiseMinima();
+
+  // Couple the [prev] and [curr] meshes
+  int nFreshNew = 0;
+  int nAbsentOld = 0;
+  int nUpdated = 0;
+  queue<int> pendingForAdd;
+  for (auto couple : match)
+  {
+    int i0 = get<0>(couple); // [Row] = old mesh ID
+    int i1 = get<1>(couple); // [Col] = new mesh ID
+
+    // Ignore if this matches nothing
+    if (i0>=N0 && i1>=N1)
+      continue;
+    // [new] with no matching
+    else if (i0>=N0)
+    {
+      nFreshNew ++;
+      pendingForAdd.push(i1);
+    }
+    // [old] with no matching
+    else if (i1>=N1)
+    {
+      nAbsentOld++;
+      this->currMeshes[i0].lengthOfAbsence++;
+    }
+    // Perfect match between [old] and [new]
+    else
+    {
+      // Record the movement history
+      nUpdated++;
+      this->currMeshes[i0].update(newMeshes[i1]);
+    }
+  }
+
+  if (debug)
+  {
+    cout << "... " << nUpdated << " mesh(es) updated" << endl;
+    cout << "... " << nAbsentOld << " mesh(es) absent" << endl;
+    cout << "... " << nFreshNew << " new mesh(es)" << endl;
+  }
+
+  // Add the new meshes
+  while (!pendingForAdd.empty())
+  {
+    int n = pendingForAdd.front();
+    pendingForAdd.pop();
+    this->currMeshes.push_back(newMeshes[n]);
+  }
+
+  // TAOTODO: Remove meshes which have been absent too long
+  
 
 }
 

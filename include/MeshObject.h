@@ -42,13 +42,16 @@ public:
   vector<MeshObject> split(double maxEdgeLength=100) const;
 
   bool isEmpty() const;
+  int lengthOfAbsence;
 
   void drawMesh(Mat &canvas, Scalar edgeColor, Scalar vertexColor, double maxDistance=100) const;
+  void drawHistoryPath(Mat &canvas, Scalar pathColor) const;
+  void update(const MeshObject &newM);
+  inline const vector<Point2f> toVec() const { return this->points; };
 
 protected:
   vector<Point2f> points; // TAOTOREVIEW: KD-Tree might be a better choice
-
-  vector<Point2f> toVec() const;
+  vector<MeshObject> history; // Temporal history of the mesh
 
   // Find minimum distance from a point [p]
   // to the group of points [ps]
