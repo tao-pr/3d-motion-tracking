@@ -86,6 +86,7 @@ vector<tuple<int,int>> Hungarian::optimiseMinima() const
   // Locate zeroes in reduced cost matrix
   priority_queue<ZeroInCol, vector<ZeroInCol>, CompareZeroInCol> minimaQ; // Least zero in a column comes first
   unordered_map<int,vector<int>> zeroesInCol;
+  unordered_map<int,vector<int>> zeroesInRow;
   for (int i=0; i<nCols; i++)
   {
     int nZeroes = 0;
@@ -95,6 +96,7 @@ vector<tuple<int,int>> Hungarian::optimiseMinima() const
       {
         nZeroes++;
         
+        // Record found zeroes
         if (zeroesInCol.find(i)==zeroesInCol.end())
         {
           vector<int> v = {j};
@@ -102,12 +104,21 @@ vector<tuple<int,int>> Hungarian::optimiseMinima() const
         }
         else
           zeroesInCol[i].push_back(j);
+
+        if (zeroesInRow.find(j)==zeroesInRow.end())
+        {
+          vector<int> v = {i};
+          zeroesInRow.insert(make_pair(j,v));
+        }
+        else
+          zeroesInRow[j].push_back(i);
       }
     }
     minimaQ.push(make_tuple(i,nZeroes));
   }
 
   // Select the optimal solution
+  set<int> pickedCol;
   unordered_map<int,int> mapRowToCol;
   vector<tuple<int,int>> minima;
   if (debug)
@@ -122,19 +133,30 @@ vector<tuple<int,int>> Hungarian::optimiseMinima() const
     int i = get<0>(next);
     if (debug) cout << "...take col #" << i << endl;
 
-    // Take a row with zero
-    int j = zeroesInCol[i].back();
-    zeroesInCol[i].pop_back();
-
-    // Must no duplicatedly assigned
-    while (mapRowToCol.find(j) != mapRowToCol.end())
+    // Take a zero row with "least" neighbor zeroes
+    priority_queue<ZeroInCol,vector<ZeroInCol>,CompareZeroInCol> qRow;
+    for (int j=0; j<nRows; j++)
     {
-      if (debug) cout << "......Skip row #" << j << endl;
-      j = zeroesInCol[i].back();
-      zeroesInCol[i].pop_back();
+      // Skip the occupied row
+      if (mapRowToCol.find(j) != mapRowToCol.end())
+        continue;
+      // Count number of unoccupied zeroes along the row [j]
+      int numNeighborZero = 0;
+      for (int ii : zeroesInRow[j])
+      {
+        if (pickedCol.find(ii) == pickedCol.end())
+          numNeighborZero++;
+      }
+
+      qRow.push(make_tuple(j,numNeighborZero));
     }
 
-    if (debug) printf("......Zero # (%d, %d)\n",j, i);
+    int j = get<0>(qRow.top());
+
+    zeroesInCol[i].pop_back();
+    pickedCol.insert(i);
+
+    if (debug) printf("......match row # %d\n",j);
 
     // Memorise the selected optimum coordinate (j,i)
     mapRowToCol.insert(make_pair(j,i));
