@@ -10,6 +10,7 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv/cvaux.hpp>
 #include "DrawUtils.h"
+#include "CalcUtils.h"
 #include "TrackUtils.h"
 #include "ITracker.h"
 #include "MeshObject.h"

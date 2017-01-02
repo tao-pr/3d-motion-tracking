@@ -97,10 +97,20 @@ void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
 
   // Map 1-to-N distrances
   // and create an assignment problem matrix M
+  //     [row] => represents old mesh
+  //     [col] => represents new mesh
   Mat m = Mat(N, N, CV_32F, Scalar(0.));
+  int j = 0;
   for (auto c0 : centroids0)
   {
-
+    int i = 0;
+    for (auto c1 : centroids)
+    {
+      float d = (float)_dist(c0,c1);
+      m.at<float>(j,i) = d;
+      i++;
+    }
+    j++;
   }
 
   // TAOTODO: Use Hungarian algorithm to find best matches
