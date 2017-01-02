@@ -383,21 +383,25 @@ tuple<set<int>, set<int>> Hungarian::coverZeroes(Mat& m, bool debug=false)
     }
     else
     {
-      cout << "...No uncovered zeroes left to collect" << endl;
+      if (debug)
+        cout << "...No uncovered zeroes left to collect" << endl;
       break;
     }
 
     nAttempt++;
   }
 
-  cout << "[covered rows:]" << endl << "...";
-  for (auto j : coverRowLines)
-    cout << j << ",";
-  cout << endl;
-  cout << "[covered cols:]" << endl << "...";
-  for (auto i : coverColLines)
-    cout << i << ",";
-  cout << endl;
+  if (debug)
+  {
+    cout << "[covered rows:]" << endl << "...";
+    for (auto j : coverRowLines)
+      cout << j << ",";
+    cout << endl;
+    cout << "[covered cols:]" << endl << "...";
+    for (auto i : coverColLines)
+      cout << i << ",";
+    cout << endl;
+  }
 
 
   // All cover lines pruned!

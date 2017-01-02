@@ -127,8 +127,8 @@ void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
 
   // TAOTODO: Use Hungarian algorithm to find best matches
   // of [currentMesh] and [prevMesh]
-
-
+  Hungarian h(m, false); // Debug OFF
+  vector<tuple<int,int>> match = h.optimiseMinima();
 
 }
 
