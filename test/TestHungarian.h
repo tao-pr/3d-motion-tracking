@@ -159,7 +159,7 @@ function<bool()> caseOptimise = []()
   cout << m << endl << endl;
 
   Hungarian hungarian(m, true);
-  auto minima = hungarian.optimiseMinima(); // TAOTODO: This stuck
+  auto minima = hungarian.optimiseMinima();
 
   cout << YELLOW << "[Minima]" << RESET << endl;
   for (const auto &min : minima)
@@ -187,6 +187,49 @@ function<bool()> caseOptimise = []()
   return rc;
 };
 
+function<bool()> caseOptimiseLargeMat = []()
+{
+  float vec[36] = {
+    1, 6, 6, 3, 1, 5,
+    2, 3, 1, 5, 5, 3,
+    3, 4, 1, 3, 1, 5,
+    4, 4, 3, 3, 2, 5,
+    5, 1, 1, 4, 1, 3,
+    6, 2, 3, 4, 5, 3
+  };
+  Mat m = Mat(6, 6, CV_32F, vec);
+  cout << m << endl << endl;
+
+  Hungarian hungarian(m, true);
+  auto minima = hungarian.optimiseMinima();
+
+  cout << YELLOW << "[Minima]" << RESET << endl;
+  for (const auto &min : minima)
+  {
+    int j = get<0>(min);
+    int i = get<1>(min);
+    printf("...(%d, %d) : %0.0f\n", j, i, m.at<float>(j,i));
+  }
+
+  // ASSERT
+  assert(isEql(minima.size(), 6));
+
+  // The assigned minima must not duplicate
+  bool rc = true;
+  set<int> assignedCol;
+  for (auto min : minima)
+  {
+    int j = get<0>(min);
+    int i = get<1>(min);
+    rc &= assignedCol.find(i) == assignedCol.end();
+    assert(assignedCol.find(i) == assignedCol.end());
+    assignedCol.insert(i);
+  }
+
+  return rc;
+};
+
+
 TestScenario testHungarian0 = TestScenario("Hungarian");
 TestScenario testHungarian = testHungarian0
   >> TestCase("[case 1] - Cover zeroes", caseCoverZeros)
@@ -194,6 +237,7 @@ TestScenario testHungarian = testHungarian0
   >> TestCase("[case 3] - Cover zeroes (larger matrix)", caseCoverZerosLargeMat)
   >> TestCase("[case 4] - Cover zeroes (sparse matrix)", caseCoverZerosSparse)
   >> TestCase("[case 5] - Create additional zeroes", caseAdditionalZero)
-  >> TestCase("[case 6] - Minima", caseOptimise);
+  >> TestCase("[case 6] - Minima", caseOptimise)
+  >> TestCase("[case 7] - Minima of large matrix", caseOptimiseLargeMat);
 
 #endif
