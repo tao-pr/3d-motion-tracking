@@ -1,9 +1,10 @@
 #include "MotionTracker.h"
 
-MotionTracker::MotionTracker(float maxMeshDistance, int longestAbsence, bool debug)
+MotionTracker::MotionTracker(float maxMeshDistance, float maxMeshEdgeLength, int longestAbsence, bool debug)
 {
   this->debug = debug;
   this->maxMeshDistance = maxMeshDistance;
+  this->maxMeshEdgeLength = maxMeshEdgeLength;
   this->longestAbsence = longestAbsence;
 }
 
@@ -51,10 +52,8 @@ void MotionTracker::trackMotion(Mat &im)
   points.insert(points.end(), cornersV.begin(), cornersV.end());
   MeshObject mesh(points);
 
-  double maxEdgeLength   = im.size[0];
-
   // Split vertices into group of meshes
-  vector<MeshObject> meshes = mesh.split(maxEdgeLength);
+  vector<MeshObject> meshes = mesh.split(maxMeshEdgeLength);
   if (this->debug)
     cout << "... " << meshes.size() << " meshes splitted from "
       << points.size() << " vertices" << endl;
@@ -69,12 +68,12 @@ void MotionTracker::trackMotion(Mat &im)
     if (m.lengthOfAbsence==0)
     {
       if (m.lengthOfHistory()>=1)
-        m.drawMesh(canvas, Scalar(100,100,200), Scalar(0,0,240), maxEdgeLength);
+        m.drawMesh(canvas, Scalar(100,100,200), Scalar(0,0,240), maxMeshEdgeLength);
       else
-        m.drawMesh(canvas, Scalar(100,230,100), Scalar(0,240,0), maxEdgeLength, true);        
+        m.drawMesh(canvas, Scalar(100,230,100), Scalar(0,240,0), maxMeshEdgeLength, true);        
     }
     else
-      m.drawMesh(canvas, Scalar(100,200,200, 0.4), Scalar(0,120,240, 0.4), maxEdgeLength);      
+      m.drawMesh(canvas, Scalar(100,200,200, 0.4), Scalar(0,120,240, 0.4), maxMeshEdgeLength);      
 
     //m.drawHistoryPath(canvas, Scalar(80,80,80,0.7));
   }

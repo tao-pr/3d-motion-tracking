@@ -14,8 +14,9 @@
 using namespace std;
 
 bool debug = true;
-float meshDisplace = 30;
-int longestAbsence = 4;
+float meshDisplace = 50;
+float maxEdgeLength = 250;
+int longestAbsence = 3;
 
 int main(int argc, char** argv)
 {
@@ -31,7 +32,7 @@ int main(int argc, char** argv)
   // function<void (Mat)> idle    = [](Mat){};
 
   
-  MotionTracker motionTrack(meshDisplace, longestAbsence, debug);
+  MotionTracker motionTrack(meshDisplace, maxEdgeLength, longestAbsence, debug);
   function<void (Mat)> tracker = motionTrack.track();
   
   // Start capturing from video source
