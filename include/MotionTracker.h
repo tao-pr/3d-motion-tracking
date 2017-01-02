@@ -23,10 +23,11 @@ using namespace std;
 class MotionTracker : ITracker
 {
 public:
-  MotionTracker(float minDist,bool debug=false);
+  MotionTracker(float maxMeshDistance, int longestAbsence, bool debug=false);
   function<void (Mat)> track();
 
-  float minDist;
+  float maxMeshDistance; // Maximum distance allowed for coupling two meshes
+  int longestAbsence; // Maximum number of frames allowed for a mesh to be absent
 
 protected:
   bool debug;

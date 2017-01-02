@@ -14,6 +14,8 @@
 using namespace std;
 
 bool debug = true;
+float meshDisplace = 30;
+int longestAbsence = 4;
 
 int main(int argc, char** argv)
 {
@@ -28,8 +30,8 @@ int main(int argc, char** argv)
   // function<void (Mat)> tracker = camTrack.track();
   // function<void (Mat)> idle    = [](Mat){};
 
-  float minDist = 25;
-  MotionTracker motionTrack(minDist, debug);
+  
+  MotionTracker motionTrack(meshDisplace, longestAbsence, debug);
   function<void (Mat)> tracker = motionTrack.track();
   
   // Start capturing from video source

@@ -1,9 +1,10 @@
 #include "MotionTracker.h"
 
-MotionTracker::MotionTracker(float minDist, bool debug)
+MotionTracker::MotionTracker(float maxMeshDistance, int longestAbsence, bool debug)
 {
   this->debug = debug;
-  this->minDist = minDist;
+  this->maxMeshDistance = maxMeshDistance;
+  this->longestAbsence = longestAbsence;
 }
 
 function<void (Mat)> MotionTracker::track()
@@ -39,6 +40,7 @@ void MotionTracker::trackMotion(Mat &im)
   // Detect corners
   int wndSize    = 5;
   int maxCorners = 16;
+  int minDist    = 25;
   vector<Point2f> cornersS = TrackUtils::detectFeaturePoints(h, wndSize, maxCorners, minDist*3, 0.2);
   vector<Point2f> cornersV = TrackUtils::detectFeaturePoints(v, wndSize, maxCorners, minDist, 0.05);
 
@@ -50,7 +52,6 @@ void MotionTracker::trackMotion(Mat &im)
   MeshObject mesh(points);
 
   double maxEdgeLength   = im.size[0];
-  double maxDisplacement = im.size[0]*0.833;
 
   // Split vertices into group of meshes
   vector<MeshObject> meshes = mesh.split(maxEdgeLength);
@@ -60,7 +61,7 @@ void MotionTracker::trackMotion(Mat &im)
 
   // Align recently tracked meshes
   // with the newly tracked ones
-  alignMeshes(meshes, maxDisplacement);
+  alignMeshes(meshes, maxMeshDistance);
 
   // Draw mesh with history
   for (auto m : this->currMeshes)
@@ -74,6 +75,8 @@ void MotionTracker::trackMotion(Mat &im)
     }
     else
       m.drawMesh(canvas, Scalar(100,200,200, 0.4), Scalar(0,120,240, 0.4), maxEdgeLength);      
+
+    //m.drawHistoryPath(canvas, Scalar(80,80,80,0.7));
   }
 
   namedWindow("tracked", CV_WINDOW_AUTOSIZE);
@@ -165,11 +168,22 @@ void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
     // Perfect match between [old] and [new]
     else
     {
-      // Record the movement history
-      nUpdated++;
-      this->currMeshes[i0].update(newMeshes[i1]);
-      // Also reset length of absence (if any)
-      this->currMeshes[i0].lengthOfAbsence = 0;
+      // Reject matching of the two distant meshes
+      if (m.at<float>(i0,i1) > maxDist)
+      {
+        nAbsentOld++;
+        nUpdated++;
+        this->currMeshes[i0].lengthOfAbsence++;
+        pendingForAdd.push(i1);
+      }
+      else
+      {
+        // Record the movement history
+        nUpdated++;
+        this->currMeshes[i0].update(newMeshes[i1]);
+        // Also reset length of absence (if any)
+        this->currMeshes[i0].lengthOfAbsence = 0;
+      }
     }
   }
 
@@ -188,8 +202,24 @@ void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
     this->currMeshes.push_back(newMeshes[n]);
   }
 
-  // TAOTODO: Remove meshes which have been absent too long
+  // Remove meshes which have been absent too long
+  vector<MeshObject> swapMeshes;
+  int nObsolete = 0;
+  for (auto m : this->currMeshes)
+  {
+    if (m.lengthOfAbsence > longestAbsence)
+      nObsolete++;
+    else
+      swapMeshes.push_back(m);
+  }
 
+  if (debug && nObsolete>0)
+  {
+    cout << "... " << nObsolete << " Mesh(es) are obsoleted" << endl;
+  }
+
+  if (nObsolete>0)
+    swap(swapMeshes, this->currMeshes);
 }
 
 Mat MotionTracker::calcHistBackProjection(Mat& im)
