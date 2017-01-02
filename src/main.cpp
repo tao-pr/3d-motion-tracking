@@ -28,7 +28,8 @@ int main(int argc, char** argv)
   // function<void (Mat)> tracker = camTrack.track();
   // function<void (Mat)> idle    = [](Mat){};
 
-  MotionTracker motionTrack(debug);
+  float minDist = 25;
+  MotionTracker motionTrack(minDist, debug);
   function<void (Mat)> tracker = motionTrack.track();
   
   // Start capturing from video source

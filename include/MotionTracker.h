@@ -23,8 +23,10 @@ using namespace std;
 class MotionTracker : ITracker
 {
 public:
-  MotionTracker(bool debug=false);
+  MotionTracker(float minDist,bool debug=false);
   function<void (Mat)> track();
+
+  float minDist;
 
 protected:
   bool debug;

@@ -1,8 +1,9 @@
 #include "MotionTracker.h"
 
-MotionTracker::MotionTracker(bool debug)
+MotionTracker::MotionTracker(float minDist, bool debug)
 {
   this->debug = debug;
+  this->minDist = minDist;
 }
 
 function<void (Mat)> MotionTracker::track()
@@ -38,7 +39,6 @@ void MotionTracker::trackMotion(Mat &im)
   // Detect corners
   int wndSize    = 5;
   int maxCorners = 16;
-  double minDist = 5;
   vector<Point2f> cornersS = TrackUtils::detectFeaturePoints(h, wndSize, maxCorners, minDist*3, 0.2);
   vector<Point2f> cornersV = TrackUtils::detectFeaturePoints(v, wndSize, maxCorners, minDist, 0.05);
 
