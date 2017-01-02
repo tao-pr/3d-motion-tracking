@@ -13,6 +13,7 @@
 #include "TrackUtils.h"
 #include "ITracker.h"
 #include "MeshObject.h"
+#include "Hungarian.h"
 
 using namespace cv;
 using namespace std;

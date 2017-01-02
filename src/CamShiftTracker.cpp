@@ -4,7 +4,6 @@ function<void (Mat)> CamShiftTracker::track()
 {
   auto pipe = [&](Mat im)
   {
-    // TAOTODO: Track!
     trackMotion(im);
     cout << "Tracking ..." << endl;
   };

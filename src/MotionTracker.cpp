@@ -79,6 +79,30 @@ void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
     this->currMeshes.pop_back();
   }
 
+  int N0 = prevMeshes.size();
+  int N1 = this->currMeshes.size();
+  int N  = max(N0,N1);
+
+  // Take only centroids into account
+  vector<Point2f> centroids0;
+  vector<Point2f> centroids;
+
+  // Fill lists of centroids
+  for (auto m : prevMeshes)
+    centroids0.push_back(m.centroid());
+  for (auto m : this->currMeshes)
+    centroids.push_back(m.centroid());
+
+  // TAOTODO: Pad if N0 != N1
+
+  // Map 1-to-N distrances
+  // and create an assignment problem matrix M
+  Mat m = Mat(N, N, CV_32F, Scalar(0.));
+  for (auto c0 : centroids0)
+  {
+
+  }
+
   // TAOTODO: Use Hungarian algorithm to find best matches
   // of [currentMesh] and [prevMesh]
 
