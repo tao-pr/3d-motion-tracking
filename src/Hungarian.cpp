@@ -114,6 +114,7 @@ vector<tuple<int,int>> Hungarian::optimiseMinima() const
   {
     cout << "...[Locating optimal solution]" << endl;
   }
+
   while (!minimaQ.empty())
   {
     // Take next column with least zeroes (least choices)
@@ -139,8 +140,8 @@ vector<tuple<int,int>> Hungarian::optimiseMinima() const
     mapRowToCol.insert(make_pair(j,i));
     minima.push_back(make_tuple(j,i));
 
-    zeroesInCol[i].pop_back();
-    minimaQ.pop();
+    if (!zeroesInCol[i].empty()) zeroesInCol[i].pop_back();
+    if (!minimaQ.empty()) minimaQ.pop();
   }
 
   if (debug)
