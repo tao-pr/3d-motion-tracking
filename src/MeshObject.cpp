@@ -142,20 +142,16 @@ void MeshObject::update(const MeshObject &newM)
 
 void MeshObject::drawHistoryPath(Mat &canvas, Scalar pathColor) const
 {
-  Point2f prevPoint = this->centroid();
-  float thick = 5.;
-  for (int n = this->history.size()-1;
-    n>0 && thick>=0.5;
-    n--, thick/=2)
+  if (this->history.size()>0)
   {
     arrowedLine(
       canvas,
-      this->history[n].centroid(),
-      prevPoint,
+      this->history.back().centroid(),
+      this->centroid(),
       pathColor,
-      thick,
+      1.0,
       CV_AA
-      );
+    );
   }
 }
 

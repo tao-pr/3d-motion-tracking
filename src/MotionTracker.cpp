@@ -47,23 +47,31 @@ void MotionTracker::trackMotion(Mat &im)
   // Create a trackable mesh
   vector<Point2f> points = cornersS;
   points.insert(points.end(), cornersV.begin(), cornersV.end());
-  if (this->debug)
-    cout << "... " << points.size() << " vertices captured" << endl;
   MeshObject mesh(points);
 
   double maxEdgeLength   = im.size[0];
   double maxDisplacement = im.size[0]*0.833;
 
-  // Split meshes
+  // Split vertices into group of meshes
   vector<MeshObject> meshes = mesh.split(maxEdgeLength);
   if (this->debug)
-    cout << "... " << meshes.size() << " meshes splitted" << endl;
-  for (MeshObject m : meshes) 
-    m.drawMesh(canvas, Scalar(100,100,200), Scalar(0,0,240), maxEdgeLength);
+    cout << "... " << meshes.size() << " meshes splitted from "
+      << points.size() << " vertices" << endl;
+  // for (MeshObject m : meshes) 
+  //   m.drawMesh(canvas, Scalar(100,100,200), Scalar(0,0,240), maxEdgeLength);
 
   // Align recently tracked meshes
   // with the newly tracked ones
   alignMeshes(meshes, maxDisplacement);
+
+  // Draw mesh with history
+  for (auto m : this->currMeshes)
+  {
+    if (m.lengthOfAbsence==0)
+      m.drawMesh(canvas, Scalar(100,100,200), Scalar(0,0,240), maxEdgeLength);
+    else
+      m.drawMesh(canvas, Scalar(100,100,200, 0.4), Scalar(0,0,240), maxEdgeLength);      
+  }
 
   namedWindow("tracked", CV_WINDOW_AUTOSIZE);
   imshow("tracked", canvas);
@@ -157,6 +165,8 @@ void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
       // Record the movement history
       nUpdated++;
       this->currMeshes[i0].update(newMeshes[i1]);
+      // Also reset length of absence (if any)
+      this->currMeshes[i0].lengthOfAbsence = 0;
     }
   }
 
@@ -176,7 +186,6 @@ void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
   }
 
   // TAOTODO: Remove meshes which have been absent too long
-  
 
 }
 
