@@ -2,8 +2,7 @@
 CC :=g++ -std=c++11
 
 # Where and what to include dependencies
-LDFLAGS      := 
-CFLAGS       := -L/usr/local/opt/opencv3/lib
+LDFLAGS      := -L/usr/local/opt/opencv3/lib
 INCLUDE      := -I/usr/local/opt/opencv3/include -I include
 INCLUDE_TEST := -I/usr/local/opt/opencv3/include -I include test
 LIB          := -lopencv_core -lopencv_imgproc -lopencv_video \
@@ -24,7 +23,7 @@ TESTOBJS      := $(patsubst $(TEST_DIR)/%,$(BUILDTEST_DIR)/%,$(TESTSOURCES:.cpp=
 TARGET        := bin/track
 TEST          := bin/test
 
-#$(CC) $(INCLUDE) $(LDFLAGS) $(CFLAGS) $(LIB) -o $(TARGET) $(OBJS)
+#$(CC) $(INCLUDE) $(LDFLAGS) $(LIB) -o $(TARGET) $(OBJS)
 
 all:$(TARGET)
 
@@ -34,28 +33,28 @@ $(TEST): $(TESTOBJS) $(OBJS_FOR_TEST)
 	@echo "••••••••••••••••••••••••••••••"
 	@echo "Link Test : $(TESTOBJS)"
 	@echo "••••••••••••••••••••••••••••••"
-	$(CC) $(CFLAGS) $(LDFLAGS) $(LIB) $^ -o $(TEST)
+	$(CC) $(LDFLAGS) $(LIB) $^ -o $(TEST)
 
 $(TARGET): $(OBJS)
 	@echo "••••••••••••••••••••••••••••••"
 	@echo "Link Target : $(OBJS)"
 	@echo "••••••••••••••••••••••••••••••"
 	@mkdir -p bin/
-	$(CC) $(CFLAGS) $(LDFLAGS) $(LIB) $^ -o $(TARGET)
+	$(CC) $(LDFLAGS) $(LIB) $^ -o $(TARGET)
 
 $(BUILDTEST_DIR)/%.o: $(TEST_DIR)/%.cpp
 	@echo "••••••••••••••••••••••••••••••"
 	@echo "Build test : $@"
 	@echo "••••••••••••••••••••••••••••••"
 	@mkdir -p $(BUILDTEST_DIR)
-	$(CC) $(CFLAGS) $(INCLUDE) $(LDFLAGS) -c -o $@ $<
+	$(CC) $(INCLUDE) $(LDFLAGS) -c -o $@ $<
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@echo "••••••••••••••••••••••••••••••"
 	@echo "Build : $@"
 	@echo "••••••••••••••••••••••••••••••"
 	@mkdir -p $(BUILD_DIR)
-	$(CC) $(CFLAGS) $(INCLUDE) $(LDFLAGS) -c -o $@ $<
+	$(CC) $(INCLUDE) $(LDFLAGS) -c -o $@ $<
 
 clean:
 	rm -r $(BUILD_DIR)/*.o $(TARGET)
