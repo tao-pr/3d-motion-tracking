@@ -47,14 +47,14 @@ $(BUILDTEST_DIR)/%.o: $(TEST_DIR)/%.cpp
 	@echo "Build test : $@"
 	@echo "••••••••••••••••••••••••••••••"
 	@mkdir -p $(BUILDTEST_DIR)
-	$(CC) $(INCLUDE) $(LDFLAGS) -c -o $@ $<
+	$(CC) $(INCLUDE) -c -o $@ $<
 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@echo "••••••••••••••••••••••••••••••"
 	@echo "Build : $@"
 	@echo "••••••••••••••••••••••••••••••"
 	@mkdir -p $(BUILD_DIR)
-	$(CC) $(INCLUDE) $(LDFLAGS) -c -o $@ $<
+	$(CC) $(INCLUDE) -c -o $@ $<
 
 clean:
 	rm -r $(BUILD_DIR)/*.o $(TARGET)
