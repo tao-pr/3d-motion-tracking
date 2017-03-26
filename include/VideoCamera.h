@@ -10,7 +10,7 @@ class VideoCamera : public IVideoSource
 {
 public:
   VideoCamera(string wndTitle="");
-  virtual Mat captureWith(ITransformation &t) final;
+  virtual Mat captureWith(ITransformation &t, bool bShow) final;
   virtual void captureRealtimeWith(ITransformation &t, function<void (Mat)> pipe) final;
 
 protected:

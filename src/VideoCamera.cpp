@@ -10,7 +10,7 @@ VideoCamera::VideoCamera(string wndTitle)
  * Capture the current frame, pass it through to
  * the transformation
  */
-Mat VideoCamera::captureWith(ITransformation &t)
+Mat VideoCamera::captureWith(ITransformation &t, bool bShow = false)
 {
   // Take a frame snapshot and pass it through
   // the given transformation
@@ -26,7 +26,7 @@ Mat VideoCamera::captureWith(ITransformation &t)
   Mat frame_  = t.transform(frame);
 
   // Display if the window title is specified
-  if (!this->m_wndTitle.empty())
+  if (!this->m_wndTitle.empty() && bShow)
   {
     namedWindow(this->m_wndTitle, CV_WINDOW_AUTOSIZE);
     imshow(this->m_wndTitle, frame_);
@@ -46,11 +46,14 @@ void VideoCamera::captureRealtimeWith(
   // This will run endlessly unless the user hits a key
   while (true){
     Mat out = this->captureWith(t);
+    
     // Pass the output matrix through 
     pipe(out);
+
+    waitKey(3);
     // Hit and run
-    if (waitKey(3)>=0)
-      return;
+    // if (waitKey(3)>=0)
+    //   return;
   }
 }
 

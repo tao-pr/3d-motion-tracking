@@ -52,31 +52,34 @@ void MotionTracker::trackMotion(Mat &im)
   points.insert(points.end(), cornersV.begin(), cornersV.end());
   MeshObject mesh(points);
 
-  // Split vertices into group of meshes
-  vector<MeshObject> meshes = mesh.split(maxMeshEdgeLength);
-  if (this->debug)
-    cout << "... " << meshes.size() << " meshes splitted from "
-      << points.size() << " vertices" << endl;
+  // Draw mesh
+  mesh.drawMesh(canvas, Scalar(200,100,0), Scalar(100,50,0), maxMeshEdgeLength);
 
-  // Align recently tracked meshes
-  // with the newly tracked ones
-  alignMeshes(meshes, maxMeshDistance);
+  // // Split vertices into group of meshes
+  // vector<MeshObject> meshes = mesh.split(maxMeshEdgeLength);
+  // if (this->debug)
+  //   cout << "... " << meshes.size() << " meshes splitted from "
+  //     << points.size() << " vertices" << endl;
 
-  // Draw mesh with history
-  for (auto m : this->currMeshes)
-  {
-    if (m.lengthOfAbsence==0)
-    {
-      if (m.lengthOfHistory()>=1)
-        m.drawMesh(canvas, Scalar(100,100,200), Scalar(0,0,240), maxMeshEdgeLength);
-      else
-        m.drawMesh(canvas, Scalar(100,230,100), Scalar(0,240,0), maxMeshEdgeLength, true);        
-    }
-    else
-      m.drawMesh(canvas, Scalar(100,200,200, 0.4), Scalar(0,120,240, 0.4), maxMeshEdgeLength);      
+  // // Align recently tracked meshes
+  // // with the newly tracked ones
+  // alignMeshes(meshes, maxMeshDistance);
 
-    //m.drawHistoryPath(canvas, Scalar(80,80,80,0.7));
-  }
+  // // Draw mesh with history
+  // for (auto m : this->currMeshes)
+  // {
+  //   if (m.lengthOfAbsence==0)
+  //   {
+  //     if (m.lengthOfHistory()>=1)
+  //       m.drawMesh(canvas, Scalar(100,100,200), Scalar(0,0,240), maxMeshEdgeLength);
+  //     else
+  //       m.drawMesh(canvas, Scalar(100,230,100), Scalar(0,240,0), maxMeshEdgeLength, true);        
+  //   }
+  //   else
+  //     m.drawMesh(canvas, Scalar(100,200,200, 0.4), Scalar(0,120,240, 0.4), maxMeshEdgeLength);      
+
+  //   //m.drawHistoryPath(canvas, Scalar(80,80,80,0.7));
+  // }
 
   namedWindow("tracked", CV_WINDOW_AUTOSIZE);
   imshow("tracked", canvas);

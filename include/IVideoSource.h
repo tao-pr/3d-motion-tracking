@@ -16,6 +16,6 @@ using namespace cv;
 class IVideoSource
 {
 public:
-  virtual Mat captureWith(ITransformation &t) = 0;
+  virtual Mat captureWith(ITransformation &t, bool bShow) = 0;
   virtual void captureRealtimeWith(ITransformation &t, function<void (Mat)> pipe) = 0;
 };
