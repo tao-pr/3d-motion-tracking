@@ -2,9 +2,9 @@
 CC :=g++ -std=c++11
 
 # Where and what to include dependencies
-LDFLAGS      := -L/usr/local/opt/opencv3/lib
-INCLUDE      := -I/usr/local/opt/opencv3/include -I include
-INCLUDE_TEST := -I/usr/local/opt/opencv3/include -I include test
+LDFLAGS      := -L/usr/local/opt/opencv3//lib -lm
+INCLUDE      := -I/usr/local/opt/opencv3//include -I include
+INCLUDE_TEST := -I/usr/local/opt/opencv3//include -I include test
 LIB          := -lopencv_core -lopencv_imgproc -lopencv_video \
 						    -lopencv_videoio -lopencv_tracking -lopencv_optflow \
 						    -lopencv_features2d -lopencv_ml -lopencv_highgui \
