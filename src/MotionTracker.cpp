@@ -10,6 +10,7 @@ MotionTracker::MotionTracker(float maxMeshDistance, float maxMeshEdgeLength, int
 
 function<void (Mat)> MotionTracker::track()
 {
+  cout << "[Press Ctrl+c to escape]" << endl;
   auto pipe = [&](Mat im)
   {
     trackMotion(im);

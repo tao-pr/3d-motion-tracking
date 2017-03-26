@@ -51,9 +51,6 @@ void VideoCamera::captureRealtimeWith(
     pipe(out);
 
     waitKey(3);
-    // Hit and run
-    // if (waitKey(3)>=0)
-    //   return;
   }
 }
 
