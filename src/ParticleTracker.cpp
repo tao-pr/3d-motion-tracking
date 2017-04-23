@@ -7,10 +7,10 @@ ParticleTracker::ParticleTracker()
 
 vector<Point2f> ParticleTracker::detectPoints(Mat &in)
 {
-  // TAOTODO:
-  vector<Point2f> vs;
-
-
-
-  return vs;
+  vector<Point2f> points;
+  vector<KeyPoint> keypoints;
+  Mat descriptors;
+  this->sift->detectAndCompute(in, noArray(), keypoints, descriptors);
+  KeyPoint::convert(keypoints, points);
+  return points;
 }

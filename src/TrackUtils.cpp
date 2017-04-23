@@ -20,11 +20,3 @@ vector<Point2f> TrackUtils::detectFeaturePoints(Mat& in, int wndSize, int maxCor
   goodFeaturesToTrack(in, corners, maxCorners, quality, minDist, mask, wndSize, false, k);
   return corners;
 }
-
-vector<Point2f> TrackUtils::detectSIFTPoints(Mat& in){
-  vector<Point2f> corners;
-  // TAOTODO:
-  Ptr<Feature2D> sift = SIFT::create();
-
-  return corners;
-}
