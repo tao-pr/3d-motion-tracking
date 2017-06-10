@@ -28,6 +28,7 @@ function<void (Mat)> ParticleTracker::track()
   {
     auto points = detectPoints(im);
     DrawUtils::drawMarks(im, points, Scalar(0,50,255));
+    imshow("sift", im);
 
     // TAOTODO: Aligh the detected points 
   };
