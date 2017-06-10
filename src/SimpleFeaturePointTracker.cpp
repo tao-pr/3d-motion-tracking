@@ -8,6 +8,10 @@ SimpleFeaturePointTracker::SimpleFeaturePointTracker(float maxMeshDistance, floa
   this->longestAbsence = longestAbsence;
 }
 
+SimpleFeaturePointTracker::~SimpleFeaturePointTracker()
+{
+}
+
 function<void (Mat)> SimpleFeaturePointTracker::track()
 {
   cout << "[Press Ctrl+c to escape]" << endl;

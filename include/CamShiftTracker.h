@@ -14,10 +14,11 @@
 using namespace cv;
 using namespace std;
 
-class CamShiftTracker
+class CamShiftTracker : public ITracker
 {
 public:
   function<void (Mat)> track();
+  ~CamShiftTracker();
 
 protected:
   void trackMotion(Mat& im);

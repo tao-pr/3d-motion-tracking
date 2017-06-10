@@ -13,6 +13,7 @@ using namespace std;
 class ITracker 
 {
 public:
+  virtual inline ~ITracker(){};
   virtual function<void (Mat)> track() = 0;
 };
 

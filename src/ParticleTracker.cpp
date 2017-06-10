@@ -6,6 +6,11 @@ ParticleTracker::ParticleTracker()
   this->sift = SIFT::create();
 }
 
+ParticleTracker::~ParticleTracker()
+{
+  delete this->sift;
+}
+
 vector<Point2f> ParticleTracker::detectPoints(Mat &in)
 {
   vector<Point2f> points;
@@ -18,5 +23,14 @@ vector<Point2f> ParticleTracker::detectPoints(Mat &in)
 
 function<void (Mat)> ParticleTracker::track()
 {
-  
+  cout << "[Press Ctrl+c to escape]" << endl;
+  auto pipe = [&](Mat im)
+  {
+    auto points = detectPoints(im);
+    DrawUtils::drawMarks(im, points, Scalar(0,50,255));
+
+    // TAOTODO: Aligh the detected points 
+  };
+
+  return pipe;
 }

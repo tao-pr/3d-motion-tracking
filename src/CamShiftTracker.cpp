@@ -1,5 +1,9 @@
 #include "CamShiftTracker.h"
 
+CamShiftTracker::~CamShiftTracker()
+{
+}
+
 function<void (Mat)> CamShiftTracker::track()
 {
   auto pipe = [&](Mat im)
