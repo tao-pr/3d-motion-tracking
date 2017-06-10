@@ -9,7 +9,7 @@
 #include "FilterTransformation.h"
 #include "VideoCamera.h"
 #include "CamShiftTracker.h"
-#include "MotionTracker.h"
+#include "SimpleFeaturePointTracker.h"
 
 using namespace std;
 
@@ -32,7 +32,7 @@ int main(int argc, char** argv)
   // function<void (Mat)> idle    = [](Mat){};
 
   
-  MotionTracker motionTrack(meshDisplace, maxEdgeLength, longestAbsence, debug);
+  SimpleFeaturePointTracker motionTrack(meshDisplace, maxEdgeLength, longestAbsence, debug);
   function<void (Mat)> tracker = motionTrack.track();
   
   // Start capturing from video source

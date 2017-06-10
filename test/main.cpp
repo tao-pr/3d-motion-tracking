@@ -9,7 +9,7 @@
 #include "FilterTransformation.h"
 #include "VideoCamera.h"
 #include "CamShiftTracker.h"
-#include "MotionTracker.h"
+#include "SimpleFeaturePointTracker.h"
 
 #include "TestHungarian.h"
 

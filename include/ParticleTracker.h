@@ -4,12 +4,14 @@
 #include <vector>
 #include <opencv2/opencv.hpp>
 #include "opencv2/xfeatures2d.hpp"
+#include "coloriser.h"
+#include "ITracker.h"
 
 using namespace cv;
 using namespace std;
 using namespace cv::xfeatures2d;
 
-class ParticleTracker
+class ParticleTracker : ITracker
 {
 protected:
   Ptr<Feature2D> sift;
@@ -17,6 +19,8 @@ protected:
 public:
   ParticleTracker();
   vector<Point2f> detectPoints(Mat &in);
+
+  function<void (Mat)> track();
 };
 
 

@@ -1,6 +1,6 @@
-#include "MotionTracker.h"
+#include "SimpleFeaturePointTracker.h"
 
-MotionTracker::MotionTracker(float maxMeshDistance, float maxMeshEdgeLength, int longestAbsence, bool debug)
+SimpleFeaturePointTracker::SimpleFeaturePointTracker(float maxMeshDistance, float maxMeshEdgeLength, int longestAbsence, bool debug)
 {
   this->debug = debug;
   this->maxMeshDistance = maxMeshDistance;
@@ -8,7 +8,7 @@ MotionTracker::MotionTracker(float maxMeshDistance, float maxMeshEdgeLength, int
   this->longestAbsence = longestAbsence;
 }
 
-function<void (Mat)> MotionTracker::track()
+function<void (Mat)> SimpleFeaturePointTracker::track()
 {
   cout << "[Press Ctrl+c to escape]" << endl;
   auto pipe = [&](Mat im)
@@ -19,7 +19,7 @@ function<void (Mat)> MotionTracker::track()
   return pipe;
 }
 
-void MotionTracker::trackMotion(Mat &im)
+void SimpleFeaturePointTracker::trackMotion(Mat &im)
 {
   // Convert image to HSV
   Mat hsv;
@@ -56,37 +56,11 @@ void MotionTracker::trackMotion(Mat &im)
   // Draw mesh
   mesh.drawMesh(canvas, Scalar(200,100,0), Scalar(100,50,0), maxMeshEdgeLength);
 
-  // // Split vertices into group of meshes
-  // vector<MeshObject> meshes = mesh.split(maxMeshEdgeLength);
-  // if (this->debug)
-  //   cout << "... " << meshes.size() << " meshes splitted from "
-  //     << points.size() << " vertices" << endl;
-
-  // // Align recently tracked meshes
-  // // with the newly tracked ones
-  // alignMeshes(meshes, maxMeshDistance);
-
-  // // Draw mesh with history
-  // for (auto m : this->currMeshes)
-  // {
-  //   if (m.lengthOfAbsence==0)
-  //   {
-  //     if (m.lengthOfHistory()>=1)
-  //       m.drawMesh(canvas, Scalar(100,100,200), Scalar(0,0,240), maxMeshEdgeLength);
-  //     else
-  //       m.drawMesh(canvas, Scalar(100,230,100), Scalar(0,240,0), maxMeshEdgeLength, true);        
-  //   }
-  //   else
-  //     m.drawMesh(canvas, Scalar(100,200,200, 0.4), Scalar(0,120,240, 0.4), maxMeshEdgeLength);      
-
-  //   //m.drawHistoryPath(canvas, Scalar(80,80,80,0.7));
-  // }
-
   namedWindow("tracked", CV_WINDOW_AUTOSIZE);
   imshow("tracked", canvas);
 }
 
-void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
+void SimpleFeaturePointTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
 {
   if (this->debug)
     cout << "...Aligning mesh: " << this->currMeshes.size() 
@@ -225,7 +199,7 @@ void MotionTracker::alignMeshes(vector<MeshObject> newMeshes, double maxDist)
     swap(swapMeshes, this->currMeshes);
 }
 
-Mat MotionTracker::calcHistBackProjection(Mat& im)
+Mat SimpleFeaturePointTracker::calcHistBackProjection(Mat& im)
 {
   Mat hist, bproj;
   Mat mask = Mat();

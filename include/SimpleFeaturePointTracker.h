@@ -20,10 +20,10 @@ using namespace cv;
 using namespace std;
 
 
-class MotionTracker : ITracker
+class SimpleFeaturePointTracker : ITracker
 {
 public:
-  MotionTracker(float maxMeshDistance, float maxMeshEdgeLength, int longestAbsence, bool debug=false);
+  SimpleFeaturePointTracker(float maxMeshDistance, float maxMeshEdgeLength, int longestAbsence, bool debug=false);
   function<void (Mat)> track();
 
   float maxMeshEdgeLength; // Maximum edge length of a mesh (longer edge will be cut off as another mesh)
