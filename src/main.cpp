@@ -15,10 +15,11 @@
 
 using namespace std;
 
-bool debug = true;
-float meshDisplace = 50;
-float maxEdgeLength = 420;
-int longestAbsence = 3;
+bool debug              = true;
+float meshDisplace      = 50;
+float maxEdgeLength     = 420;
+int longestAbsence      = 3;
+string trackerModelName = "particle";
 
 
 ITracker* trackerModel = nullptr;
@@ -56,7 +57,7 @@ int main(int argc, char** argv)
     FilterType::Nothing, 0, 0, 0.43
     );
   
-  auto tracker = createTracker("particle");
+  auto tracker = createTracker(trackerModelName);
 
   // Start capturing from video source
   VideoCamera cam("cam");
