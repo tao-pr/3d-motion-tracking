@@ -27,10 +27,11 @@ public:
 class Alignment
 {
 protected:
-  function<double (Point2f, Point2f)> measureFunction;
+  function<double (Point2f, Point2f)> measureDistFunction;
+  function<double (Mat, Mat)> measureSimilarityFunction;
   double maxDistance;
 public:
-  Alignment(function<double (Point2f, Point2f)> measure, double maxMoveDistance);
+  Alignment(function<double (Point2f, Point2f)> measureDistance, function<double (Mat, Mat)> measureFeatureSimilarity, double maxMoveDistance);
   void align(vector<Point2f> basepoints, vector<Point2f> newpoints, const Mat& baseFeatures, const Mat& newFeatures) const;
 };
 

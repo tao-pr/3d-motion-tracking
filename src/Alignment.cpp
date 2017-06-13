@@ -1,9 +1,10 @@
 #include "Alignment.h"
 
-Alignment::Alignment(function<double (Point2f, Point2f)> measure, double maxMoveDistance)
+Alignment::Alignment(function<double (Point2f, Point2f)> measureDistance, function<double (Mat, Mat)> measureFeatureSimilarity, double maxMoveDistance)
 {
-  this->measureFunction = measure;
-  this->maxDistance = maxMoveDistance;
+  this->measureDistFunction       = measureDistance;
+  this->measureSimilarityFunction = measureFeatureSimilarity;
+  this->maxDistance               = maxMoveDistance;
 }
 
 void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, const Mat& baseFeatures, const Mat& newFeatures) const
@@ -19,7 +20,7 @@ void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, con
     int j = 0;
     for (auto np : newpoints)
     {
-      double d = this->measureFunction(bp, np);
+      double d = this->measureDistFunction(bp, np);
       candidates.push(make_tuple(j, d));
       j++;
     }
@@ -28,7 +29,10 @@ void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, con
     const int N = 3;
     queue<distanceToIndex> qClosests;
     while (qClosests.size() < N && !qClosests.empty())
+    {
       qClosests.push(candidates.top());
+      // TAOTODO: Measure similarity between [baseFeature[i]] vs [newFeature[j]]
+    }
 
     // TAOTODO:
 
