@@ -16,9 +16,6 @@
 using namespace std;
 
 bool debug              = true;
-float meshDisplace      = 50;
-float maxEdgeLength     = 420;
-int longestAbsence      = 3;
 string trackerModelName = "particle";
 
 
@@ -33,7 +30,10 @@ function<void (Mat)> createTracker(string modelName)
   }
   else if (modelName == "simple")// Good feature to track -based
   {
-    trackerModel = new SimpleFeaturePointTracker(meshDisplace, maxEdgeLength, longestAbsence, debug);
+    float meshDisplace  = 50;
+    float maxEdgeLength = 420;
+    int longestAbsence  = 3;
+    trackerModel        = new SimpleFeaturePointTracker(meshDisplace, maxEdgeLength, longestAbsence, debug);
     return trackerModel->track();
   }
   else if (modelName == "particle") // SIFT based

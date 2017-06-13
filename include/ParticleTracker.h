@@ -7,6 +7,7 @@
 #include "coloriser.h"
 #include "ITracker.h"
 #include "DrawUtils.h"
+#include "Alignment.h"
 
 using namespace cv;
 using namespace std;

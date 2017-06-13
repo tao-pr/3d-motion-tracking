@@ -8,6 +8,7 @@ ParticleTracker::ParticleTracker()
 
 ParticleTracker::~ParticleTracker()
 {
+  cout << CYAN << "[Tracker]" << RESET << " Tearing down SIFT particle tracker..." << endl;
   delete this->sift;
 }
 
