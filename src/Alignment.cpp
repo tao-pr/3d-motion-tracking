@@ -2,12 +2,43 @@
 
 Alignment::Alignment(function<double (Point2f, Point2f)> measureDistance, function<double (Mat, Mat)> measureFeatureSimilarity, double maxMoveDistance)
 {
+  const int M = VIS_PATCH_SIZE * VIS_MAX_SPOT;
   this->measureDistFunction       = measureDistance;
   this->measureSimilarityFunction = measureFeatureSimilarity;
   this->maxDistance               = maxMoveDistance;
+  this->isVisualisationOn         = false;
+  this->vis                       = Mat(M, M, CV_8UC3, Scalar(0,0,0));
 }
 
-void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, const Mat& baseFeatures, const Mat& newFeatures) const
+void Alignment::setVisualisation(bool on)
+{
+  this->isVisualisationOn = on;
+}
+
+void Alignment::drawVisCell(int i, int j, double score)
+{
+  auto color = Scalar(0,0,int(floor(255*score)));
+  rectangle(
+    this->vis,
+    Point2f(i*VIS_PATCH_SIZE, j*VIS_PATCH_SIZE),
+    Point2f((i+1)*VIS_PATCH_SIZE-1, (j-1)*VIS_PATCH_SIZE-1),
+    color, 
+    -1
+  );
+}
+
+void Alignment::redrawVis(const Mat& matchScore)
+{
+  for (int i=0; i<VIS_MAX_SPOT && i<matchScore.rows; i++)
+    for (int j=0; j<VIS_MAX_SPOT && j<matchScore.cols; j++)
+    {
+      drawVisCell(i, j, matchScore.at<double>(i,j));
+    }
+
+  imshow("tracking scores", matchScore);
+}
+
+void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, const Mat& baseFeatures, const Mat& newFeatures)
 {
   int i = 0;
   Mat matchScore = Mat(basepoints.size(), newpoints.size(), CV_32FC1, Scalar(1e32));
@@ -38,6 +69,13 @@ void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, con
       // Record the score (invert distance)
       int j = get<0>(c);
       matchScore.at<float>(i,j) = 1/get<1>(c);
+    }
+
+    if (this->isVisualisationOn)
+    {
+      Mat forVis = Mat(matchScore.rows, matchScore.cols, CV_32FC1, Scalar(0));
+      normalize(matchScore, forVis, 255, 0);
+      this->redrawVis(forVis);
     }
 
     // TAOTODO:
