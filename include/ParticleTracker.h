@@ -6,6 +6,7 @@
 #include "opencv2/xfeatures2d.hpp"
 #include "coloriser.h"
 #include "ITracker.h"
+#include "CalcUtils.h"
 #include "DrawUtils.h"
 #include "Alignment.h"
 
@@ -15,8 +16,14 @@ using namespace cv::xfeatures2d;
 
 class ParticleTracker : public ITracker
 {
+private:
+  Alignment* alignment;
+  vector<Point2f> prevPoints;
+  Mat* prevFeatures;
+
 protected:
   Ptr<Feature2D> sift;
+  void trackFeatures(Mat &im);
 
 public:
   ParticleTracker();
