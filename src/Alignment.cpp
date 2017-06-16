@@ -3,12 +3,10 @@
 Alignment::Alignment(function<double (Point2f, Point2f)> measureDistance, function<double (Mat, Mat)> measureFeatureSimilarity, double maxMoveDistance)
 {
   cout << GREEN << "Initialising alignment engine..." << RESET << endl;
-  const int M = VIS_PATCH_SIZE * VIS_MAX_SPOT + 1;
   this->measureDistFunction       = measureDistance;
   this->measureSimilarityFunction = measureFeatureSimilarity;
   this->maxDistance               = maxMoveDistance;
   this->isVisualisationOn         = false;
-  this->vis                       = Mat::zeros(M, M, CV_8UC3);
 }
 
 void Alignment::setVisualisation(bool on)
@@ -16,33 +14,12 @@ void Alignment::setVisualisation(bool on)
   this->isVisualisationOn = on;
 }
 
-void Alignment::drawVisCell(int i, int j, double score)
-{
-  auto color = Scalar(0,0,int(score));
-  rectangle(
-    this->vis,
-    Point2f(i*VIS_PATCH_SIZE, j*VIS_PATCH_SIZE),
-    Point2f((i+1)*VIS_PATCH_SIZE-1, (j-1)*VIS_PATCH_SIZE-1),
-    color, 
-    -1
-  );
-}
-
-void Alignment::redrawVis(const Mat& matchScore)
-{
-  for (int i=0; i<VIS_MAX_SPOT && i<matchScore.rows; i++)
-    for (int j=0; j<VIS_MAX_SPOT && j<matchScore.cols; j++)
-    {
-      drawVisCell(i, j, matchScore.at<double>(i,j));
-    }
-
-  imshow("tracking scores", matchScore);
-}
-
 void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, const Mat* baseFeatures, const Mat* newFeatures)
 {
   int i = 0;
+  int M = VIS_MAX_SPOT * VIS_PATCH_SIZE + 1;
   Mat matchScore = Mat::zeros(basepoints.size(), newpoints.size(), CV_64FC1);
+  Mat vis = Mat::zeros(M, M, CV_8UC3);
   for (auto bp : basepoints)
   {
     // List of Tuples of <distance, index of candidate>
@@ -61,20 +38,28 @@ void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, con
       }
       else
       {
-        candidates.push(make_tuple(j, 1/d));
-        matchScore.at<double>(i,j) = 1/d;
+        double d_ = 1/d;
+        candidates.push(make_tuple(j, d_));
+        matchScore.at<double>(i,j) = d_;
+        if (this->isVisualisationOn)
+        {
+          int v   = floor(d_*255);
+          auto p0 = Point2f(i*VIS_PATCH_SIZE, j*VIS_PATCH_SIZE);
+          auto p1 = Point2f((i+1)*VIS_PATCH_SIZE-1, (j+1)*VIS_PATCH_SIZE-1);
+          auto c  = Scalar(0,0,int(v));
+          rectangle(vis, p0, p1, c, -1);
+        }
       }
       j++;
     }
 
+    // TAOTODO:
+
     if (this->isVisualisationOn)
     {
-      Mat forVis = Mat::zeros(matchScore.rows, matchScore.cols, CV_64FC1);
-      normalize(matchScore, forVis, double(255.0), double(0.0));
-      this->redrawVis(forVis);
+      imshow("tracking score", vis); 
     }
 
-    // TAOTODO:
 
     i++;
   }
