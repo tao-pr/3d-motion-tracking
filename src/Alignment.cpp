@@ -3,12 +3,12 @@
 Alignment::Alignment(function<double (Point2f, Point2f)> measureDistance, function<double (Mat, Mat)> measureFeatureSimilarity, double maxMoveDistance)
 {
   cout << GREEN << "Initialising alignment engine..." << RESET << endl;
-  const int M = VIS_PATCH_SIZE * VIS_MAX_SPOT;
+  const int M = VIS_PATCH_SIZE * VIS_MAX_SPOT + 1;
   this->measureDistFunction       = measureDistance;
   this->measureSimilarityFunction = measureFeatureSimilarity;
   this->maxDistance               = maxMoveDistance;
   this->isVisualisationOn         = false;
-  this->vis                       = Mat(M, M, CV_8UC3, Scalar(0,0,0));
+  this->vis                       = Mat::zeros(M, M, CV_8UC3);
 }
 
 void Alignment::setVisualisation(bool on)
@@ -18,7 +18,7 @@ void Alignment::setVisualisation(bool on)
 
 void Alignment::drawVisCell(int i, int j, double score)
 {
-  auto color = Scalar(0,0,int(floor(255*score)));
+  auto color = Scalar(0,0,int(score));
   rectangle(
     this->vis,
     Point2f(i*VIS_PATCH_SIZE, j*VIS_PATCH_SIZE),
@@ -42,7 +42,7 @@ void Alignment::redrawVis(const Mat& matchScore)
 void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, const Mat* baseFeatures, const Mat* newFeatures)
 {
   int i = 0;
-  Mat matchScore = Mat(basepoints.size(), newpoints.size(), CV_32FC1, Scalar(1e32));
+  Mat matchScore = Mat::zeros(basepoints.size(), newpoints.size(), CV_64FC1);
   for (auto bp : basepoints)
   {
     // List of Tuples of <distance, index of candidate>
@@ -54,32 +54,23 @@ void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, con
     for (auto np : newpoints)
     {
       double d = this->measureDistFunction(bp, np);
-      candidates.push(make_tuple(j, d));
-      j++;
-    }
-
-    // Take only top [N] closest new points
-    const int N = 3;
-    queue<distanceToIndex> q;
-    while (!candidates.empty() && q.size()<N)
-    {
-      auto c = candidates.top();
-      q.push(c);
-      // TAOTODO: Measure similarity between [baseFeature[i]] vs [newFeature[j]]
-
-      // Record the score (invert distance)
-      int j = get<0>(c);
-      int d = get<1>(c);
       if (d > this->maxDistance)
-        matchScore.at<float>(i,j) = 0;
-      else 
-        matchScore.at<float>(i,j) = 1/d;
+      {
+        candidates.push(make_tuple(j, 0));
+        matchScore.at<double>(i,j) = 0;
+      }
+      else
+      {
+        candidates.push(make_tuple(j, 1/d));
+        matchScore.at<double>(i,j) = 1/d;
+      }
+      j++;
     }
 
     if (this->isVisualisationOn)
     {
-      Mat forVis = Mat(matchScore.rows, matchScore.cols, CV_32FC1, Scalar(0));
-      normalize(matchScore, forVis, 255, 0);
+      Mat forVis = Mat::zeros(matchScore.rows, matchScore.cols, CV_64FC1);
+      normalize(matchScore, forVis, double(255.0), double(0.0));
       this->redrawVis(forVis);
     }
 

@@ -12,15 +12,15 @@
 using namespace std;
 using namespace cv;
 
-const int VIS_PATCH_SIZE = 16;
-const int VIS_MAX_SPOT   = 20;
+const int VIS_PATCH_SIZE = 32;
+const int VIS_MAX_SPOT   = 32;
 
 typedef tuple<double, int> distanceToIndex;
 
 class compareDistance
 {
 public:
-  // TRUE if a<b
+  // Ascending order
   inline bool operator()(distanceToIndex &a, distanceToIndex &b)
   { 
     return get<0>(a) < get<0>(b); 
