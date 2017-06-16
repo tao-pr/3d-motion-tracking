@@ -1,7 +1,9 @@
 #ifndef PARTICLE_TRACKER
 #define PARTICLE_TRACKER
 
+#include <tuple>
 #include <vector>
+#include <algorithm>
 #include <opencv2/opencv.hpp>
 #include "opencv2/xfeatures2d.hpp"
 #include "coloriser.h"
@@ -19,7 +21,7 @@ class ParticleTracker : public ITracker
 private:
   Alignment* alignment;
   vector<Point2f> prevPoints;
-  Mat* prevFeatures;
+  Mat prevFeatures;
 
 protected:
   Ptr<Feature2D> sift;
@@ -28,7 +30,7 @@ protected:
 public:
   ParticleTracker();
   ~ParticleTracker();
-  vector<Point2f> detectPoints(Mat &in);
+  tuple<vector<Point2f>,Mat> detectPoints(Mat &in);
 
   function<void (Mat)> track();
 };

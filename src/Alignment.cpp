@@ -14,7 +14,7 @@ void Alignment::setVisualisation(bool on)
   this->isVisualisationOn = on;
 }
 
-void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, const Mat* baseFeatures, const Mat* newFeatures)
+void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, const Mat baseFeatures, const Mat newFeatures)
 {
   int i = 0;
   int M = VIS_MAX_SPOT * VIS_PATCH_SIZE + 1;
@@ -39,8 +39,14 @@ void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, con
       else
       {
         double d_ = 1/d;
-        candidates.push(make_tuple(j, d_));
+        auto v0 = baseFeatures.row(i);
+        auto v1 = newFeatures.row(j);
+        double summag = sum(v0)[0] + sum(v1)[0];
+        double similarity = v0.dot(v1)/summag;
+
+        candidates.push(make_tuple(j, d_ * similarity));
         matchScore.at<double>(i,j) = d_;
+        
         if (this->isVisualisationOn)
         {
           int v   = floor(d_*255);
