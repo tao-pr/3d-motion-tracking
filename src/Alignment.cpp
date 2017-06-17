@@ -47,7 +47,7 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
         double mag1 = norm(newFeatures.row(j), CV_L2);
         double similarity = acos(baseFeatures.row(i).dot(newFeatures.row(j))/(mag0*mag1))/M_PI;
 
-        double score = d_ * similarity;
+        double score = -log(d_ * similarity);
         if (score < 1e-5)
           score = 0; // NOTE: Do not add zero as a candidate
         else
