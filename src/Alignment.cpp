@@ -48,7 +48,6 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
         double similarity = 0.5*(M_PI - acos(v0.dot(v1)/(mag0*mag1)))/M_PI;
 
         double score = (d<1e-30) ? 1.0 : similarity / pow(d,2.0);
-        // TAOTODO: Reject low score statistically
         if (score > 1e-20)
           candidates.push(make_tuple(j, score));
         matchScore.at<double>(i,j) = score;
@@ -68,10 +67,18 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
       j++;
     }
 
+    // Reject statistically low scores
+    Mat scores = matchScore.row(i);
+    Mat meanVec, stdVec;
+    meanStdDev(scores, meanVec, stdVec);
+
+    double mean = meanVec.at<double>(0,0);
+    double std  = stdVec.at<double>(0,0);
+
     if (!candidates.empty())
     {
       auto matchedPoint = candidates.top();
-      if (get<0>(matchedPoint) > 0)
+      if (get<0>(matchedPoint) > mean+std)
         pairs.insert(make_pair(i, get<0>(matchedPoint)));
     }
 
