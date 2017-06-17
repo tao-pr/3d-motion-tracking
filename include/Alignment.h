@@ -5,6 +5,7 @@
 #include <queue>
 #include <tuple>
 #include <map>
+#include <unordered_map>
 #include <algorithm>
 #include <opencv2/opencv.hpp>
 #include "coloriser.h"
@@ -37,7 +38,7 @@ protected:
 public:
   Alignment(function<double (Point2f, Point2f)> measureDistance, function<double (Mat, Mat)> measureFeatureSimilarity, double maxMoveDistance);
   void setVisualisation(bool on);
-  vector<tuple<int,int>> align(vector<Point2f> basepoints, vector<Point2f> newpoints, const Mat baseFeatures, const Mat newFeatures);
+  unordered_map<int,int> align(vector<Point2f> basepoints, vector<Point2f> newpoints, const Mat baseFeatures, const Mat newFeatures);
 };
 
 #endif

@@ -45,19 +45,32 @@ void ParticleTracker::trackFeatures(Mat &im)
   auto pointsAndFeatures = detectPoints(im);
   auto points = get<0>(pointsAndFeatures);
   Mat features = get<1>(pointsAndFeatures);
+  // Draw all detected points as RED
   DrawUtils::drawMarks(im, points, Scalar(0,50,255));
   
   if (!this->prevPoints.empty())
   {
-    cout << "... " << points.size() << " feature points tracked" << endl;
     auto pairs = alignment->align(prevPoints, points, prevFeatures, features);
+    set<int> trackedPoints;
+
     for (auto pair : pairs)
     {
       // Draw connecting line between two aligned points
-      int i = get<0>(pair);
-      int j = get<1>(pair);
+      int i = pair.first;
+      int j = pair.second;
+      trackedPoints.insert(j);
       line(im, prevPoints[i], points[j], Scalar(0,50,255), 1, CV_AA);
     }
+
+    // Highlight new points with GREEN (without matched previous points)
+    for (int j=0; j<points.size(); j++)
+    {
+      if (trackedPoints.find(j) == trackedPoints.end())
+        DrawUtils::drawSpot(im, points[j], Scalar(0,255,50));
+    }
+
+    cout << "... " << points.size() << " feature points (" 
+         << trackedPoints.size() << " tracked)" << endl;
   }
 
   imshow("sift", im);

@@ -16,6 +16,12 @@ using namespace std;
 class DrawUtils
 {
 public:
+
+  inline static void drawSpot(Mat& canvas, Point2f p, Scalar color)
+  {
+    circle(canvas, p, 3, color, CV_FILLED, CV_AA);
+  }
+
   /**
    * Draw marks spots on the canvas
    * @param {Mat} canvas matrix

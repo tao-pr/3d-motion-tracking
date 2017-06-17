@@ -14,13 +14,13 @@ void Alignment::setVisualisation(bool on)
   this->isVisualisationOn = on;
 }
 
-vector<tuple<int,int>> Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, const Mat baseFeatures, const Mat newFeatures)
+unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, const Mat baseFeatures, const Mat newFeatures)
 {
   int i = 0;
   int M = VIS_MAX_SPOT * VIS_PATCH_SIZE + 1;
   Mat matchScore = Mat::zeros(basepoints.size(), newpoints.size(), CV_64FC1);
   Mat vis = Mat::zeros(M, M, CV_8UC3);
-  vector<tuple<int,int>> pairs;
+  unordered_map<int,int> pairs;
   for (auto bp : basepoints)
   {
     // List of Tuples of <distance, index of candidate>
@@ -66,8 +66,8 @@ vector<tuple<int,int>> Alignment::align(vector<Point2f> basepoints, vector<Point
     if (!candidates.empty())
     {
       auto matchedPoint = candidates.top();
-      if (get<0>(matchedPoint) > 0) // TAOTODO: Should be a map?
-        pairs.push_back(make_tuple(i, get<0>(matchedPoint)));
+      if (get<0>(matchedPoint) > 0)
+        pairs.insert(make_pair(i, get<0>(matchedPoint)));
     }
 
     if (this->isVisualisationOn)

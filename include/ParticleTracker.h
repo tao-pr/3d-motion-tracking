@@ -1,6 +1,7 @@
 #ifndef PARTICLE_TRACKER
 #define PARTICLE_TRACKER
 
+#include <set>
 #include <tuple>
 #include <vector>
 #include <algorithm>
