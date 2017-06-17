@@ -27,7 +27,7 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
   {
     // List of Tuples of <distance, index of candidate>
     // Closest first
-    priority_queue<distanceToIndex, vector<distanceToIndex>, compareDistance> candidates;
+    priority_queue<distanceToIndex, vector<distanceToIndex>, compareScore> candidates;
 
     // Measure all candidates within the perimeter
     int j = 0;

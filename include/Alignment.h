@@ -30,6 +30,16 @@ public:
   }
 };
 
+class compareScore
+{
+public:
+  // Descending order
+  inline bool operator()(distanceToIndex &a, distanceToIndex &b)
+  { 
+    return get<0>(a) > get<0>(b); 
+  }
+};
+
 class Alignment
 {
 protected:
