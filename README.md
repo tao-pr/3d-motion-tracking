@@ -24,13 +24,43 @@ $ make
 $ bin/track
 ```
 
-The tracking program runs forever. Tab `Ctrl + C` to terminate.
+The tracking program runs forever. Tab `Ctrl + C` inside your terminal 
+window to terminate.
 
 
 ## Disclaimer
 
 The build is configured to perfectly fit on MacOS (g++ as a gcc compiler). 
 Your mileage may vary if you are compiling the code on a different OS. 
+
+---
+
+## My build environment
+
+In case you face difficulty building on your own machine, 
+following is the specifications of my environment which may be 
+helpful for you to spot the difference to yours.
+
+<b>OS</b>
+
+```
+OSX El Capitan 10.11.6
+```
+
+<b>gcc -v</b>
+
+```
+Apple LLVM version 8.0.0 (clang-800.0.42.1)
+Target: x86_64-apple-darwin15.6.0
+```
+
+<b>OpenCV3</b>
+
+OpenCV 3.2.0 built and installed via following [homebrew](https://brew.sh/) params:
+
+```
+--with-ffmpeg --without-numpy --without-test --with-contrib --with-python3
+```
 
 ---
 
