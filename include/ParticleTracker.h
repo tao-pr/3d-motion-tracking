@@ -7,9 +7,8 @@
 #include <algorithm>
 #include <opencv2/opencv.hpp>
 #include "opencv2/xfeatures2d.hpp"
-#include "coloriser.h"
+#include "master.h"
 #include "ITracker.h"
-#include "CalcUtils.h"
 #include "DrawUtils.h"
 #include "Alignment.h"
 

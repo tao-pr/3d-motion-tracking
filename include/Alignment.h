@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <opencv2/opencv.hpp>
-#include "coloriser.h"
+#include "master.h"
 #include "Distribution.h"
 
 using namespace std;

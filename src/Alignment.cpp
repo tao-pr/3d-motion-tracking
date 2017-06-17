@@ -23,6 +23,7 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
   unordered_map<int,int> pairs;
   
   // TAOTODO: Record the population distribution (of scores)
+  GenericDistribution<double> scorePopulation;
   for (auto bp : basepoints)
   {
     // List of Tuples of <distance, index of candidate>
@@ -36,7 +37,7 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
       double d = this->measureDistFunction(bp, np);
       if (d > this->maxDistance)
       {
-        //candidates.push(make_tuple(j, 0));
+        // NOTE: Do not add zero as a candidate
         matchScore.at<double>(i,j) = 0;
       }
       else
@@ -48,10 +49,13 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
 
         double score = d_ * similarity;
         if (score < 1e-5)
-          score = 0;
+          score = 0; // NOTE: Do not add zero as a candidate
         else
           candidates.push(make_tuple(j, score));
         matchScore.at<double>(i,j) = score;
+
+        // Record the score population
+        scorePopulation.addPopulation(score);
         
         if (this->isVisualisationOn)
         {
@@ -74,7 +78,10 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
 
     if (this->isVisualisationOn)
     {
-      imshow("matching score", vis); 
+      imshow("matching score", vis);
+      auto interval = DoubleBucket(0.02, 0.0, 1.0);
+      auto bounds   = make_tuple(0.0, 0.1);
+      scorePopulation.bucketPlot(interval, bounds, "Score distribution", 3);
     }
 
     i++;
