@@ -42,11 +42,13 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
       }
       else
       {
-        double mag0 = norm(baseFeatures.row(i), CV_L2);
-        double mag1 = norm(newFeatures.row(j), CV_L2);
-        double similarity = acos(baseFeatures.row(i).dot(newFeatures.row(j))/(mag0*mag1))/M_PI;
+        auto v0 = baseFeatures.row(i);
+        auto v1 = newFeatures.row(j);
+        double mag0 = norm(v0, CV_L2);
+        double mag1 = norm(v1, CV_L2);
+        double similarity = (M_PI - acos(v0.dot(v1)/(mag0*mag1)))/M_PI;
 
-        double score = similarity / d;
+        double score = (d<1e-30) ? 1.0 : similarity / d;
         candidates.push(make_tuple(j, score));
         matchScore.at<double>(i,j) = score;
 
@@ -80,7 +82,9 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
     imshow("matching score", vis);
     auto binstep = Bucket<double>(0.02, 0.0, 1.0);
     auto bounds  = make_tuple(0.0, 0.1);
+    #ifdef DEBUG_ALIGNMENT
     scorePopulation.bucketPlot(binstep, bounds, "Score distribution", 10);
+    #endif
   }
 
   return pairs;
