@@ -13,6 +13,7 @@
 
 using namespace std;
 using namespace cv;
+using namespace Distribution;
 
 const int VIS_PATCH_SIZE = 4;
 const int VIS_MAX_SPOT   = 32;
