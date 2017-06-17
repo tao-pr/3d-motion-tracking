@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <opencv2/opencv.hpp>
 #include "coloriser.h"
+#include "Distribution.h"
 
 using namespace std;
 using namespace cv;

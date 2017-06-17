@@ -21,6 +21,8 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
   Mat matchScore = Mat::zeros(basepoints.size(), newpoints.size(), CV_64FC1);
   Mat vis = Mat::zeros(M, M, CV_8UC3);
   unordered_map<int,int> pairs;
+  
+  // TAOTODO: Record the population distribution (of scores)
   for (auto bp : basepoints)
   {
     // List of Tuples of <distance, index of candidate>
@@ -42,10 +44,10 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
         double d_ = 1/d;
         double mag0 = norm(baseFeatures.row(i), CV_L2);
         double mag1 = norm(newFeatures.row(j), CV_L2);
-        double similarity = baseFeatures.row(i).dot(newFeatures.row(j))/(mag0*mag1);
+        double similarity = acos(baseFeatures.row(i).dot(newFeatures.row(j))/(mag0*mag1))/M_PI;
 
         double score = d_ * similarity;
-        if (score < 1e-3)
+        if (score < 1e-5)
           score = 0;
         else
           candidates.push(make_tuple(j, score));
