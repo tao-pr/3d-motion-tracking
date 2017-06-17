@@ -14,12 +14,13 @@ void Alignment::setVisualisation(bool on)
   this->isVisualisationOn = on;
 }
 
-void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, const Mat baseFeatures, const Mat newFeatures)
+vector<tuple<int,int>> Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, const Mat baseFeatures, const Mat newFeatures)
 {
   int i = 0;
   int M = VIS_MAX_SPOT * VIS_PATCH_SIZE + 1;
   Mat matchScore = Mat::zeros(basepoints.size(), newpoints.size(), CV_64FC1);
   Mat vis = Mat::zeros(M, M, CV_8UC3);
+  vector<tuple<int,int>> pairs;
   for (auto bp : basepoints)
   {
     // List of Tuples of <distance, index of candidate>
@@ -44,6 +45,8 @@ void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, con
         double similarity = baseFeatures.row(i).dot(newFeatures.row(j))/(mag0*mag1);
 
         double score = d_ * similarity;
+        if (score < 1e-3)
+          score = 0;
 
         candidates.push(make_tuple(j, score));
         matchScore.at<double>(i,j) = score;
@@ -60,14 +63,19 @@ void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, con
       j++;
     }
 
+    if (!candidates.empty())
+    {
+      auto matchedPoint = candidates.top();
+      if (get<0>(matchedPoint) > 0) // TAOTODO: Should be a map?
+        pairs.push_back(make_tuple(i, get<0>(matchedPoint)));
+    }
+
     if (this->isVisualisationOn)
     {
       imshow("matching score", vis); 
     }
 
-    // TAOTODO: Locate pairs of matchings p(t-1) ==> p(t)
-
-
     i++;
   }
+  return pairs;
 }
