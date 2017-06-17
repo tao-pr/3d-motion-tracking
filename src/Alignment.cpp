@@ -39,17 +39,18 @@ void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, con
       else
       {
         double d_ = 1/d;
-        auto v0 = baseFeatures.row(i);
-        auto v1 = newFeatures.row(j);
-        double summag = sum(v0)[0] + sum(v1)[0];
-        double similarity = v0.dot(v1)/summag;
+        double mag0 = norm(baseFeatures.row(i), CV_L2);
+        double mag1 = norm(newFeatures.row(j), CV_L2);
+        double similarity = baseFeatures.row(i).dot(newFeatures.row(j))/(mag0*mag1);
 
-        candidates.push(make_tuple(j, d_ * similarity));
-        matchScore.at<double>(i,j) = d_;
+        double score = d_ * similarity;
+
+        candidates.push(make_tuple(j, score));
+        matchScore.at<double>(i,j) = score;
         
         if (this->isVisualisationOn)
         {
-          int v   = floor(d_*255);
+          int v   = floor(255 * score);
           auto p0 = Point2f(i*VIS_PATCH_SIZE, j*VIS_PATCH_SIZE);
           auto p1 = Point2f((i+1)*VIS_PATCH_SIZE-1, (j+1)*VIS_PATCH_SIZE-1);
           auto c  = Scalar(0,0,int(v));
@@ -59,12 +60,12 @@ void Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, con
       j++;
     }
 
-    // TAOTODO:
-
     if (this->isVisualisationOn)
     {
-      imshow("tracking score", vis); 
+      imshow("matching score", vis); 
     }
+
+    // TAOTODO: Locate pairs of matchings p(t-1) ==> p(t)
 
 
     i++;

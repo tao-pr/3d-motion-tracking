@@ -5,7 +5,7 @@ ParticleTracker::ParticleTracker()
   cout << GREEN << "[Tracker]" << RESET << " Initialising SIFT particle tracker..." << endl;
   
   auto featureSimilarityMeasure = [](Mat m1, Mat m2){ return 0; }; //TAOTODO:
-  const double maxDisplacement = 30;
+  const double maxDisplacement = 70;
 
   this->sift         = SIFT::create();
   this->alignment    = new Alignment(_dist, featureSimilarityMeasure, maxDisplacement);
