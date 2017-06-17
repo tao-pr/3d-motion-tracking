@@ -1,10 +1,9 @@
 #include "Alignment.h"
 
-Alignment::Alignment(function<double (Point2f, Point2f)> measureDistance, function<double (Mat, Mat)> measureFeatureSimilarity, double maxMoveDistance)
+Alignment::Alignment(function<double (Point2f, Point2f)> measureDistance, double maxMoveDistance)
 {
   cout << GREEN << "Initialising alignment engine..." << RESET << endl;
   this->measureDistFunction       = measureDistance;
-  this->measureSimilarityFunction = measureFeatureSimilarity;
   this->maxDistance               = maxMoveDistance;
   this->isVisualisationOn         = false;
 }

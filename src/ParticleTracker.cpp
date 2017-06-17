@@ -3,12 +3,10 @@
 ParticleTracker::ParticleTracker()
 {
   cout << GREEN << "[Tracker]" << RESET << " Initialising SIFT particle tracker..." << endl;
-  
-  auto featureSimilarityMeasure = [](Mat m1, Mat m2){ return 0; }; //TAOTODO:
   const double maxDisplacement = 70;
 
   this->sift         = SIFT::create();
-  this->alignment    = new Alignment(_dist, featureSimilarityMeasure, maxDisplacement);
+  this->alignment    = new Alignment(_dist, maxDisplacement);
   this->alignment->setVisualisation(true);
 }
 
@@ -61,7 +59,8 @@ void ParticleTracker::trackFeatures(Mat &im)
       int i = pair.first;
       int j = pair.second;
       trackedPoints.insert(j);
-      line(im, prevPoints[i], points[j], Scalar(0,50,255), 1, CV_AA);
+      if (_dist(prevPoints[i], points[j]) >= MIN_DISTANCE_TO_DRAW_TRAIL)
+        line(im, prevPoints[i], points[j], Scalar(0,50,255), 1, CV_AA);
       #ifndef DRAW_ALL_POINTS
       DrawUtils::drawSpot(im, points[j], Scalar(0,50,255));
       #endif

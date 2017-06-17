@@ -10,6 +10,8 @@
 
 // #define DRAW_ALL_POINTS
 // #define DRAW_NEW_POINTS_GREEN
+#define MIN_DISTANCE_TO_DRAW_TRAIL    5.0
+
 #define DEBUG_ALIGNMENT
 
 #endif
