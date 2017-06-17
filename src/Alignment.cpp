@@ -46,10 +46,12 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
         auto v1 = newFeatures.row(j);
         double mag0 = norm(v0, CV_L2);
         double mag1 = norm(v1, CV_L2);
-        double similarity = (M_PI - acos(v0.dot(v1)/(mag0*mag1)))/M_PI;
+        double similarity = 0.5*(M_PI - acos(v0.dot(v1)/(mag0*mag1)))/M_PI;
 
         double score = (d<1e-30) ? 1.0 : similarity / d;
-        candidates.push(make_tuple(j, score));
+        // TAOTODO: Reject low score statistically
+        if (score > 1e-10)
+          candidates.push(make_tuple(j, score));
         matchScore.at<double>(i,j) = score;
 
         // Record the score population

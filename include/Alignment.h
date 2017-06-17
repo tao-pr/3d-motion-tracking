@@ -15,8 +15,8 @@ using namespace std;
 using namespace cv;
 using namespace Distribution;
 
-const int VIS_PATCH_SIZE = 4;
-const int VIS_MAX_SPOT   = 32;
+const int VIS_PATCH_SIZE = 8;
+const int VIS_MAX_SPOT   = 48;
 
 typedef tuple<double, int> distanceToIndex;
 
