@@ -42,16 +42,12 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
       }
       else
       {
-        double d_ = 1/d;
         double mag0 = norm(baseFeatures.row(i), CV_L2);
         double mag1 = norm(newFeatures.row(j), CV_L2);
         double similarity = acos(baseFeatures.row(i).dot(newFeatures.row(j))/(mag0*mag1))/M_PI;
 
-        double score = -log(d_ * similarity);
-        if (score < 1e-5)
-          score = 0; // NOTE: Do not add zero as a candidate
-        else
-          candidates.push(make_tuple(j, score));
+        double score = similarity / d;
+        candidates.push(make_tuple(j, score));
         matchScore.at<double>(i,j) = score;
 
         // Record the score population
