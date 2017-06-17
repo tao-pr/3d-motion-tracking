@@ -1,8 +1,5 @@
 #include "Distribution.h"
 
-template class Distribution::Bucket<double>;
-template class Distribution::GenericDistribution<double>;
-
 template<class T>
 Distribution::Bucket<T>::Bucket(T interval, T lowerBound, T upperBound)
 {
@@ -54,3 +51,6 @@ void Distribution::GenericDistribution<T>::bucketPlot(Bucket<T> bucketInterval, 
   }
   imshow(wnd, plot);
 }
+
+template class Distribution::Bucket<double>;
+template class Distribution::GenericDistribution<double>;
