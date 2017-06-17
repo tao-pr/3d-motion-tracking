@@ -18,7 +18,7 @@ int Distribution::Bucket<T>::index(const T v)
 template<class T>
 int Distribution::Bucket<T>::numBucketsWithinInterval()
 {
-  return (this->upperBound - this->lowerBound);
+  return (this->upperBound - this->lowerBound)/this->interval;
 }
 
 template<class T>
@@ -26,28 +26,43 @@ void Distribution::GenericDistribution<T>::bucketPlot(Bucket<T> bucketInterval, 
 {
   int bucketCount = bucketInterval.numBucketsWithinInterval();
   Mat buckets = Mat::zeros(1, bucketCount, CV_32FC1);
+
   // Collect bucket population ticks
   for (auto p : this->population)
   {
     int index = bucketInterval.index(p);
-    if (index < buckets.cols)
+    if (index < bucketCount)
     {
-      buckets.at<float>(1, index) = buckets.at<float>(1, index) + 1;
-    }  
+      float v = buckets.at<float>(0, index);
+      buckets.at<float>(0, index) = v+1.0;
+    } 
   }
-  normalize(buckets, buckets, 0, 100, NORM_MINMAX);
+  
+  #ifdef DEBUG_ALIGNMENT
+  cout << buckets << endl;
+  #endif
+  normalize(buckets, buckets, 0.0, 1.0, NORM_MINMAX);
 
-  int M = drawUnitSize * 200;
+
+  int M = 180;
   int N = drawUnitSize * bucketCount;
-  Mat plot = Mat::zeros(M, N, CV_8UC3);
+  Mat plot = Mat(M, N, CV_8UC3, Scalar(0,0,0));
 
+  auto prevX = 0;
+  auto prevY = M - (int)floor(M * buckets.at<float>(0, 0));
   for (int b=0; b<bucketCount; b++)
   {
-    auto freq = (int)buckets.at<float>(1, b);
+    auto yPos = M - (int)floor(M * buckets.at<float>(0, b));
     auto xPos = (drawUnitSize * b) + (int)floor(drawUnitSize/2);
-    auto toppoint    = Point2f(xPos, drawUnitSize * freq);
-    auto bottompoint = Point2f(xPos, 0);
-    line(plot, toppoint, bottompoint, Scalar(0,50,200), 1, CV_AA);
+    line(
+      plot, 
+      Point2f(prevX, prevY), 
+      Point2f(xPos, yPos), 
+      Scalar(0,50,200), 
+      1, CV_AA);
+    circle(plot, Point2f(xPos,yPos), 3, Scalar(0,30,180), CV_FILLED, CV_AA);
+    prevX = xPos;
+    prevY = yPos;
   }
   imshow(wnd, plot);
 }

@@ -8,4 +8,6 @@
 #include "coloriser.h"
 #include "CalcUtils.h"
 
+#define DEBUG_ALIGNMENT
+
 #endif

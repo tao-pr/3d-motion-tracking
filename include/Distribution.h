@@ -31,13 +31,6 @@ namespace Distribution
     virtual int numBucketsWithinInterval();
   };
 
-  class DoubleBucket : public Bucket<double>
-  {
-  public:
-    DoubleBucket(double interval, double lowerBound, double upperBound)
-      : Bucket<double>(interval, lowerBound, upperBound){};
-  };
-
   template<class T> class GenericDistribution 
   {
   private:

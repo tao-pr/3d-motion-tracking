@@ -22,7 +22,7 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
   Mat vis = Mat::zeros(M, M, CV_8UC3);
   unordered_map<int,int> pairs;
   
-  // TAOTODO: Record the population distribution (of scores)
+  // Record the population distribution (of scores)
   GenericDistribution<double> scorePopulation;
   for (auto bp : basepoints)
   {
@@ -76,15 +76,16 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
         pairs.insert(make_pair(i, get<0>(matchedPoint)));
     }
 
-    if (this->isVisualisationOn)
-    {
-      imshow("matching score", vis);
-      auto interval = DoubleBucket(0.02, 0.0, 1.0);
-      auto bounds   = make_tuple(0.0, 0.1);
-      scorePopulation.bucketPlot(interval, bounds, "Score distribution", 3);
-    }
-
     i++;
   }
+  
+  if (this->isVisualisationOn)
+  {
+    imshow("matching score", vis);
+    auto binstep = Bucket<double>(0.02, 0.0, 1.0);
+    auto bounds  = make_tuple(0.0, 0.1);
+    scorePopulation.bucketPlot(binstep, bounds, "Score distribution", 10);
+  }
+
   return pairs;
 }
