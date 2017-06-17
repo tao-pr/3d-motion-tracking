@@ -38,9 +38,6 @@ void Distribution::GenericDistribution<T>::bucketPlot(Bucket<T> bucketInterval, 
     } 
   }
   
-  #ifdef DEBUG_ALIGNMENT
-  cout << buckets << endl;
-  #endif
   normalize(buckets, buckets, 0.0, 1.0, NORM_MINMAX);
 
 

@@ -46,7 +46,9 @@ void ParticleTracker::trackFeatures(Mat &im)
   auto points = get<0>(pointsAndFeatures);
   Mat features = get<1>(pointsAndFeatures);
   // Draw all detected points as RED
+  #ifdef DRAW_ALL_POINTS
   DrawUtils::drawMarks(im, points, Scalar(0,50,255));
+  #endif
   
   if (!this->prevPoints.empty())
   {
@@ -60,17 +62,24 @@ void ParticleTracker::trackFeatures(Mat &im)
       int j = pair.second;
       trackedPoints.insert(j);
       line(im, prevPoints[i], points[j], Scalar(0,50,255), 1, CV_AA);
+      #ifndef DRAW_ALL_POINTS
+      DrawUtils::drawSpot(im, points[j], Scalar(0,50,255));
+      #endif
     }
 
     // Highlight new points with GREEN (without matched previous points)
+    #ifdef DRAW_NEW_POINTS_GREEN
     for (int j=0; j<points.size(); j++)
     {
       if (trackedPoints.find(j) == trackedPoints.end())
         DrawUtils::drawSpot(im, points[j], Scalar(0,255,50));
     }
+    #endif
 
+    #ifdef DEBUG_ALIGNMENT
     cout << "... " << points.size() << " feature points (" 
          << trackedPoints.size() << " tracked)" << endl;
+    #endif
   }
 
   imshow("sift", im);

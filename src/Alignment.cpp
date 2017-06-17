@@ -48,9 +48,9 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
         double mag1 = norm(v1, CV_L2);
         double similarity = 0.5*(M_PI - acos(v0.dot(v1)/(mag0*mag1)))/M_PI;
 
-        double score = (d<1e-30) ? 1.0 : similarity / d;
+        double score = (d<1e-30) ? 1.0 : similarity / pow(d,2.0);
         // TAOTODO: Reject low score statistically
-        if (score > 1e-10)
+        if (score > 1e-20)
           candidates.push(make_tuple(j, score));
         matchScore.at<double>(i,j) = score;
 
@@ -82,10 +82,10 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
   if (this->isVisualisationOn)
   {
     imshow("matching score", vis);
-    auto binstep = Bucket<double>(0.02, 0.0, 1.0);
+    auto binstep = Bucket<double>(0.001, 0.0, 1.0);
     auto bounds  = make_tuple(0.0, 0.1);
     #ifdef DEBUG_ALIGNMENT
-    scorePopulation.bucketPlot(binstep, bounds, "Score distribution", 10);
+    scorePopulation.bucketPlot(binstep, bounds, "Score distribution", 5);
     #endif
   }
 
