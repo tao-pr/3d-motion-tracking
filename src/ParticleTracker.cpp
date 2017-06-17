@@ -84,9 +84,8 @@ void ParticleTracker::trackFeatures(Mat &im)
   imshow("sift", im);
   
   // Store the points
-  this->prevPoints.clear();
-  for (auto p : points)
-    this->prevPoints.push_back(p);
+  this->prevPoints.swap(points);
+  
   // Store the features
   features.copyTo(this->prevFeatures);
 }
