@@ -34,7 +34,7 @@ vector<tuple<int,int>> Alignment::align(vector<Point2f> basepoints, vector<Point
       double d = this->measureDistFunction(bp, np);
       if (d > this->maxDistance)
       {
-        candidates.push(make_tuple(j, 0));
+        //candidates.push(make_tuple(j, 0));
         matchScore.at<double>(i,j) = 0;
       }
       else
@@ -47,8 +47,8 @@ vector<tuple<int,int>> Alignment::align(vector<Point2f> basepoints, vector<Point
         double score = d_ * similarity;
         if (score < 1e-3)
           score = 0;
-
-        candidates.push(make_tuple(j, score));
+        else
+          candidates.push(make_tuple(j, score));
         matchScore.at<double>(i,j) = score;
         
         if (this->isVisualisationOn)
