@@ -46,7 +46,7 @@ namespace Distribution
       this->population.push_back(e);
     };
 
-    virtual void bucketPlot(Bucket<T> bucketInterval, tuple<T,T> bounds, string wnd, int drawUnitSize = 3);
+    virtual void bucketPlot(Bucket<T> bucketInterval, tuple<T,T> bounds, string wnd, int drawUnitSize, T cutOffLine);
     
   };
 

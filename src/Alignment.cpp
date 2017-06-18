@@ -110,10 +110,10 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
   if (this->isVisualisationOn)
   {
     imshow("matching score", vis);
-    auto binstep = Bucket<double>(0.001, 0.0, 1.0);
+    auto binstep = Bucket<double>(0.01, 0.0, 1.0);
     auto bounds  = make_tuple(0.0, 0.1);
     #ifdef DEBUG_ALIGNMENT
-    scorePopulation.bucketPlot(binstep, bounds, "Score distribution", 5);
+    scorePopulation.bucketPlot(binstep, bounds, "Score distribution", 3, mean + 3*std);
     #endif
   }
 

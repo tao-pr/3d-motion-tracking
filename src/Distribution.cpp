@@ -22,7 +22,7 @@ int Distribution::Bucket<T>::numBucketsWithinInterval()
 }
 
 template<class T>
-void Distribution::GenericDistribution<T>::bucketPlot(Bucket<T> bucketInterval, tuple<T,T> bounds, string wnd, int drawUnitSize)
+void Distribution::GenericDistribution<T>::bucketPlot(Bucket<T> bucketInterval, tuple<T,T> bounds, string wnd, int drawUnitSize, T cutOffLine)
 {
   int bucketCount = bucketInterval.numBucketsWithinInterval();
   Mat buckets = Mat::zeros(1, bucketCount, CV_32FC1);
@@ -41,7 +41,7 @@ void Distribution::GenericDistribution<T>::bucketPlot(Bucket<T> bucketInterval, 
   normalize(buckets, buckets, 0.0, 1.0, NORM_MINMAX);
 
 
-  int M = 180;
+  int M = 500;
   int N = drawUnitSize * bucketCount;
   Mat plot = Mat(M, N, CV_8UC3, Scalar(0,0,0));
 
@@ -60,6 +60,18 @@ void Distribution::GenericDistribution<T>::bucketPlot(Bucket<T> bucketInterval, 
     circle(plot, Point2f(xPos,yPos), 3, Scalar(0,30,180), CV_FILLED, CV_AA);
     prevX = xPos;
     prevY = yPos;
+  }
+  // Draw cut off line if in boundary
+  int indexCutOff = bucketInterval.index(cutOffLine);
+  if (indexCutOff>=0 && indexCutOff<bucketCount)
+  {
+    auto x  = (drawUnitSize * indexCutOff) + (int)floor(drawUnitSize/2);
+    line(
+      plot,
+      Point2f(x,0),
+      Point2f(x,M),
+      Scalar(255,255,255),
+      1, CV_AA);
   }
   imshow(wnd, plot);
 }
