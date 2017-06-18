@@ -15,7 +15,7 @@
 #include "DrawUtils.h"
 #include "CalcUtils.h"
 
-// TAOTODO: This module is to be deprecated
+// DEPRECATED:
 
 struct Point2fPair
 {

@@ -68,22 +68,44 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
     }
 
     // Reject statistically low scores
-    Mat scores = matchScore.row(i);
-    Mat meanVec, stdVec;
-    meanStdDev(scores, meanVec, stdVec);
+    // Mat scores = matchScore.row(i);
+    // Mat meanVec, stdVec;
+    // meanStdDev(scores, meanVec, stdVec);
 
-    double mean = meanVec.at<double>(0,0);
-    double std  = stdVec.at<double>(0,0);
+    // double mean = meanVec.at<double>(0,0);
+    // double std  = stdVec.at<double>(0,0);
 
     if (!candidates.empty())
     {
       auto matchedPoint = candidates.top();
-      if (get<0>(matchedPoint) > mean+std)
+      if (get<0>(matchedPoint) > 0)
         pairs.insert(make_pair(i, get<0>(matchedPoint)));
     }
 
     i++;
   }
+
+  // Reject candidates of matching with low scores here
+  Mat meanVec, stdVec;
+  meanStdDev(matchScore, meanVec, stdVec);
+  double mean = meanVec.at<double>(0,0);
+  double std  = stdVec.at<double>(0,0);
+  unordered_map<int,int> pairsFiltered;
+  int numRejected = 0;
+  for (auto pair : pairs)
+  {
+    auto score = pair.second;
+    if (score > mean + 3*std)
+    {
+      pairsFiltered.insert(pair);
+    }
+    else numRejected++;
+  }
+
+  #ifdef DEBUG_ALIGNMENT
+  cout << numRejected << " candidates rejected by mean : " << mean
+    << " (+" << 3*std << ")" << endl;
+  #endif
   
   if (this->isVisualisationOn)
   {
@@ -95,5 +117,5 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
     #endif
   }
 
-  return pairs;
+  return pairsFiltered;
 }
