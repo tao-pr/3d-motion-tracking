@@ -11,6 +11,7 @@
 #include "ITracker.h"
 #include "DrawUtils.h"
 #include "Alignment.h"
+#include "Space.h"
 #include "Transformation.h"
 
 using namespace cv;

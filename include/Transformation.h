@@ -20,5 +20,10 @@ public:
   Transformation(TRANSFORM_FUNC _t);
 };
 
+class PointTransformation : public Transformation<Point2f>
+{
+  // TAOTODO:
+};
+
 
 #endif

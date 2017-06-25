@@ -13,16 +13,16 @@ using namespace cv;
  * Space structure which builds up a network of 
  * vertices and their connected neighbours 
  */
-class Space  // TAODEBUG: KD-Tree
+class Space
 {
 private:
   vector<Point2f> vertices;
 public:
   Space();
-  ~Space();
+  virtual ~Space();
   static Space& create(const vector<Point2f> ps);
 
-  operator PointTransformation >>(const Space &another) = 0;
+  virtual PointTransformation estimateTransformationTo(const Space &another) = 0;
 };
 
 #endif
