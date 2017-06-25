@@ -23,11 +23,13 @@ ITracker* trackerModel = nullptr;
 
 function<void (Mat)> createTracker(string modelName)
 {
+  // NOTE: Experimental only
   if (modelName == "camshift")
   {
     trackerModel = new CamShiftTracker();
     return trackerModel->track();
   }
+  // NOTE: Experimental only
   else if (modelName == "simple")// Good feature to track -based
   {
     float meshDisplace  = 50;
@@ -36,7 +38,8 @@ function<void (Mat)> createTracker(string modelName)
     trackerModel        = new SimpleFeaturePointTracker(meshDisplace, maxEdgeLength, longestAbsence, debug);
     return trackerModel->track();
   }
-  else if (modelName == "particle") // SIFT based
+  // SIFT-based
+  else if (modelName == "particle")
   {
     trackerModel = new ParticleTracker();
     return trackerModel->track();

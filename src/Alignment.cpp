@@ -67,14 +67,6 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
       j++;
     }
 
-    // Reject statistically low scores
-    // Mat scores = matchScore.row(i);
-    // Mat meanVec, stdVec;
-    // meanStdDev(scores, meanVec, stdVec);
-
-    // double mean = meanVec.at<double>(0,0);
-    // double std  = stdVec.at<double>(0,0);
-
     if (!candidates.empty())
     {
       auto matchedPoint = candidates.top();
@@ -91,11 +83,12 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
   double mean = meanVec.at<double>(0,0);
   double std  = stdVec.at<double>(0,0);
   unordered_map<int,int> pairsFiltered;
+  const double rejectedStdTimes = 4;
   int numRejected = 0;
   for (auto pair : pairs)
   {
     auto score = pair.second;
-    if (score > mean + 3*std)
+    if (score > mean + rejectedStdTimes*std)
     {
       pairsFiltered.insert(pair);
     }
@@ -104,7 +97,7 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
 
   #ifdef DEBUG_ALIGNMENT
   cout << numRejected << " candidates rejected by mean : " << mean
-    << " (+" << 3*std << ")" << endl;
+    << " (+" << rejectedStdTimes*std << ")" << endl;
   #endif
   
   if (this->isVisualisationOn)
@@ -113,7 +106,7 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
     auto binstep = Bucket<double>(0.01, 0.0, 1.0);
     auto bounds  = make_tuple(0.0, 0.1);
     #ifdef DEBUG_ALIGNMENT
-    scorePopulation.bucketPlot(binstep, bounds, "Score distribution", 3, mean + 3*std);
+    scorePopulation.bucketPlot(binstep, bounds, "Score distribution", 3, mean + rejectedStdTimes*std);
     #endif
   }
 
