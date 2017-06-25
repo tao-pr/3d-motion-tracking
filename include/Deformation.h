@@ -16,9 +16,9 @@ template<class TSubject>
 class Deformation
 {
 protected:
-  double[] c; // Coefficients of the transformation
+  vector<double> c; // Coefficients of the transformation
 public:
-  Deformation(double[] coeff);
+  Deformation(vector<double> coeff);
   virtual TSubject apply(const TSubject& s) = 0;
 };
 
