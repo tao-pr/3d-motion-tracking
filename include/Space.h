@@ -4,7 +4,6 @@
 #include <vector>
 #include <opencv2/opencv.hpp>
 #include "master.h"
-#include "Deformation.h"
 
 using namespace std;
 using namespace cv;
@@ -29,12 +28,12 @@ public:
   virtual ~Space();
   static Space& create(const vector<Point2f> ps);
 
-  inline const TStructure& getStructure()
+  inline const TStructure& getStructure() const
   {
     return this->structure;
   };
 
-  virtual Deformation<Space<TStructure>> estimateDeformationTo(const Space<TStructure> &another) = 0;
+  virtual Deformation<TStructure> estimateDeformationTo(const Space<TStructure> &another) const = 0;
 };
 
 
