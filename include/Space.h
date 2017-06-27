@@ -8,6 +8,25 @@
 using namespace std;
 using namespace cv;
 
+struct AnchorWithVelocity
+{
+  Point2f origin;
+  Point2f speed;
+
+  void setSpeed(double x, double y)
+  {
+    this->speed.x = x;
+    this->speed.y = y;
+  }
+
+  static AnchorWithVelocity create(const Point2f& o)
+  {
+    AnchorWithVelocity a;
+    a.origin = o;
+    return a;
+  }
+};
+
 /**
  * Space structure which builds up a network of 
  * vertices and their connected neighbours 
@@ -16,24 +35,37 @@ template <class TStructure>
 class Space
 {
 private:
-  vector<Point2f> vertices;
+  vector<AnchorWithVelocity> anchors;
 protected:
   TStructure structure;
 public:
-  inline Space(const vector<Point2f> vs)
+  // Create a [Space] from list of anchor points
+  inline Space(const vector<AnchorWithVelocity> vs)
   {
-    this->vertices.assign(vs.begin(), vs.end());
+    this->anchors.assign(vs.begin(), vs.end());
   }
 
   virtual ~Space();
-  static Space& create(const vector<Point2f> ps);
+
+  inline const vector<AnchorWithVelocity> getAnchors() const 
+  {
+    return this->anchors;
+  }
+
+  inline const vector<Point2f> getAnchorsWithoutVelocity() const
+  {
+    vector<Point2f> ps;
+    for (auto a : this->anchors)
+    {
+      ps.push_back(a.origin);
+    }
+    return ps;
+  }
 
   inline const TStructure& getStructure() const
   {
     return this->structure;
-  };
-
-  virtual Deformation<TStructure> estimateDeformationTo(const Space<TStructure> &another) const = 0;
+  }
 };
 
 
