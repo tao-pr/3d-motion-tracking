@@ -14,6 +14,7 @@ typedef function<double (double)> GravityFunction ;
 class Grid
 {
 protected:
+  vector<Point2f> anchors;
   Mat velocityX, velocityY;
   GravityFunction gravity; // Function which maps [distance] => [gravity magnitude]
   double gravityThreshold; // Minimum gravity magnitude to draw effect
@@ -31,11 +32,23 @@ public:
   {
   }
 
+  inline void neutralise()
+  {
+    this->velocityX = Scalar::all(0.0);
+    this->velocityY = Scalar::all(0.0);
+    this->anchors.clear();
+  }
+
   inline void setAnchor(int x, int y, const Point2f& velocity)
   {
     this->velocityX.at<double>(y, x) = velocity.x;
     this->velocityY.at<double>(y, x) = velocity.y;
+    this->anchors.push_back(Point2f(x, y));
   }
+
+  virtual void renderGravity();
+
+  virtual void renderVelocityMap(const string& wndName) const;
 };
 
 
