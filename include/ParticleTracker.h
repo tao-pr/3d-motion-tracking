@@ -11,7 +11,7 @@
 #include "ITracker.h"
 #include "DrawUtils.h"
 #include "Alignment.h"
-#include "Space.h"
+#include "Grid.h"
 
 using namespace cv;
 using namespace std;
