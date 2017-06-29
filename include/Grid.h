@@ -1,6 +1,7 @@
 #ifndef GRID
 #define GRID
 
+#include <math.h>
 #include <vector>
 #include <functional>
 #include <opencv2/opencv.hpp>
@@ -19,19 +20,26 @@ namespace Gravity
 
 class Grid
 {
+private:
+  const int PATCH_MAP_SIZE = 5;
 protected:
   vector<Point2f> anchors;
   Mat velocityX, velocityY;
   GravityFunction gravity; // Function which maps [distance] , [velocity] => [gravity magnitude]
   double gravityThreshold; // Minimum gravity magnitude to draw effect
 
+  Mat canvas;
+  Mat canvas64;
+
 public:
-  Grid(Size gridSize, GravityFunction gravity, double gravityThreshold = 0.0)
+  Grid(Size gridSize, GravityFunction gravity = Gravity::Newton, double gravityThreshold = 0.0)
   {
     this->velocityX = Mat::zeros(gridSize.height, gridSize.width, CV_64FC1);
     this->velocityY = Mat::zeros(gridSize.height, gridSize.width, CV_64FC1);
     this->gravity   = gravity;
     this->gravityThreshold = gravityThreshold;
+    this->canvas    = Mat(gridSize.height, gridSize.width, CV_8UC3);
+    this->canvas    = Mat(gridSize.height, gridSize.width, CV_64FC1);
   }
   
   virtual ~Grid()
@@ -54,7 +62,7 @@ public:
 
   virtual void renderGravity();
 
-  virtual void renderVelocityMap(const string& wndName) const;
+  virtual void renderVelocityMap(const string& wndName = "velocity");
 };
 
 
