@@ -9,14 +9,20 @@
 using namespace std;
 using namespace cv;
 
-typedef function<double (double)> GravityFunction ;
+typedef function<double (double, double)> GravityFunction ;
+
+namespace Gravity
+{
+  const GravityFunction Linear = [](double d, double v){ return (d==0) ? 1 : 1/d; };
+  const GravityFunction Newton = [](double d, double v){ return (d==0) ? 1 : v/d*d; };
+}
 
 class Grid
 {
 protected:
   vector<Point2f> anchors;
   Mat velocityX, velocityY;
-  GravityFunction gravity; // Function which maps [distance] => [gravity magnitude]
+  GravityFunction gravity; // Function which maps [distance] , [velocity] => [gravity magnitude]
   double gravityThreshold; // Minimum gravity magnitude to draw effect
 
 public:
@@ -34,8 +40,8 @@ public:
 
   inline void neutralise()
   {
-    this->velocityX = Scalar::all(0.0);
-    this->velocityY = Scalar::all(0.0);
+    this->velocityX.setTo(Scalar::all(0.0));
+    this->velocityY.setTo(Scalar::all(0.0));
     this->anchors.clear();
   }
 
