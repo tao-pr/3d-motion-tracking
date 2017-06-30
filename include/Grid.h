@@ -67,7 +67,7 @@ public:
   }
 
   // Calculate velocity with direction on the specified list of subjects
-  virtual vector<tuple<Point2i, Point2f>> calculateVelocity(const vector<Point2i>& ps) const;
+  virtual vector<tuple<Point2i, Point2d>> calculateVelocity(const vector<Point2i>& ps) const;
 
   virtual void renderVelocityMap(const string& wndName = "velocity");
 };

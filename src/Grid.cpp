@@ -1,8 +1,8 @@
 #include "Grid.h"
 
-vector<tuple<Point2i, Point2f>> Grid::calculateVelocity(const vector<Point2i>& ps) const
+vector<tuple<Point2i, Point2d>> Grid::calculateVelocity(const vector<Point2i>& ps) const
 {
-  vector<tuple<Point2i, Point2f>> psOutput;
+  vector<tuple<Point2i, Point2d>> psOutput;
   for (auto p : ps)
   {
     double totalGravX = 0.0;
