@@ -22,18 +22,21 @@ class Grid
 {
 private:
   const int PATCH_MAP_SIZE = 5;
+
 protected:
   vector<Point2f> anchors;
   Mat velocityX, velocityY;
   GravityFunction gravity; // Function which maps [distance] , [velocity] => [gravity magnitude]
   double gravityThreshold; // Minimum gravity magnitude to draw effect
+  double maxDistance; // Maximum distance from the anchor which gravity can take effect
 
   Mat canvas;
   Mat canvas64;
 
 public:
-  Grid(Size gridSize, GravityFunction gravity = Gravity::Newton, double gravityThreshold = 0.0)
+  Grid(Size gridSize, double maxInfluentialDistance, GravityFunction gravity = Gravity::Newton, double gravityThreshold = 0.0)
   {
+    this->maxDistance = maxInfluentialDistance;
     this->velocityX = Mat::zeros(gridSize.height, gridSize.width, CV_64FC1);
     this->velocityY = Mat::zeros(gridSize.height, gridSize.width, CV_64FC1);
     this->gravity   = gravity;

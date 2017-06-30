@@ -20,13 +20,17 @@ using namespace cv::xfeatures2d;
 class ParticleTracker : public ITracker
 {
 private:
+  const double maxDisplacement = 70;
+
   Alignment* alignment;
   vector<Point2f> prevPoints;
   Mat prevFeatures;
+  Grid* grid;
 
 protected:
   Ptr<Feature2D> sift;
   void trackFeatures(Mat &im);
+  void initialiseGrid(int w, int h);
 
 public:
   ParticleTracker();

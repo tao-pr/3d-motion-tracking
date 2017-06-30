@@ -3,18 +3,32 @@
 ParticleTracker::ParticleTracker()
 {
   cout << GREEN << "[Tracker]" << RESET << " Initialising SIFT particle tracker..." << endl;
-  const double maxDisplacement = 70;
 
-  this->sift         = SIFT::create();
-  this->alignment    = new Alignment(_dist, maxDisplacement);
+  this->sift      = SIFT::create();
+  this->alignment = new Alignment(_dist, this->maxDisplacement);
+  this->grid      = nullptr;
   this->alignment->setVisualisation(true);
 }
 
 ParticleTracker::~ParticleTracker()
 {
-  cout << CYAN << "[Tracker]" << RESET << " Tearing down SIFT particle tracker..." << endl;
+  cout << CYAN << "[Tracker]" << RESET << " Terminating SIFT particle tracker..." << endl;
   delete this->sift;
   delete this->alignment;
+  delete this->grid;
+}
+
+void ParticleTracker::initialiseGrid(int w, int h)
+{
+  if (this->grid != nullptr)
+  {
+    cout << YELLOW << "[Tracker] Grid is already initialised. Skipping..." << RESET << endl;
+  }
+  else
+  {
+    cout << GREEN << "[Tracker] Initialising Grid" << RESET << endl;
+    this->grid = new Grid(Size(w, h), maxDisplacement);
+  }
 }
 
 tuple<vector<Point2f>,Mat> ParticleTracker::detectPoints(Mat &in)
@@ -32,6 +46,9 @@ function<void (Mat)> ParticleTracker::track()
   cout << "[Press Ctrl+c to escape]" << endl;
   auto pipe = [&](Mat im)
   {
+    if (this->grid == nullptr)
+      this->initialiseGrid(im.cols, im.rows);
+    
     trackFeatures(im);
   };
 
