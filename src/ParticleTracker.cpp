@@ -48,6 +48,8 @@ function<void (Mat)> ParticleTracker::track()
   {
     if (this->grid == nullptr)
       this->initialiseGrid(im.cols, im.rows);
+    else
+      this->grid->neutralise();
     
     trackFeatures(im);
   };
