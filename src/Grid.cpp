@@ -38,10 +38,13 @@ void Grid::renderVelocityMap(const string& wndName, const vector<tuple<Point2i, 
   // Draw anchors first
   for (auto a : this->anchors)
   {
-    auto vx = this->velocityX.at<double>(a.y, a.x);
-    auto vy = this->velocityY.at<double>(a.y, a.x);
-    auto a_ = Point2i(a.x + vx, a.y + vy);
-    arrowedLine(this->canvas, a, a_, Scalar(0,0,245), 1.0, CV_AA);
+    auto vx = this->velocityX.at<double>(a.y, a.x) * PATCH_MAP_SIZE;
+    auto vy = this->velocityY.at<double>(a.y, a.x) * PATCH_MAP_SIZE;
+    auto aScaled = Point2i(a.x*PATCH_MAP_SIZE, a.y*PATCH_MAP_SIZE);
+    auto bScaled = Point2i((a.x + vx)*PATCH_MAP_SIZE, 
+                           (a.y + vy)*PATCH_MAP_SIZE);
+    if (_sqrt(_square(vx) + _square(vy)) > MIN_VELOCITY_TO_DRAW)
+      arrowedLine(this->canvas, aScaled, bScaled, Scalar(0,0,245), 1.0, CV_AA);
   }
 
   // Draw the given points with velocity
@@ -49,8 +52,10 @@ void Grid::renderVelocityMap(const string& wndName, const vector<tuple<Point2i, 
   {
     auto p = get<0>(tup);
     auto v = get<1>(tup);
-    auto p_ = Point2i(p.x + v.x, p.y + v.y);
-    arrowedLine(this->canvas, p, p_, Scalar(200,0,0), 1.0, CV_AA);
+    auto pScaled = Point2i(p.x*PATCH_MAP_SIZE, p.y*PATCH_MAP_SIZE);
+    auto qScaled = Point2i((p.x + v.x)*PATCH_MAP_SIZE, 
+                           (p.y + v.y)*PATCH_MAP_SIZE);
+    arrowedLine(this->canvas, pScaled, qScaled, Scalar(200,0,0), 1.0, CV_AA);
   }
 
   imshow(wndName, this->canvas);

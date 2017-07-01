@@ -102,7 +102,8 @@ void ParticleTracker::trackFeatures(Mat &im)
     #endif
 
     // Track the feature points with [Grid]
-    // TAODEBUG:
+    auto vEmpty = vector<tuple<Point2i, Point2d>>();
+    this->grid->renderVelocityMap("Grid", vEmpty);
 
     #ifdef DEBUG_ALIGNMENT
     cout << "... " << points.size() << " feature points (" 

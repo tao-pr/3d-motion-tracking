@@ -22,7 +22,7 @@ namespace Gravity
 class Grid
 {
 private:
-  const int PATCH_MAP_SIZE = 5;
+  const int PATCH_MAP_SIZE = 2;
 
 protected:
   Size size;
@@ -43,7 +43,7 @@ public:
     this->velocityY = Mat::zeros(gridSize.height, gridSize.width, CV_64FC1);
     this->gravity   = gravity;
     this->gravityThreshold = gravityThreshold;
-    this->canvas    = Mat(gridSize.height, gridSize.width, CV_8UC3);
+    this->canvas    = Mat(gridSize.height * PATCH_MAP_SIZE, gridSize.width * PATCH_MAP_SIZE, CV_8UC3);
   }
   
   virtual ~Grid()
