@@ -49,7 +49,7 @@ function<void (Mat)> ParticleTracker::track()
     if (this->grid == nullptr)
       this->initialiseGrid(im.cols, im.rows);
     else
-      this->grid->neutralise();
+      this->grid->neutralise(true);
     
     trackFeatures(im);
   };
@@ -80,9 +80,16 @@ void ParticleTracker::trackFeatures(Mat &im)
       trackedPoints.insert(j);
       if (_dist(prevPoints[i], points[j]) >= MIN_DISTANCE_TO_DRAW_TRAIL)
         line(im, prevPoints[i], points[j], Scalar(0,50,255), 1, CV_AA);
+      
       #ifndef DRAW_ALL_POINTS
       DrawUtils::drawSpot(im, points[j], Scalar(0,50,255));
       #endif
+
+      // Register the previous points as anchors in the [Grid]
+      Point2i p = Point2i((int)prevPoints[i].x, (int)prevPoints[i].y);
+      Point2d v = Point2d(points[j].x - prevPoints[i].x,
+                          points[j].y - prevPoints[i].y);
+      this->grid->setAnchor(p, v);
     }
 
     // Highlight new points with GREEN (without matched previous points)
@@ -93,6 +100,9 @@ void ParticleTracker::trackFeatures(Mat &im)
         DrawUtils::drawSpot(im, points[j], Scalar(0,255,50));
     }
     #endif
+
+    // Track the feature points with [Grid]
+    // TAODEBUG:
 
     #ifdef DEBUG_ALIGNMENT
     cout << "... " << points.size() << " feature points (" 

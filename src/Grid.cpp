@@ -28,39 +28,30 @@ vector<tuple<Point2i, Point2d>> Grid::calculateVelocity(const vector<Point2i>& p
   return psOutput;
 }
 
-void Grid::renderVelocityMap(const string& wndName)
+void Grid::renderVelocityMap(const string& wndName, const vector<tuple<Point2i, Point2d>>& ps)
 {
   this->canvas.setTo(Scalar::all(255));
-  this->canvas64.setTo(Scalar::all(0.0));
   
   const int W = this->velocityX.cols;
   const int H = this->velocityX.rows;
-  
-  for (int i=0; i<W; i++)
-    for (int j=0; j<H; j++)
-    {
-      auto magX = this->velocityX.at<double>(j,i);
-      auto magY = this->velocityY.at<double>(j,i);
-      if (magX + magY < this->gravityThreshold)
-        continue;
-      auto mag  = sqrt(magX*magX + magY*magY);
-      auto c = Point2f(i+PATCH_MAP_SIZE/2, j+PATCH_MAP_SIZE/2);
 
-      this->canvas64.at<double>(j,i) = mag;
-    }
+  // Draw anchors first
+  for (auto a : this->anchors)
+  {
+    auto vx = this->velocityX.at<double>(a.y, a.x);
+    auto vy = this->velocityY.at<double>(a.y, a.x);
+    auto a_ = Point2i(a.x + vx, a.y + vy);
+    arrowedLine(this->canvas, a, a_, Scalar(0,0,245), 1.0, CV_AA);
+  }
 
-  normalize(this->canvas64, this->canvas64, 0.0, 255.0, NORM_MINMAX);
-
-  for (int i=0; i<W; i++)
-    for (int j=0; j<H; j++)
-    {
-      auto p0     = Point2i(i, j);
-      auto p1     = Point2i(i+PATCH_MAP_SIZE, j+PATCH_MAP_SIZE);
-      auto colour = (int)floor(this->canvas64.at<double>(j,i));
-      rectangle(this->canvas, p0, p1, colour, -1);
-    }
-
-  // TAOTODO: Draw arrows
+  // Draw the given points with velocity
+  for (auto tup : ps)
+  {
+    auto p = get<0>(tup);
+    auto v = get<1>(tup);
+    auto p_ = Point2i(p.x + v.x, p.y + v.y);
+    arrowedLine(this->canvas, p, p_, Scalar(200,0,0), 1.0, CV_AA);
+  }
 
   imshow(wndName, this->canvas);
 }

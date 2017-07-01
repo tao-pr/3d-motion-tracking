@@ -33,7 +33,6 @@ protected:
   double maxDistance; // Maximum distance from the anchor which gravity can take effect
 
   Mat canvas;
-  Mat canvas64;
 
 public:
   Grid(Size gridSize, double maxInfluentialDistance, GravityFunction gravity = Gravity::Newton, double gravityThreshold = 0.0)
@@ -45,31 +44,41 @@ public:
     this->gravity   = gravity;
     this->gravityThreshold = gravityThreshold;
     this->canvas    = Mat(gridSize.height, gridSize.width, CV_8UC3);
-    this->canvas64  = Mat(gridSize.height, gridSize.width, CV_64FC1);
   }
   
   virtual ~Grid()
   {
   }
 
-  inline void neutralise()
+  inline void neutralise(const bool quick = true)
   {
-    this->velocityX.setTo(Scalar::all(0.0));
-    this->velocityY.setTo(Scalar::all(0.0));
+    if (quick)
+    {
+      for (auto a : this->anchors)
+      {
+        this->velocityX.at<double>(a.y, a.x) = 0.0;
+        this->velocityY.at<double>(a.y, a.x) = 0.0;
+      }
+    }
+    else
+    {
+      this->velocityX.setTo(Scalar::all(0.0));
+      this->velocityY.setTo(Scalar::all(0.0));
+    }
     this->anchors.clear();
   }
 
-  inline void setAnchor(int x, int y, const Point2d& velocity)
+  inline void setAnchor(const Point2i& anchor, const Point2d& velocity)
   {
-    this->velocityX.at<double>(y, x) = velocity.x;
-    this->velocityY.at<double>(y, x) = velocity.y;
-    this->anchors.push_back(Point2i(x, y));
+    this->velocityX.at<double>(anchor.y, anchor.x) = velocity.x;
+    this->velocityY.at<double>(anchor.y, anchor.x) = velocity.y;
+    this->anchors.push_back(anchor);
   }
 
   // Calculate velocity with direction on the specified list of subjects
   virtual vector<tuple<Point2i, Point2d>> calculateVelocity(const vector<Point2i>& ps) const;
 
-  virtual void renderVelocityMap(const string& wndName = "velocity");
+  virtual void renderVelocityMap(const string& wndName, const vector<tuple<Point2i, Point2d>>& ps);
 };
 
 
