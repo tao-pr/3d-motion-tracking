@@ -133,7 +133,7 @@ void ParticleTracker::trackFeatures(Mat &im)
     {
       // Tracked point, calculate changes by momentum
       auto pi = prevPoints[mapNewToOld.find(j)->second];
-      Point2f newp = pi * momentum - (pi - pj);
+      Point2f newp = pj + (momentum * pi)/(1 + momentum);
       updatedPoints.push_back(newp);
     }
   }
