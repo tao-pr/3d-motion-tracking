@@ -21,6 +21,7 @@ class ParticleTracker : public ITracker
 {
 private:
   const double maxDisplacement = 12;
+  const double momentum = 0.67;
 
   Alignment* alignment;
   vector<Point2f> prevPoints;

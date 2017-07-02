@@ -66,6 +66,8 @@ void ParticleTracker::trackFeatures(Mat &im)
   #ifdef DRAW_ALL_POINTS
   DrawUtils::drawMarks(im, points, Scalar(0,50,255));
   #endif
+
+  unordered_map<int,int> mapNewToOld;
   
   if (!this->prevPoints.empty())
   {
@@ -78,6 +80,8 @@ void ParticleTracker::trackFeatures(Mat &im)
       int i = pair.first;
       int j = pair.second;
       trackedPoints.insert(j);
+      mapNewToOld.insert(make_pair(j,i));
+
       if (_dist(prevPoints[i], points[j]) >= MIN_DISTANCE_TO_DRAW_TRAIL)
         line(im, prevPoints[i], points[j], Scalar(250,0,0), 1, CV_AA);
       
@@ -112,9 +116,31 @@ void ParticleTracker::trackFeatures(Mat &im)
   }
 
   imshow("sift", im);
+
+  // TAOTODO:
+  // Update the displacement of the positions
+  // by momentum
+  vector<Point2f> updatedPoints;
+  for (int j=0; j<points.size(); j++)
+  {
+    auto pj = points[j];
+    if (mapNewToOld.find(j) == mapNewToOld.end())
+    {
+      // New point
+      updatedPoints.push_back(pj);
+    }
+    else
+    {
+      // Tracked point, calculate changes by momentum
+      auto pi = prevPoints[mapNewToOld.find(j)->second];
+      Point2f newp = pi * momentum - (pi - pj);
+      updatedPoints.push_back(newp);
+    }
+  }
+
   
   // Store the points
-  this->prevPoints.swap(points);
+  this->prevPoints.swap(updatedPoints);
   
   // Store the features
   features.copyTo(this->prevFeatures);
