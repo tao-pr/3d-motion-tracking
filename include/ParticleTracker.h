@@ -20,7 +20,7 @@ using namespace cv::xfeatures2d;
 class ParticleTracker : public ITracker
 {
 private:
-  const double maxDisplacement = 70;
+  const double maxDisplacement = 12;
 
   Alignment* alignment;
   vector<Point2f> prevPoints;

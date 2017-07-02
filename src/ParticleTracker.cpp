@@ -79,7 +79,7 @@ void ParticleTracker::trackFeatures(Mat &im)
       int j = pair.second;
       trackedPoints.insert(j);
       if (_dist(prevPoints[i], points[j]) >= MIN_DISTANCE_TO_DRAW_TRAIL)
-        line(im, prevPoints[i], points[j], Scalar(0,50,255), 1, CV_AA);
+        line(im, prevPoints[i], points[j], Scalar(250,0,0), 1, CV_AA);
       
       #ifndef DRAW_ALL_POINTS
       DrawUtils::drawSpot(im, points[j], Scalar(0,50,255));

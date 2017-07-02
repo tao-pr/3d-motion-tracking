@@ -45,6 +45,12 @@ void Grid::renderVelocityMap(const string& wndName, const vector<tuple<Point2i, 
                            (a.y + vy)*PATCH_MAP_SIZE);
     if (_sqrt(_square(vx) + _square(vy)) > MIN_VELOCITY_TO_DRAW)
       arrowedLine(this->canvas, aScaled, bScaled, Scalar(0,0,245), 1.0, CV_AA);
+
+    rectangle(this->canvas, 
+              aScaled, 
+              Point2i((a.x+1)*PATCH_MAP_SIZE, (a.y+1)*PATCH_MAP_SIZE),
+              Scalar(0,0,245),
+              1.0, CV_AA);
   }
 
   // Draw the given points with velocity

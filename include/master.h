@@ -9,7 +9,7 @@
 #include "CalcUtils.h"
 
 // #define DRAW_ALL_POINTS
-// #define DRAW_NEW_POINTS_GREEN
+#define DRAW_NEW_POINTS_GREEN
 #define MIN_DISTANCE_TO_DRAW_TRAIL    5.0
 #define MIN_VELOCITY_TO_DRAW          12.0
 
