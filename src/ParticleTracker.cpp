@@ -117,7 +117,6 @@ void ParticleTracker::trackFeatures(Mat &im)
 
   imshow("sift", im);
 
-  // TAOTODO:
   // Update the displacement of the positions
   // by momentum
   vector<Point2f> updatedPoints;
