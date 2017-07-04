@@ -62,17 +62,19 @@ void ParticleTracker::trackFeatures(Mat &im)
   auto pointsAndFeatures = detectPoints(im);
   auto points = get<0>(pointsAndFeatures);
   Mat features = get<1>(pointsAndFeatures);
+  
   // Draw all detected points as RED
   #ifdef DRAW_ALL_POINTS
   DrawUtils::drawMarks(im, points, Scalar(0,50,255));
   #endif
 
   unordered_map<int,int> mapNewToOld;
+  set<int> trackedPoints;
+  set<int> trackedPrevPoints;
   
   if (!this->prevPoints.empty())
   {
     auto pairs = alignment->align(prevPoints, points, prevFeatures, features);
-    set<int> trackedPoints;
 
     for (auto pair : pairs)
     {
@@ -80,19 +82,22 @@ void ParticleTracker::trackFeatures(Mat &im)
       int i = pair.first;
       int j = pair.second;
       trackedPoints.insert(j);
+      trackedPrevPoints.insert(i);
       mapNewToOld.insert(make_pair(j,i));
 
-      if (_dist(prevPoints[i], points[j]) >= MIN_DISTANCE_TO_DRAW_TRAIL)
-        line(im, prevPoints[i], points[j], Scalar(250,0,0), 1, CV_AA);
+      auto pi = prevPoints[i].get();
+
+      if (_dist(pi, points[j]) >= MIN_DISTANCE_TO_DRAW_TRAIL)
+        line(im, pi, points[j], Scalar(250,0,0), 1, CV_AA);
       
       #ifndef DRAW_ALL_POINTS
       DrawUtils::drawSpot(im, points[j], Scalar(0,50,255));
       #endif
 
       // Register the previous points as anchors in the [Grid]
-      Point2i p = Point2i((int)prevPoints[i].x, (int)prevPoints[i].y);
-      Point2d v = Point2d(points[j].x - prevPoints[i].x,
-                          points[j].y - prevPoints[i].y);
+      Point2i p = Point2i((int)pi.x, (int)pi.y);
+      Point2d v = Point2d(points[j].x - pi.x,
+                          points[j].y - pi.y);
       this->grid->setAnchor(p, v);
     }
 
@@ -119,25 +124,36 @@ void ParticleTracker::trackFeatures(Mat &im)
 
   // Update the displacement of the positions
   // by momentum
-  vector<Point2f> updatedPoints;
+  vector<TrackablePoint> updatedPoints;
   for (int j=0; j<points.size(); j++)
   {
     auto pj = points[j];
     if (mapNewToOld.find(j) == mapNewToOld.end())
     {
       // New point
-      updatedPoints.push_back(pj);
+      updatedPoints.push_back(TrackablePoint::create(pj));
     }
     else
     {
       // Tracked point, calculate changes by momentum
       auto pi = prevPoints[mapNewToOld.find(j)->second];
-      Point2f newp = pj + (momentum * pi)/(1 + momentum);
-      updatedPoints.push_back(newp);
+      pi.updateNewPosition(pj, momentum);
+      updatedPoints.push_back(pi);
     }
   }
 
-  
+  // Identify old absent points
+  for (int i=0; i<prevPoints.size(); i++)
+  {
+    if (trackedPrevPoints.find(i) == trackedPrevPoints.end())
+    {
+      // Untracked or missing
+      auto pi = prevPoints[i];
+      pi.markAbsent();
+      updatedPoints.push_back(pi);
+    }
+  }
+
   // Store the points
   this->prevPoints.swap(updatedPoints);
   

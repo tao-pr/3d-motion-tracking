@@ -3,9 +3,9 @@
 Alignment::Alignment(function<double (Point2f, Point2f)> measureDistance, double maxMoveDistance)
 {
   cout << GREEN << "Initialising alignment engine..." << RESET << endl;
-  this->measureDistFunction       = measureDistance;
-  this->maxDistance               = maxMoveDistance;
-  this->isVisualisationOn         = false;
+  this->measureDistFunction  = measureDistance;
+  this->maxDistance          = maxMoveDistance;
+  this->isVisualisationOn    = false;
 }
 
 void Alignment::setVisualisation(bool on)
@@ -13,7 +13,7 @@ void Alignment::setVisualisation(bool on)
   this->isVisualisationOn = on;
 }
 
-unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, const Mat baseFeatures, const Mat newFeatures)
+unordered_map<int,int> Alignment::align(vector<TrackablePoint> basepoints, vector<Point2f> newpoints, const Mat baseFeatures, const Mat newFeatures)
 {
   int i = 0;
   int M = VIS_MAX_SPOT * VIS_PATCH_SIZE + 1;
@@ -23,8 +23,10 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
   
   // Record the population distribution (of scores)
   GenericDistribution<double> scorePopulation;
-  for (auto bp : basepoints)
+  for (auto bp0 : basepoints)
   {
+    auto bp = bp0.get();
+
     // List of Tuples of <distance, index of candidate>
     // Closest first
     priority_queue<distanceToIndex, vector<distanceToIndex>, compareScore> candidates;
