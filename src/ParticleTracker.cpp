@@ -74,7 +74,7 @@ void ParticleTracker::trackFeatures(Mat &im)
   
   if (!this->prevPoints.empty())
   {
-    auto pairs = alignment->align(prevPoints, points, prevFeatures, features);
+    auto pairs = alignment->align(prevPoints, points, features);
 
     for (auto pair : pairs)
     {
@@ -113,17 +113,15 @@ void ParticleTracker::trackFeatures(Mat &im)
     // Track the feature points with [Grid]
     auto vEmpty = vector<tuple<Point2i, Point2d>>();
     this->grid->renderVelocityMap("Grid", vEmpty);
-
-    #ifdef DEBUG_ALIGNMENT
-    cout << "... " << points.size() << " feature points (" 
-         << trackedPoints.size() << " tracked)" << endl;
-    #endif
   }
 
   imshow("sift", im);
 
   // Update the displacement of the positions
   // by momentum
+  int numNewPointRegistered = 0;
+  int numOldPointAbsent = 0;
+  int numTrackedPoints = 0;
   vector<TrackablePoint> updatedPoints;
   for (int j=0; j<points.size(); j++)
   {
@@ -131,14 +129,16 @@ void ParticleTracker::trackFeatures(Mat &im)
     if (mapNewToOld.find(j) == mapNewToOld.end())
     {
       // New point
-      updatedPoints.push_back(TrackablePoint::create(pj));
+      updatedPoints.push_back(TrackablePoint::create(pj, features.row(j)));
+      numNewPointRegistered++;
     }
     else
     {
       // Tracked point, calculate changes by momentum
       auto pi = prevPoints[mapNewToOld.find(j)->second];
-      pi.updateNewPosition(pj, momentum);
+      pi.updateNewPosition(pj, momentum, features.row(j));
       updatedPoints.push_back(pi);
+      numTrackedPoints++;
     }
   }
 
@@ -151,12 +151,14 @@ void ParticleTracker::trackFeatures(Mat &im)
       auto pi = prevPoints[i];
       pi.markAbsent();
       updatedPoints.push_back(pi);
+      numOldPointAbsent++;
     }
   }
 
+  cout << numNewPointRegistered << " new points | "
+       << numTrackedPoints << " trackable points | "
+       << numOldPointAbsent << " points absent | " << endl;
+
   // Store the points
   this->prevPoints.swap(updatedPoints);
-  
-  // Store the features
-  features.copyTo(this->prevFeatures);
 }

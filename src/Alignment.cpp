@@ -13,7 +13,7 @@ void Alignment::setVisualisation(bool on)
   this->isVisualisationOn = on;
 }
 
-unordered_map<int,int> Alignment::align(vector<TrackablePoint> basepoints, vector<Point2f> newpoints, const Mat baseFeatures, const Mat newFeatures)
+unordered_map<int,int> Alignment::align(vector<TrackablePoint> basepoints, vector<Point2f> newpoints, const Mat newFeatures)
 {
   int i = 0;
   int M = VIS_MAX_SPOT * VIS_PATCH_SIZE + 1;
@@ -43,7 +43,7 @@ unordered_map<int,int> Alignment::align(vector<TrackablePoint> basepoints, vecto
       }
       else
       {
-        auto v0 = baseFeatures.row(i);
+        auto v0 = bp0.feature;
         auto v1 = newFeatures.row(j);
         double mag0 = norm(v0, CV_L2);
         double mag1 = norm(v1, CV_L2);

@@ -28,7 +28,6 @@ private:
 
   Alignment* alignment;
   vector<TrackablePoint> prevPoints;
-  Mat prevFeatures; // TAOTODO: Should this be stored in heap?
   Grid* grid;
 
 protected:

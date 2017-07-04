@@ -46,20 +46,22 @@ public:
 
 struct TrackablePoint
 {
+  Mat feature;
   deque<Point2f> history;
   int numAbsence; // Number of consecutive frames this point is absent
   int numPresent; // Number of consecutive frames this point is present
 
-  static TrackablePoint create(const Point2f& p)
+  static TrackablePoint create(const Point2f& p, const Mat& feat)
   {
     TrackablePoint t;
+    t.feature = feat.clone();
     t.history.push_back(p);
     t.numAbsence = 0;
     t.numPresent = 1;
     return t;
   }
 
-  void updateNewPosition(const Point2f& p, double momentum)
+  void updateNewPosition(const Point2f& p, double momentum, const Mat& newFeat)
   {
     // Update new position by momentum of history
     Point2f np = p;
@@ -78,6 +80,7 @@ struct TrackablePoint
     this->history.push_back(np);
     this->numPresent++;
     this->numAbsence = 0;
+    newFeat.copyTo(this->feature);
     if (this->history.size() > MAX_HISTORY_LENGTH)
       this->history.pop_front();
   }
@@ -104,7 +107,7 @@ protected:
 public:
   Alignment(function<double (Point2f, Point2f)> measureDistance, double maxMoveDistance);
   void setVisualisation(bool on);
-  unordered_map<int,int> align(vector<TrackablePoint> basepoints, vector<Point2f> newpoints, const Mat baseFeatures, const Mat newFeatures);
+  unordered_map<int,int> align(vector<TrackablePoint> basepoints, vector<Point2f> newpoints, const Mat newFeatures);
 };
 
 #endif
