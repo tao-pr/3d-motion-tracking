@@ -61,7 +61,7 @@ struct TrackablePoint
     return t;
   }
 
-  void updateNewPosition(const Point2f& p, double momentum, const Mat& newFeat)
+  bool updateNewPosition(const Point2f& p, double momentum, const Mat& newFeat)
   {
     // Update new position by momentum of history
     Point2f np = p;
@@ -82,13 +82,18 @@ struct TrackablePoint
     this->numAbsence = 0;
     newFeat.copyTo(this->feature);
     if (this->history.size() > MAX_HISTORY_LENGTH)
+    {
       this->history.pop_front();
+      return false;
+    }
+    return true;
   }
 
-  void markAbsent()
+  int markAbsent()
   {
     this->numAbsence += 1;
     this->numPresent = 0;
+    return this->numAbsence;
   }
 
   Point2f get() const

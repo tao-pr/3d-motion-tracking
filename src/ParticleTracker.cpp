@@ -122,6 +122,7 @@ void ParticleTracker::trackFeatures(Mat &im)
   int numNewPointRegistered = 0;
   int numOldPointAbsent = 0;
   int numTrackedPoints = 0;
+  int numDisqualified = 0;
   vector<TrackablePoint> updatedPoints;
   for (int j=0; j<points.size(); j++)
   {
@@ -149,15 +150,23 @@ void ParticleTracker::trackFeatures(Mat &im)
     {
       // Untracked or missing
       auto pi = prevPoints[i];
-      pi.markAbsent();
-      updatedPoints.push_back(pi);
-      numOldPointAbsent++;
+      if (pi.markAbsent() <= maxAbsenceAllowed)
+      {
+        updatedPoints.push_back(pi);
+        numOldPointAbsent++;
+      }
+      else
+      {
+        numDisqualified++;
+      }
     }
   }
 
   cout << numNewPointRegistered << " new points | "
        << numTrackedPoints << " trackable points | "
-       << numOldPointAbsent << " points absent | " << endl;
+       << numOldPointAbsent << " points absent | " 
+       << YELLOW << numDisqualified << " points disqualified" << RESET
+       << endl;
 
   // Store the points
   this->prevPoints.swap(updatedPoints);
