@@ -44,11 +44,11 @@ void Grid::renderVelocityMap(const string& wndName, const vector<tuple<Point2i, 
     auto bScaled = Point2i((a.x + vx)*PATCH_MAP_SIZE, 
                            (a.y + vy)*PATCH_MAP_SIZE);
     if (_sqrt(_square(vx) + _square(vy)) > MIN_VELOCITY_TO_DRAW)
-      arrowedLine(this->canvas, aScaled, bScaled, Scalar(0,0,245), 1.0, CV_AA);
+      arrowedLine(this->canvas, aScaled, bScaled, Scalar(0,0,245), 1.0, CV_AA, 0, 0.3);
 
     rectangle(this->canvas, 
-              aScaled, 
-              Point2i((a.x+1)*PATCH_MAP_SIZE, (a.y+1)*PATCH_MAP_SIZE),
+              Point2i((a.x-2)*PATCH_MAP_SIZE, (a.y-2)*PATCH_MAP_SIZE), 
+              Point2i((a.x+2)*PATCH_MAP_SIZE, (a.y+2)*PATCH_MAP_SIZE),
               Scalar(0,0,245),
               1.0, CV_AA);
   }
