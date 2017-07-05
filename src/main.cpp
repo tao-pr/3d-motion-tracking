@@ -8,48 +8,27 @@
 #include "IdentityTransformation.h"
 #include "FilterTransformation.h"
 #include "VideoCamera.h"
-#include "CamShiftTracker.h"
-#include "SimpleFeaturePointTracker.h"
 #include "ParticleTracker.h"
 #include "ITracker.h"
 
 using namespace std;
 
 bool debug              = true;
-string trackerModelName = "particle";
+ITracker* trackerModel  = nullptr;
 
-
-ITracker* trackerModel = nullptr;
-
-function<void (Mat)> createTracker(string modelName)
+void mouseEvent(int event, int x, int y, int n, void* p)
 {
-  // NOTE: Experimental only
-  if (modelName == "camshift")
+  if (event == EVENT_LBUTTONDOWN)
   {
-    trackerModel = new CamShiftTracker();
-    return trackerModel->track();
+    // Point selection
+    // TAOTODO:
   }
-  // NOTE: Experimental only
-  else if (modelName == "simple")// Good feature to track -based
-  {
-    float meshDisplace  = 50;
-    float maxEdgeLength = 420;
-    int longestAbsence  = 3;
-    trackerModel        = new SimpleFeaturePointTracker(meshDisplace, maxEdgeLength, longestAbsence, debug);
-    return trackerModel->track();
-  }
-  // SIFT-based
-  else if (modelName == "particle")
-  {
-    trackerModel = new ParticleTracker();
-    return trackerModel->track();
-  }
-  else
-  {
-    cout << YELLOW << "[WARNING] Unsupported tracker model is specified." << RESET << endl;
-    cout << YELLOW << "[WARNING] No tracker will be created." << RESET << endl;
-    return [](Mat){}; // Do nothing
-  }
+}
+
+function<void (Mat)> createTracker()
+{
+  trackerModel = new ParticleTracker();
+  return trackerModel->track();
 }
 
 int main(int argc, char** argv)
@@ -60,7 +39,7 @@ int main(int argc, char** argv)
     FilterType::Nothing, 0, 0, 0.43
     );
   
-  auto tracker = createTracker(trackerModelName);
+  auto tracker = createTracker();
 
   // Start capturing from video source
   VideoCamera cam("cam");
