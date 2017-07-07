@@ -1,6 +1,6 @@
 #include "ParticleTracker.h"
 
-ParticleTracker::ParticleTracker()
+ParticleTracker::ParticleTracker(string wndName) : ITracker(wndName)
 {
   cout << GREEN << "[Tracker]" << RESET << " Initialising SIFT particle tracker..." << endl;
 

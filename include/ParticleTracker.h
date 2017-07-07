@@ -36,7 +36,7 @@ protected:
   void initialiseGrid(int w, int h);
 
 public:
-  ParticleTracker();
+  ParticleTracker(string wndName);
   ~ParticleTracker();
   tuple<vector<Point2f>,Mat> detectPoints(Mat &in);
 
