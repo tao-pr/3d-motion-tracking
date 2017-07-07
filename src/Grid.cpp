@@ -19,10 +19,18 @@ vector<tuple<Point2i, Point2d>> Grid::calculateVelocity(const vector<Point2i>& p
       if (_sqrt(_square(vx) + _square(vy)) < gravityThreshold)
         continue;
 
+      // TAODEBUG:
+      cout << "gx : " << vx << endl;
+      cout << "gy : " << vy << endl;
+
       totalGravX += this->gravity(distance, vx);
       totalGravY += this->gravity(distance, vy);
     }
-    
+
+    // TAODEBUG:
+    cout << "tot gx : " << totalGravX << endl;
+    cout << "tot gy : " << totalGravY << endl;
+
     psOutput.push_back(make_tuple(p, Point2f(totalGravX, totalGravY)));
   }
   return psOutput;

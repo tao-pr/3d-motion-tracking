@@ -15,8 +15,8 @@ typedef function<double (double, double)> GravityFunction ;
 
 namespace Gravity
 {
-  const GravityFunction Linear = [](double d, double v){ return (d==0) ? 1 : 1/d; };
-  const GravityFunction Newton = [](double d, double v){ return (d==0) ? 1 : v/d*d; };
+  const GravityFunction Linear = [](double d, double v){ return (d<1) ? v : v/d; };
+  const GravityFunction Newton = [](double d, double v){ return (d<1) ? v : v/d*d; };
 }
 
 class Grid
@@ -26,7 +26,7 @@ private:
 
 protected:
   Size size;
-  vector<Point2i> anchors;
+  vector<Point2i> anchors; // TAOTODO: Should use [TrackablePoint] so we can use velocity estmation
   Mat velocityX, velocityY;
   GravityFunction gravity; // Function which maps [distance] , [velocity] => [gravity magnitude]
   double gravityThreshold; // Minimum gravity magnitude to draw effect

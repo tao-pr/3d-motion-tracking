@@ -22,9 +22,10 @@ using namespace cv::xfeatures2d;
 class ParticleTracker : public ITracker
 {
 private:
-  const int maxAbsenceAllowed  = 3;
-  const double maxDisplacement = 12;
-  const double momentum        = 0.25;
+  const int maxAbsenceAllowed     = 3;
+  const double maxDisplacement    = 12;
+  const double maxGravityDistance = 200;
+  const double momentum           = 0.25;
 
   Alignment* alignment;
   vector<TrackablePoint> prevPoints;

@@ -61,6 +61,8 @@ struct TrackablePoint
     return t;
   }
 
+  // TAOTODO: write a velocity function which estimates with 3 consecutive frames
+
   bool updateNewPosition(const Point2f& p, double momentum, const Mat& newFeat)
   {
     // Update new position by momentum of history

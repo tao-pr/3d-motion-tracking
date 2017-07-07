@@ -24,6 +24,7 @@ void mouseEvent(int event, int x, int y, int n, void* p)
   {
     // Point selection
     cout << CYAN << "(" << x << ", " << y << ")" << RESET << endl;
+    // TAOTODO: lock trackerModel before proceeding
     trackerModel->addTrackingPoint(Point2i(x, y));
   }
 }
