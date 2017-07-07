@@ -12,6 +12,10 @@ using namespace std;
 
 class ITracker 
 {
+protected:
+  // Custom tracking points
+  vector<Point2i> trackingPoints;
+
 public:
   string wndName;
   ITracker(string wndName)
@@ -21,6 +25,11 @@ public:
   }
   virtual inline ~ITracker(){};
   virtual function<void (Mat)> track() = 0;
+  virtual void addTrackingPoint(const Point2i& p)
+  {
+    this->trackingPoints.push_back(p);
+    cout << this->trackingPoints.size() << " points being tracked" << endl; // TAODEBUG:
+  }
 
   static void bindMouseEvent(string wndName, MouseCallback ev)
   {

@@ -22,6 +22,11 @@ public:
     circle(canvas, p, 3, color, CV_FILLED, CV_AA);
   }
 
+  inline static void drawSpot(Mat& canvas, Point2i p, Scalar color)
+  {
+    circle(canvas, p, 3, color, CV_FILLED, CV_AA);
+  }
+  
   /**
    * Draw marks spots on the canvas
    * @param {Mat} canvas matrix

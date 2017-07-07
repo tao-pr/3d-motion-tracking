@@ -62,6 +62,11 @@ void Grid::renderVelocityMap(const string& wndName, const vector<tuple<Point2i, 
     auto qScaled = Point2i((p.x + v.x)*PATCH_MAP_SIZE, 
                            (p.y + v.y)*PATCH_MAP_SIZE);
     arrowedLine(this->canvas, pScaled, qScaled, Scalar(200,0,0), 1.0, CV_AA);
+    rectangle(this->canvas, 
+              Point2i((p.x-2)*PATCH_MAP_SIZE, (p.y-2)*PATCH_MAP_SIZE), 
+              Point2i((p.x+2)*PATCH_MAP_SIZE, (p.y+2)*PATCH_MAP_SIZE),
+              Scalar(0,245,0),
+              2.0, CV_AA);
   }
 
   imshow(wndName, this->canvas);

@@ -110,12 +110,28 @@ void ParticleTracker::trackFeatures(Mat &im)
     }
     #endif
 
+    // Given the custom tracking points, generate the induced velocity
+    auto velocityMap = this->grid->calculateVelocity(this->trackingPoints);
+
     // Track the feature points with [Grid]
-    auto vEmpty = vector<tuple<Point2i, Point2d>>();
-    this->grid->renderVelocityMap("Grid", vEmpty);
+    this->grid->renderVelocityMap("Grid", velocityMap);
+
+    // Update the new positions of the custom tracking points
+    vector<Point2i> newTrackingPoints;
+    for (auto vm : velocityMap)
+    {
+      auto p = get<0>(vm);
+      auto v = get<1>(vm);
+      DrawUtils::drawSpot(im, p, Scalar(100,245,0));
+      newTrackingPoints.push_back(Point2i(p.x + v.x, p.y + v.y));
+
+      // TAODEBUG:
+      cout << p << " + (" << v << ")" << endl;
+    }
+    this->trackingPoints.swap(newTrackingPoints);
   }
 
-  imshow("sift", im);
+  imshow(this->wndName, im);
 
   // Update the displacement of the positions
   // by momentum

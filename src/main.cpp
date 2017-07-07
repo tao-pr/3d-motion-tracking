@@ -4,6 +4,7 @@
  * @copyRight 2016-now 
  */
 
+#include <mutex>
 #include <functional>
 #include "IdentityTransformation.h"
 #include "FilterTransformation.h"
@@ -15,14 +16,15 @@ using namespace std;
 
 bool debug              = true;
 ITracker* trackerModel  = nullptr;
+mutex m;
 
 void mouseEvent(int event, int x, int y, int n, void* p)
 {
   if (event == EVENT_LBUTTONDOWN)
   {
     // Point selection
-    // TAOTODO:
-    cout << "(" << x << ", " << y << ")" << endl;
+    cout << CYAN << "(" << x << ", " << y << ")" << RESET << endl;
+    trackerModel->addTrackingPoint(Point2i(x, y));
   }
 }
 
