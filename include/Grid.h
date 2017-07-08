@@ -11,6 +11,18 @@
 using namespace std;
 using namespace cv;
 
+typedef tuple<double, Point2f> DistanceToPoint;
+
+class CompareNeighbourDistance
+{
+public:
+  // Ascending order
+  inline bool operator()(DistanceToPoint &a, DistanceToPoint &b)
+  { 
+    return get<0>(a) < get<0>(b); 
+  }
+};
+
 class Grid
 {
 private:
@@ -20,19 +32,19 @@ protected:
   Size size;
   vector<Point2i> anchors; // TAOTODO: Should use [TrackablePoint] so we can use velocity estmation
   Mat velocityX, velocityY;
-  double gravityThreshold; // Minimum gravity magnitude to draw effect
   double maxDistance; // Maximum distance from the anchor which gravity can take effect
+  unsigned int numNeighbours; // Number of closest neighbours to take into account
 
   Mat canvas;
 
 public:
-  Grid(Size gridSize, double maxInfluentialDistance, double gravityThreshold = 0.0)
+  Grid(Size gridSize, double maxInfluentialDistance, unsigned int neighbours)
   {
     this->size      = gridSize;
     this->maxDistance = maxInfluentialDistance;
     this->velocityX = Mat::zeros(gridSize.height, gridSize.width, CV_64FC1);
     this->velocityY = Mat::zeros(gridSize.height, gridSize.width, CV_64FC1);
-    this->gravityThreshold = gravityThreshold;
+    this->numNeighbours = neighbours;
     this->canvas    = Mat(gridSize.height * PATCH_MAP_SIZE, gridSize.width * PATCH_MAP_SIZE, CV_8UC3);
   }
   

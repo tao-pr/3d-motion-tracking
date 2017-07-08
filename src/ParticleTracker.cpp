@@ -27,7 +27,7 @@ void ParticleTracker::initialiseGrid(int w, int h)
   else
   {
     cout << GREEN << "[Tracker] Initialising Grid" << RESET << endl;
-    this->grid = new Grid(Size(w, h), maxGravityDistance);
+    this->grid = new Grid(Size(w, h), this->maxGravityDistance, this->maxGravityNeighbourhood);
   }
 }
 

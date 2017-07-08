@@ -5,27 +5,40 @@ vector<tuple<Point2i, Point2d>> Grid::calculateVelocity(const vector<Point2i>& p
   vector<tuple<Point2i, Point2d>> psOutput;
   for (auto p : ps)
   {
-    double totalGravX = 0.0;
-    double totalGravY = 0.0;
+    // Identify N closest neighbours
+    priority_queue<DistanceToPoint, vector<DistanceToPoint>, CompareNeighbourDistance> closest;
     for (auto c : this->anchors)
     {
       auto distance = _sqrt(_square(c.x-p.x) + _square(c.y-p.y));
       if (distance > this->maxDistance)
         continue;
-
-      auto vx = this->velocityX.at<double>(c.y, c.x);
-      auto vy = this->velocityY.at<double>(c.y, c.x);
-
-      if (_sqrt(_square(vx) + _square(vy)) < gravityThreshold)
-        continue;
-
-      totalGravX += vx;
-      totalGravY += vy;
+      closest.push(make_tuple(distance, p));
     }
 
-    // TAODEBUG:
-    cout << "tot gx : " << totalGravX << endl;
-    cout << "tot gy : " << totalGravY << endl;
+    // Take only top N nearest neighbours
+    int n = 0;
+    double factorRatio = 1.0;
+    double totalGravX = 0.0;
+    double totalGravY = 0.0;
+    double sumFactor = 1.0;
+    while (!closest.empty() && n<numNeighbours)
+    {
+      auto next   = closest.top();
+      auto anchor = get<1>(next);
+      closest.pop();
+
+      // TAOTOREVIEW: Consider influence from distance to the anchor
+      
+      totalGravX += factorRatio * this->velocityX.at<double>(anchor.y, anchor.x);
+      totalGravY += factorRatio * this->velocityY.at<double>(anchor.y, anchor.x);
+
+      n++;
+      factorRatio *= 0.9;
+      sumFactor += factorRatio;
+    }
+
+    totalGravX /= sumFactor;
+    totalGravY /= sumFactor;
 
     psOutput.push_back(make_tuple(p, Point2f(totalGravX, totalGravY)));
   }
