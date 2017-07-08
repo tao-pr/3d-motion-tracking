@@ -11,14 +11,6 @@
 using namespace std;
 using namespace cv;
 
-typedef function<double (double, double)> GravityFunction ;
-
-namespace Gravity
-{
-  const GravityFunction Linear = [](double d, double v){ return (d<1) ? v : v/d; };
-  const GravityFunction Newton = [](double d, double v){ return (d<1) ? v : v/d*d; };
-}
-
 class Grid
 {
 private:
@@ -28,20 +20,18 @@ protected:
   Size size;
   vector<Point2i> anchors; // TAOTODO: Should use [TrackablePoint] so we can use velocity estmation
   Mat velocityX, velocityY;
-  GravityFunction gravity; // Function which maps [distance] , [velocity] => [gravity magnitude]
   double gravityThreshold; // Minimum gravity magnitude to draw effect
   double maxDistance; // Maximum distance from the anchor which gravity can take effect
 
   Mat canvas;
 
 public:
-  Grid(Size gridSize, double maxInfluentialDistance, GravityFunction gravity = Gravity::Newton, double gravityThreshold = 0.0)
+  Grid(Size gridSize, double maxInfluentialDistance, double gravityThreshold = 0.0)
   {
     this->size      = gridSize;
     this->maxDistance = maxInfluentialDistance;
     this->velocityX = Mat::zeros(gridSize.height, gridSize.width, CV_64FC1);
     this->velocityY = Mat::zeros(gridSize.height, gridSize.width, CV_64FC1);
-    this->gravity   = gravity;
     this->gravityThreshold = gravityThreshold;
     this->canvas    = Mat(gridSize.height * PATCH_MAP_SIZE, gridSize.width * PATCH_MAP_SIZE, CV_8UC3);
   }
