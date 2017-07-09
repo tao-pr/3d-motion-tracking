@@ -19,7 +19,7 @@ public:
   // Ascending order
   inline bool operator()(DistanceToPoint &a, DistanceToPoint &b)
   { 
-    return get<0>(a) < get<0>(b); 
+    return get<0>(a) > get<0>(b); 
   }
 };
 

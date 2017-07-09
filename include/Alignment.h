@@ -29,7 +29,7 @@ public:
   // Ascending order
   inline bool operator()(distanceToIndex &a, distanceToIndex &b)
   { 
-    return get<0>(a) < get<0>(b); 
+    return get<0>(a) > get<0>(b); 
   }
 };
 
@@ -39,7 +39,7 @@ public:
   // Descending order
   inline bool operator()(distanceToIndex &a, distanceToIndex &b)
   { 
-    return get<0>(a) > get<0>(b); 
+    return get<0>(a) < get<0>(b); 
   }
 };
 

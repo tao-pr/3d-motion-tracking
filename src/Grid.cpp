@@ -35,10 +35,19 @@ vector<tuple<Point2i, Point2d>> Grid::calculateVelocity(const vector<Point2i>& p
       n++;
       factorRatio *= 0.9;
       sumFactor += factorRatio;
+
+      // TAODEBUG:
+      cout << "[" << n << "] : " << get<0>(next) << endl;
+      cout << " x +: " << factorRatio << " * " << this->velocityX.at<double>(anchor.y, anchor.x) << endl;
+      cout << " y +: " << factorRatio << " * " << this->velocityY.at<double>(anchor.y, anchor.x) << endl;
     }
 
     totalGravX /= sumFactor;
     totalGravY /= sumFactor;
+
+    // TAODEBUG:
+    cout << " gx : " << totalGravX << endl;
+    cout << " gy : " << totalGravY << endl;
 
     psOutput.push_back(make_tuple(p, Point2f(totalGravX, totalGravY)));
   }

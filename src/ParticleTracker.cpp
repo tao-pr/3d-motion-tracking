@@ -29,6 +29,7 @@ void ParticleTracker::initialiseGrid(int w, int h)
     cout << GREEN << "[Tracker] Initialising Grid" << RESET << endl;
     this->grid = new Grid(Size(w, h), this->maxGravityDistance, this->maxGravityNeighbourhood);
   }
+  cout << "[Tracker] Grid initialised " << endl; // TAODEBUG:
 }
 
 tuple<vector<Point2f>,Mat> ParticleTracker::detectPoints(Mat &in)
