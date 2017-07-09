@@ -1,18 +1,20 @@
 #include "Grid.h"
 
-vector<tuple<Point2i, Point2d>> Grid::calculateVelocity(const vector<Point2i>& ps) const
+vector<AnchorWithVelocity> Grid::calculateVelocity(const vector<Point2i>& ps) const
 {
-  vector<tuple<Point2i, Point2d>> psOutput;
+  vector<AnchorWithVelocity> psOutput;
   for (auto p : ps)
   {
     // Identify N closest neighbours
-    priority_queue<DistanceToPoint, vector<DistanceToPoint>, CompareNeighbourDistance> closest;
+    priority_queue<DistanceToAnchor, 
+                   vector<DistanceToAnchor>, 
+                   CompareNeighbourDistance> closest;
     for (auto c : this->anchors)
     {
-      auto distance = _sqrt(_square(c.x-p.x) + _square(c.y-p.y));
+      auto distance = _sqrt(_square(c.anchor.x-c.anchor.x) + _square(c.anchor.y-c.anchor.y));
       if (distance > this->maxDistance)
         continue;
-      closest.push(make_tuple(distance, p));
+      closest.push(make_tuple(distance, c));
     }
 
     // Take only top N nearest neighbours
@@ -29,8 +31,8 @@ vector<tuple<Point2i, Point2d>> Grid::calculateVelocity(const vector<Point2i>& p
 
       // TAOTOREVIEW: Consider influence from distance to the anchor
       
-      totalGravX += factorRatio * this->velocityX.at<double>(anchor.y, anchor.x);
-      totalGravY += factorRatio * this->velocityY.at<double>(anchor.y, anchor.x);
+      totalGravX += factorRatio * anchor.velocity.x;
+      totalGravY += factorRatio * anchor.velocity.y;
 
       n++;
       factorRatio *= 0.9;
@@ -38,8 +40,8 @@ vector<tuple<Point2i, Point2d>> Grid::calculateVelocity(const vector<Point2i>& p
 
       // TAODEBUG:
       cout << "[" << n << "] : " << get<0>(next) << endl;
-      cout << " x +: " << factorRatio << " * " << this->velocityX.at<double>(anchor.y, anchor.x) << endl;
-      cout << " y +: " << factorRatio << " * " << this->velocityY.at<double>(anchor.y, anchor.x) << endl;
+      cout << " x +: " << factorRatio << " * " << anchor.velocity.x << endl;
+      cout << " y +: " << factorRatio << " * " << anchor.velocity.y << endl;
     }
 
     totalGravX /= sumFactor;
@@ -49,32 +51,31 @@ vector<tuple<Point2i, Point2d>> Grid::calculateVelocity(const vector<Point2i>& p
     cout << " gx : " << totalGravX << endl;
     cout << " gy : " << totalGravY << endl;
 
-    psOutput.push_back(make_tuple(p, Point2f(totalGravX, totalGravY)));
+    psOutput.push_back(AnchorWithVelocity::create(p, Point2f(totalGravX, totalGravY)));
   }
   return psOutput;
 }
 
-void Grid::renderVelocityMap(const string& wndName, const vector<tuple<Point2i, Point2d>>& ps)
+void Grid::renderVelocityMap(const string& wndName, const vector<AnchorWithVelocity>& ps)
 {
   this->canvas.setTo(Scalar::all(255));
-  
-  const int W = this->velocityX.cols;
-  const int H = this->velocityX.rows;
 
   // Draw anchors first
   for (auto a : this->anchors)
   {
-    auto vx = this->velocityX.at<double>(a.y, a.x) * PATCH_MAP_SIZE;
-    auto vy = this->velocityY.at<double>(a.y, a.x) * PATCH_MAP_SIZE;
-    auto aScaled = Point2i(a.x*PATCH_MAP_SIZE, a.y*PATCH_MAP_SIZE);
-    auto bScaled = Point2i((a.x + vx)*PATCH_MAP_SIZE, 
-                           (a.y + vy)*PATCH_MAP_SIZE);
+    auto anchor   = a.anchor;
+    auto velocity = a.velocity;
+    auto vx = velocity.x * PATCH_MAP_SIZE;
+    auto vy = velocity.y * PATCH_MAP_SIZE;
+    auto aScaled = Point2i(anchor.x*PATCH_MAP_SIZE, anchor.y*PATCH_MAP_SIZE);
+    auto bScaled = Point2i((anchor.x + vx)*PATCH_MAP_SIZE, 
+                           (anchor.y + vy)*PATCH_MAP_SIZE);
     if (_sqrt(_square(vx) + _square(vy)) > MIN_VELOCITY_TO_DRAW)
       arrowedLine(this->canvas, aScaled, bScaled, Scalar(0,0,245), 1.0, CV_AA, 0, 0.3);
 
     rectangle(this->canvas, 
-              Point2i((a.x-2)*PATCH_MAP_SIZE, (a.y-2)*PATCH_MAP_SIZE), 
-              Point2i((a.x+2)*PATCH_MAP_SIZE, (a.y+2)*PATCH_MAP_SIZE),
+              Point2i((anchor.x-2)*PATCH_MAP_SIZE, (anchor.y-2)*PATCH_MAP_SIZE), 
+              Point2i((anchor.x+2)*PATCH_MAP_SIZE, (anchor.y+2)*PATCH_MAP_SIZE),
               Scalar(0,0,245),
               1.0, CV_AA);
   }
@@ -82,8 +83,8 @@ void Grid::renderVelocityMap(const string& wndName, const vector<tuple<Point2i, 
   // Draw the given points with velocity
   for (auto tup : ps)
   {
-    auto p = get<0>(tup);
-    auto v = get<1>(tup);
+    auto p = tup.anchor;
+    auto v = tup.velocity;
     auto pScaled = Point2i(p.x*PATCH_MAP_SIZE, p.y*PATCH_MAP_SIZE);
     auto qScaled = Point2i((p.x + v.x)*PATCH_MAP_SIZE, 
                            (p.y + v.y)*PATCH_MAP_SIZE);

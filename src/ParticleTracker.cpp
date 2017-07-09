@@ -50,7 +50,7 @@ function<void (Mat)> ParticleTracker::track()
     if (this->grid == nullptr)
       this->initialiseGrid(im.cols, im.rows);
     else
-      this->grid->neutralise(true);
+      this->grid->neutralise();
     
     trackFeatures(im);
   };
@@ -121,13 +121,10 @@ void ParticleTracker::trackFeatures(Mat &im)
     vector<Point2i> newTrackingPoints;
     for (auto vm : velocityMap)
     {
-      auto p = get<0>(vm);
-      auto v = get<1>(vm);
-      DrawUtils::drawSpot(im, p, Scalar(100,245,0));
-      newTrackingPoints.push_back(Point2i(p.x + v.x, p.y + v.y));
-
-      // TAODEBUG:
-      cout << p << " + (" << v << ")" << endl;
+      DrawUtils::drawSpot(im, vm.anchor, Scalar(100,245,0));
+      newTrackingPoints.push_back(
+        Point2i(vm.anchor.x + vm.velocity.x, 
+                vm.anchor.y + vm.velocity.y));
     }
     this->trackingPoints.swap(newTrackingPoints);
   }
