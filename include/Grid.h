@@ -13,10 +13,10 @@ using namespace cv;
 
 struct AnchorWithVelocity
 {
-  Point2i   anchor;
+  Point2d   anchor;
   Point2d   velocity;
 
-  static AnchorWithVelocity create(Point2i anc, Point2d v)
+  static AnchorWithVelocity create(Point2d anc, Point2d v)
   {
     AnchorWithVelocity a;
     a.anchor   = anc;
@@ -68,7 +68,7 @@ public:
     this->anchors.clear();
   }
 
-  inline void setAnchor(const Point2i& anchor, const Point2d& velocity)
+  inline void setAnchor(const Point2f& anchor, const Point2d& velocity)
   {
     this->anchors.push_back(AnchorWithVelocity::create(anchor, velocity));
   }

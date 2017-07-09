@@ -22,30 +22,32 @@ vector<AnchorWithVelocity> Grid::calculateVelocity(const vector<Point2i>& ps) co
     double factorRatio = 1.0;
     double totalGravX = 0.0;
     double totalGravY = 0.0;
-    double sumFactor = 1.0;
+    double sumFactor = 0.0;
+    double closestDistance;
     while (!closest.empty() && n<numNeighbours)
     {
-      auto next   = closest.top();
-      auto anchor = get<1>(next);
+      auto next     = closest.top();
+      auto anchor   = get<1>(next);
+      auto distance = get<0>(next);
       closest.pop();
 
       // TAOTOREVIEW: Consider influence from distance to the anchor
-      
-      totalGravX += factorRatio * anchor.velocity.x;
-      totalGravY += factorRatio * anchor.velocity.y;
+      if (n==0) closestDistance = distance;
+
+      double distanceRatio = distance / closestDistance;
+
+      totalGravX += distanceRatio * anchor.velocity.x;
+      totalGravY += distanceRatio * anchor.velocity.y;
 
       n++;
-      factorRatio *= 0.9;
-      sumFactor += factorRatio;
-
-      // TAODEBUG:
-      cout << "[" << n << "] : " << get<0>(next) << endl;
-      cout << " x +: " << factorRatio << " * " << anchor.velocity.x << endl;
-      cout << " y +: " << factorRatio << " * " << anchor.velocity.y << endl;
+      sumFactor += distanceRatio;
     }
 
-    totalGravX /= sumFactor;
-    totalGravY /= sumFactor;
+    if (n>0)
+    {
+      totalGravX /= sumFactor;
+      totalGravY /= sumFactor;
+    }
 
     // TAODEBUG:
     cout << " gx : " << totalGravX << endl;

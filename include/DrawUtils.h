@@ -17,12 +17,7 @@ class DrawUtils
 {
 public:
 
-  inline static void drawSpot(Mat& canvas, Point2f p, Scalar color)
-  {
-    circle(canvas, p, 3, color, CV_FILLED, CV_AA);
-  }
-
-  inline static void drawSpot(Mat& canvas, Point2i p, Scalar color)
+  inline static void drawSpot(Mat& canvas, Point2d p, Scalar color)
   {
     circle(canvas, p, 3, color, CV_FILLED, CV_AA);
   }

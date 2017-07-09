@@ -96,7 +96,7 @@ void ParticleTracker::trackFeatures(Mat &im)
       #endif
 
       // Register the previous points as anchors in the [Grid]
-      Point2i p = Point2i((int)pi.x, (int)pi.y);
+      Point2i p = Point2f(pi.x, pi.y);
       Point2d v = Point2d(points[j].x - pi.x,
                           points[j].y - pi.y);
       this->grid->setAnchor(p, v);
