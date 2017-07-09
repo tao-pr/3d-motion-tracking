@@ -4,49 +4,35 @@
  * @copyRight 2016-now 
  */
 
+#include <mutex>
 #include <functional>
 #include "IdentityTransformation.h"
 #include "FilterTransformation.h"
 #include "VideoCamera.h"
-#include "CamShiftTracker.h"
-#include "SimpleFeaturePointTracker.h"
 #include "ParticleTracker.h"
 #include "ITracker.h"
 
 using namespace std;
 
 bool debug              = true;
-string trackerModelName = "particle";
+ITracker* trackerModel  = nullptr;
+mutex m;
 
-
-ITracker* trackerModel = nullptr;
-
-function<void (Mat)> createTracker(string modelName)
+void mouseEvent(int event, int x, int y, int n, void* p)
 {
-  if (modelName == "camshift")
+  if (event == EVENT_LBUTTONDOWN)
   {
-    trackerModel = new CamShiftTracker();
-    return trackerModel->track();
+    // Point selection
+    cout << CYAN << "(" << x << ", " << y << ")" << RESET << endl;
+    // TAOTODO: lock trackerModel before proceeding
+    trackerModel->addTrackingPoint(Point2i(x, y));
   }
-  else if (modelName == "simple")// Good feature to track -based
-  {
-    float meshDisplace  = 50;
-    float maxEdgeLength = 420;
-    int longestAbsence  = 3;
-    trackerModel        = new SimpleFeaturePointTracker(meshDisplace, maxEdgeLength, longestAbsence, debug);
-    return trackerModel->track();
-  }
-  else if (modelName == "particle") // SIFT based
-  {
-    trackerModel = new ParticleTracker();
-    return trackerModel->track();
-  }
-  else
-  {
-    cout << YELLOW << "[WARNING] Unsupported tracker model is specified." << RESET << endl;
-    cout << YELLOW << "[WARNING] No tracker will be created." << RESET << endl;
-    return [](Mat){}; // Do nothing
-  }
+}
+
+function<void (Mat)> createTracker()
+{
+  trackerModel = new ParticleTracker("sift");
+  return trackerModel->track();
 }
 
 int main(int argc, char** argv)
@@ -54,10 +40,10 @@ int main(int argc, char** argv)
   // Prepare frame transformers
   IdentityTransformation nothing;
   FilterTransformation grayDownsampling = FilterTransformation(
-    FilterType::Nothing, 0, 0, 0.43
-    );
+    FilterType::Nothing, 0, 0, 0.43);
   
-  auto tracker = createTracker(trackerModelName);
+  auto tracker = createTracker();
+  ITracker::bindMouseEvent(trackerModel->wndName, mouseEvent);
 
   // Start capturing from video source
   VideoCamera cam("cam");

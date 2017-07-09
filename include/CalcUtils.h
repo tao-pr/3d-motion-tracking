@@ -6,6 +6,11 @@
 
 using namespace cv;
 
+inline double _square(double n)
+{
+  return n*n;
+}
+
 // Fast square root
 // [href] : http://www.codeproject.com/Articles/69941/Best-Square-Root-Method-Algorithm-Function-Precisi
 inline double _sqrt(double n)

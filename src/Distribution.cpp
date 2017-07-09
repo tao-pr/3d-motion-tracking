@@ -4,7 +4,7 @@ template<class T>
 Distribution::Bucket<T>::Bucket(T interval, T lowerBound, T upperBound)
 {
   assert(lowerBound < upperBound);
-  this->interval = interval;
+  this->interval   = interval;
   this->lowerBound = lowerBound;
   this->upperBound = upperBound;
 }

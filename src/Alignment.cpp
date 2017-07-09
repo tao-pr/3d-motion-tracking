@@ -3,9 +3,9 @@
 Alignment::Alignment(function<double (Point2f, Point2f)> measureDistance, double maxMoveDistance)
 {
   cout << GREEN << "Initialising alignment engine..." << RESET << endl;
-  this->measureDistFunction       = measureDistance;
-  this->maxDistance               = maxMoveDistance;
-  this->isVisualisationOn         = false;
+  this->measureDistFunction  = measureDistance;
+  this->maxDistance          = maxMoveDistance;
+  this->isVisualisationOn    = false;
 }
 
 void Alignment::setVisualisation(bool on)
@@ -13,7 +13,7 @@ void Alignment::setVisualisation(bool on)
   this->isVisualisationOn = on;
 }
 
-unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point2f> newpoints, const Mat baseFeatures, const Mat newFeatures)
+unordered_map<int,int> Alignment::align(vector<TrackablePoint> basepoints, vector<Point2f> newpoints, const Mat newFeatures)
 {
   int i = 0;
   int M = VIS_MAX_SPOT * VIS_PATCH_SIZE + 1;
@@ -23,8 +23,10 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
   
   // Record the population distribution (of scores)
   GenericDistribution<double> scorePopulation;
-  for (auto bp : basepoints)
+  for (auto bp0 : basepoints)
   {
+    auto bp = bp0.get();
+
     // List of Tuples of <distance, index of candidate>
     // Closest first
     priority_queue<distanceToIndex, vector<distanceToIndex>, compareScore> candidates;
@@ -41,13 +43,13 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
       }
       else
       {
-        auto v0 = baseFeatures.row(i);
+        auto v0 = bp0.feature;
         auto v1 = newFeatures.row(j);
         double mag0 = norm(v0, CV_L2);
         double mag1 = norm(v1, CV_L2);
-        double similarity = 0.5*(M_PI - acos(v0.dot(v1)/(mag0*mag1)))/M_PI;
+        double similarity = FACTOR_SIMILARIY * 0.5 * (M_PI - acos(v0.dot(v1)/(mag0*mag1)))/M_PI;
 
-        double score = (d<1e-30) ? 1.0 : similarity / pow(d,2.0);
+        double score = (d<=1) ? 1.0 : similarity / pow(d,2.0);
         if (score > 1e-20)
           candidates.push(make_tuple(j, score));
         matchScore.at<double>(i,j) = score;
@@ -67,14 +69,6 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
       j++;
     }
 
-    // Reject statistically low scores
-    // Mat scores = matchScore.row(i);
-    // Mat meanVec, stdVec;
-    // meanStdDev(scores, meanVec, stdVec);
-
-    // double mean = meanVec.at<double>(0,0);
-    // double std  = stdVec.at<double>(0,0);
-
     if (!candidates.empty())
     {
       auto matchedPoint = candidates.top();
@@ -91,11 +85,12 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
   double mean = meanVec.at<double>(0,0);
   double std  = stdVec.at<double>(0,0);
   unordered_map<int,int> pairsFiltered;
+  const double rejectedStdTimes = 4;
   int numRejected = 0;
   for (auto pair : pairs)
   {
     auto score = pair.second;
-    if (score > mean + 3*std)
+    if (score > mean + rejectedStdTimes*std)
     {
       pairsFiltered.insert(pair);
     }
@@ -104,7 +99,7 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
 
   #ifdef DEBUG_ALIGNMENT
   cout << numRejected << " candidates rejected by mean : " << mean
-    << " (+" << 3*std << ")" << endl;
+    << " (+" << rejectedStdTimes*std << ")" << endl;
   #endif
   
   if (this->isVisualisationOn)
@@ -113,7 +108,7 @@ unordered_map<int,int> Alignment::align(vector<Point2f> basepoints, vector<Point
     auto binstep = Bucket<double>(0.01, 0.0, 1.0);
     auto bounds  = make_tuple(0.0, 0.1);
     #ifdef DEBUG_ALIGNMENT
-    scorePopulation.bucketPlot(binstep, bounds, "Score distribution", 3, mean + 3*std);
+    scorePopulation.bucketPlot(binstep, bounds, "Score distribution", 3, mean + rejectedStdTimes*std);
     #endif
   }
 
